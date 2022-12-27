@@ -189,14 +189,15 @@ public class Principal extends JFrame {
 					XSSFRow row = sheet.getRow(i);
 					// XSSFRow row = null;
 
-					// System.out.println("TESTE"); //Linha debug
+					//Copia as informações das linhas da planilhas para arrayslists.
 					while ((row = sheet.getRow(i)) != null) {
 						if (row.getCell(0).getNumericCellValue() != 0 && row.getCell(1).getStringCellValue() != null) {
 							item.add((int) row.getCell(0).getNumericCellValue());
 							desc.add(row.getCell(1).getStringCellValue());
-							System.out.print("Laudo N :: " + item.get(pos));
-							System.out.println("\tNome :: " + desc.get(pos));
-							// System.out.println("TESTE");
+							
+							//System.out.print("Laudo N :: " + item.get(pos));
+							//System.out.println("\tNome :: " + desc.get(pos));
+							
 							pos++;
 							i++;
 						} else {
