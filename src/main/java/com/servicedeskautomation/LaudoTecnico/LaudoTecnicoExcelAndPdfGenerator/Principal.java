@@ -177,7 +177,8 @@ public class Principal extends JFrame {
 
 				try {
 					int i = 1;
-					int pos = 0;
+					//int pos = 0;
+					
 					// Abre o arquivo excel
 					XSSFWorkbook work = new XSSFWorkbook(new FileInputStream(pathfile));
 
@@ -195,10 +196,10 @@ public class Principal extends JFrame {
 							item.add((int) row.getCell(0).getNumericCellValue());
 							desc.add(row.getCell(1).getStringCellValue());
 							
-							//System.out.print("Laudo N :: " + item.get(pos));
-							//System.out.println("\tNome :: " + desc.get(pos));
+							/*System.out.print("Laudo N :: " + item.get(pos));
+							System.out.println("\tNome :: " + desc.get(pos));
+							pos++;*/
 							
-							pos++;
 							i++;
 						} else {
 							preencherTabelaProprietario();
