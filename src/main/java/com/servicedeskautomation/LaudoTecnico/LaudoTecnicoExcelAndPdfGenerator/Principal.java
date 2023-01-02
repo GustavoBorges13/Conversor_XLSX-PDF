@@ -43,9 +43,28 @@ public class Principal extends JFrame {
 	private DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
 	private static int alinhamento = SwingConstants.LEFT;
 	private File pathfile;
-	private ArrayList<Integer> item = new ArrayList<Integer>();
-	private ArrayList<String> desc = new ArrayList<String>();
-	private String[] colunas;
+
+	private ArrayList<Integer> laudo = new ArrayList<Integer>();
+	private ArrayList<String> nomeSolicitante = new ArrayList<String>();
+	private ArrayList<String> usuario = new ArrayList<String>();
+	private ArrayList<String> centroCusto = new ArrayList<String>();
+	private ArrayList<String> item = new ArrayList<String>();
+	private ArrayList<String> qtd = new ArrayList<String>();
+	private ArrayList<String> ativo = new ArrayList<String>();
+	private ArrayList<String> dispositivo = new ArrayList<String>();
+	private ArrayList<String> hostname = new ArrayList<String>();
+	private ArrayList<String> fabricante = new ArrayList<String>();
+	private ArrayList<String> modelo = new ArrayList<String>();
+	private ArrayList<String> serviceTag = new ArrayList<String>();
+	private ArrayList<String> dataAquisicao = new ArrayList<String>();
+	private ArrayList<String> cpu = new ArrayList<String>();
+	private ArrayList<String> storage = new ArrayList<String>();
+	private ArrayList<Integer> memoria = new ArrayList<Integer>();
+	private ArrayList<String> tecnico = new ArrayList<String>();
+	private ArrayList<String> observacao = new ArrayList<String>();
+	private ArrayList<String> status = new ArrayList<String>();
+
+	private ArrayList<String> colunas = new ArrayList<String>();
 
 	/*
 	 * Alinhador de fonts da tabela, deixa as fontes centralizadas para a lateral
@@ -71,23 +90,26 @@ public class Principal extends JFrame {
 	@SuppressWarnings("static-access")
 	public void preencherTabelaProprietario() {
 		ArrayList<Object[]> dados = new ArrayList<>();
-		String[] Colunas = new String[] { " Item", " Descricao" };
-		
-		for (int i = 0; i < item.size(); i++) {
-			dados.add(new Object[] { (" " + item.get(i)), (" " + desc.get(i)) });
+
+		for (int i = 0; i < laudo.size(); i++) {
+			dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
+					(" " + centroCusto.get(i)), (" " + item.get(i)), (" " + qtd.get(i)), (" " + ativo.get(i)),
+					(" " + dispositivo.get(i)), (" " + hostname.get(i)), (" " + fabricante.get(i)),
+					(" " + modelo.get(i)), (" " + serviceTag.get(i)), (" " + dataAquisicao.get(i)), (" " + cpu.get(i)),
+					(" " + storage.get(i)), (" " + memoria.get(i)), (" " + tecnico.get(i)), (" " + observacao.get(i)),
+					(" " + status.get(i)) });
 		}
 
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
-		ModeloTabela modelo = new ModeloTabela(dados, Colunas);
+		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
-		// table.setModel(mode);
 
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
 		table.getColumnModel().getColumn(0).setPreferredWidth(45);
 		table.getColumnModel().getColumn(0).setResizable(false);
 		table.getColumnModel().getColumn(0).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(1).setPreferredWidth(540);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
 		table.getColumnModel().getColumn(1).setResizable(false);
 		table.getColumnModel().getColumn(1).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 
@@ -187,36 +209,51 @@ public class Principal extends JFrame {
 
 					// Linha de referencia (selecionar a partir de uma determinada linha...)
 					XSSFRow row = null;
-					//row = sheet.getRow(i);
-					
-					//Varredura dos cabeçalhos/colunas
+					// row = sheet.getRow(i);
+
+					System.out.println("DEBUG -> "+sheet.getRow(2).getCell(4));
+					// Varredura dos cabeçalhos/colunas
 					while ((row = sheet.getRow(i)) != null) {
 						if (row.getCell(pos).getStringCellValue() != null) {
-							colunas[pos] = row.getCell(pos).toString();
-							System.out.println(row.getCell(pos).toString());
-							System.out.println("Colunas debug: "+colunas);
+							colunas.add(row.getCell(pos).toString());
 							pos++;
-							
 						} else {
 							break;
 						}
 					}
 					
-					
-					
-					
 					// Copia as informações das linhas da planilhas para arrayslists.
-					i=1; //varredura a partir da segunda linha ~ ignora cabeçalho
+					i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
+					System.out.println("DEBUG 2 -> "+row.getCell(4));
 					while ((row = sheet.getRow(i)) != null) {
-						if (row.getCell(0).getNumericCellValue() != 0 && row.getCell(1).getStringCellValue() != null) {
-							item.add((int) row.getCell(0).getNumericCellValue());
-							desc.add(row.getCell(1).getStringCellValue());
+						System.out.println("DEBUG 2 -> "+row.getCell(4));
+						if (row.getCell(0).getNumericCellValue() != 0 && row.getCell(1).getStringCellValue() != null
+								) {
+
+							laudo.add((int) row.getCell(0).getNumericCellValue());
+							nomeSolicitante.add(row.getCell(1).getStringCellValue());
+							usuario.add(row.getCell(2).getStringCellValue());
+							centroCusto.add(row.getCell(3).getStringCellValue());
+							item.add(row.getCell(4).getStringCellValue());
+							qtd.add(row.getCell(5).getStringCellValue());
+							ativo.add(row.getCell(6).getStringCellValue());
+							dispositivo.add(row.getCell(7).getStringCellValue());
+							hostname.add(row.getCell(8).getStringCellValue());
+							fabricante.add(row.getCell(9).getStringCellValue());
+							modelo.add(row.getCell(10).getStringCellValue());
+							serviceTag.add(row.getCell(11).getStringCellValue());
+							dataAquisicao.add(row.getCell(12).getStringCellValue());
+							cpu.add(row.getCell(13).getStringCellValue());
+							storage.add(row.getCell(14).getStringCellValue());
+							memoria.add((int) row.getCell(15).getNumericCellValue());
+							tecnico.add(row.getCell(16).getStringCellValue());
+							observacao.add(row.getCell(17).getStringCellValue());
+							status.add(row.getCell(18).getStringCellValue());
 							i++;
 						} else {
 							break;
 						}
 					}
-					
 					// Chegou na ultima linha que possui conteudo da planilha..
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showConfirmDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
@@ -227,8 +264,15 @@ public class Principal extends JFrame {
 					JOptionPane.showConfirmDialog(null, "Arquivo invalido!\nErro: " + e3);
 				}
 
+				// debug
+				System.out.println(laudo + "\n" + nomeSolicitante + "\n" + usuario + "\n" + centroCusto + "\n" + item
+						+ "\n" + qtd + "\n" + ativo + "\n" + dispositivo + "\n" + hostname + "\n" + fabricante + "\n"
+						+ modelo + "\n" + serviceTag + "\n" + dataAquisicao + "\n" + cpu + "\n" + storage + "\n"
+						+ memoria + "\n" + tecnico + "\n" + observacao + "\n" + status + "\n");
+
 				// Preenche a tabela
 				preencherTabelaProprietario();
+				colunas.clear();
 			}
 		});
 

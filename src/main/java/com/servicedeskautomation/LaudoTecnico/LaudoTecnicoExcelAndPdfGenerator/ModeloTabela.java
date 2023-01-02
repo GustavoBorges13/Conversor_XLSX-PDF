@@ -8,10 +8,10 @@ import javax.swing.table.AbstractTableModel;
 public class ModeloTabela extends AbstractTableModel {
 	private static final long serialVersionUID = 7738213752936430631L;
 	private ArrayList linhas = null;
-	private String[] colunas = null;
+	private ArrayList colunas = null;
 	
 	
-	public ModeloTabela(ArrayList lin, String[] col) {
+	public ModeloTabela(ArrayList lin, ArrayList col) {
 		setLinhas(lin);
 		setColunas(col);
 	}
@@ -24,17 +24,17 @@ public class ModeloTabela extends AbstractTableModel {
 		this.linhas = linhas;
 	}
 
-	public String[] getColunas() {
+	public ArrayList getColunas() {
 		return colunas;
 	}
 
-	public void setColunas(String[] colunas) {
+	public void setColunas(ArrayList colunas) {
 		this.colunas = colunas;
 	}
 	
 	//Conta as colunas e suas quantidades
 	public int getColumnCount() {
-		return colunas.length;
+		return colunas.size();
 	}
 	
 	//Conta quantas linhas tem na tabela o nosso caso do array
@@ -44,7 +44,7 @@ public class ModeloTabela extends AbstractTableModel {
 	
 	//Responsavel por pegar o nome da coluna e retornar quantas colunas tem
 	public String getColumnName(int numCol) {
-		return colunas[numCol];
+		return colunas.get(numCol).toString();
 	}
 	
 	//Metodo que monta a tabela pela quantidade de linhas das colunas...	
