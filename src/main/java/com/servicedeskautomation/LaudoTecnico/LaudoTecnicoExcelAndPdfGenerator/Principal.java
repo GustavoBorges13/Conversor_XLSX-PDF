@@ -9,12 +9,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -22,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
@@ -42,28 +45,12 @@ public class Principal extends JFrame {
 	private File pathfile;
 	private ArrayList<Integer> item = new ArrayList<Integer>();
 	private ArrayList<String> desc = new ArrayList<String>();
+	private String[] colunas;
 
-	// Customize the code to set the background and foreground color for each column
-	// of a JTable
-	class ColumnColorRenderer extends DefaultTableCellRenderer {
-		private static final long serialVersionUID = -2920708207060590184L;
-		Color backgroundColor, foregroundColor;
-
-		public ColumnColorRenderer(Color backgroundColor, Color foregroundColor) {
-			super();
-			this.backgroundColor = backgroundColor;
-			this.foregroundColor = foregroundColor;
-		}
-
-		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
-				int row, int column) {
-			Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			cell.setBackground(backgroundColor);
-			cell.setForeground(foregroundColor);
-			return cell;
-		}
-	}
-
+	/*
+	 * Alinhador de fonts da tabela, deixa as fontes centralizadas para a lateral
+	 * Para controlar mude o .LEFT para o que desejar... .CENTER, .RIGHT
+	 */
 	public class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -85,17 +72,19 @@ public class Principal extends JFrame {
 	public void preencherTabelaProprietario() {
 		ArrayList<Object[]> dados = new ArrayList<>();
 		String[] Colunas = new String[] { " Item", " Descricao" };
-
+		
 		for (int i = 0; i < item.size(); i++) {
 			dados.add(new Object[] { (" " + item.get(i)), (" " + desc.get(i)) });
 		}
 
+		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
 		ModeloTabela modelo = new ModeloTabela(dados, Colunas);
 		table.setModel(modelo);
+		// table.setModel(mode);
 
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
-		table.getColumnModel().getColumn(0).setPreferredWidth(160);
+		table.getColumnModel().getColumn(0).setPreferredWidth(45);
 		table.getColumnModel().getColumn(0).setResizable(false);
 		table.getColumnModel().getColumn(0).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(1).setPreferredWidth(540);
@@ -112,8 +101,8 @@ public class Principal extends JFrame {
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		// Realiza a configuracao de fontes
-		table.getTableHeader().setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 12));
-		table.setFont(new Font("Dialog", Font.PLAIN, 9));
+		table.getTableHeader().setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 10));
+		table.setFont(new Font("Dialog", Font.PLAIN, 10));
 	}
 
 	public static void main(String[] args) {
@@ -153,6 +142,16 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				fc.setPreferredSize(new Dimension(700, 400));
+
+				// Restringir o usuário para selecionar arquivos de todos os tipos
+				fc.setAcceptAllFileFilterUsed(false);
+
+				// Coloca um titulo para a janela de dialogo
+				fc.setDialogTitle("Selecione um arquivo .txt");
+
+				// Habilita para o user escolher apenas arquivos do tipo: txt
+				FileNameExtensionFilter restrict = new FileNameExtensionFilter("Somente arquivos .xlsx", "xlsx");
+				fc.addChoosableFileFilter(restrict);
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 				int resultado = fc.showOpenDialog(null);
@@ -176,9 +175,9 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					int i = 1;
-					//int pos = 0;
-					
+					int i = 0;
+					int pos = 0;
+
 					// Abre o arquivo excel
 					XSSFWorkbook work = new XSSFWorkbook(new FileInputStream(pathfile));
 
@@ -187,29 +186,49 @@ public class Principal extends JFrame {
 					XSSFSheet sheet = work.getSheetAt(0);
 
 					// Linha de referencia (selecionar a partir de uma determinada linha...)
-					XSSFRow row = sheet.getRow(i);
-					// XSSFRow row = null;
-
-					//Copia as informações das linhas da planilhas para arrayslists.
+					XSSFRow row = null;
+					//row = sheet.getRow(i);
+					
+					//Varredura dos cabeçalhos/colunas
+					while ((row = sheet.getRow(i)) != null) {
+						if (row.getCell(pos).getStringCellValue() != null) {
+							colunas[pos] = row.getCell(pos).toString();
+							System.out.println(row.getCell(pos).toString());
+							System.out.println("Colunas debug: "+colunas);
+							pos++;
+							
+						} else {
+							break;
+						}
+					}
+					
+					
+					
+					
+					// Copia as informações das linhas da planilhas para arrayslists.
+					i=1; //varredura a partir da segunda linha ~ ignora cabeçalho
 					while ((row = sheet.getRow(i)) != null) {
 						if (row.getCell(0).getNumericCellValue() != 0 && row.getCell(1).getStringCellValue() != null) {
 							item.add((int) row.getCell(0).getNumericCellValue());
 							desc.add(row.getCell(1).getStringCellValue());
-							
-							/*System.out.print("Laudo N :: " + item.get(pos));
-							System.out.println("\tNome :: " + desc.get(pos));
-							pos++;*/
-							
 							i++;
 						} else {
-							preencherTabelaProprietario();
 							break;
 						}
-
 					}
-				} catch (IOException e1) {
-					e1.printStackTrace();
+					
+					// Chegou na ultima linha que possui conteudo da planilha..
+				} catch (FileNotFoundException e1) {
+					JOptionPane.showConfirmDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
+
+				} catch (NullPointerException e2) {
+					System.out.println("Debug error: " + e2 + " Não há mais linhas com conteúdo no excel...");
+				} catch (IOException e3) {
+					JOptionPane.showConfirmDialog(null, "Arquivo invalido!\nErro: " + e3);
 				}
+
+				// Preenche a tabela
+				preencherTabelaProprietario();
 			}
 		});
 
@@ -231,8 +250,6 @@ public class Principal extends JFrame {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-
-		preencherTabelaProprietario();
 
 	}
 }
