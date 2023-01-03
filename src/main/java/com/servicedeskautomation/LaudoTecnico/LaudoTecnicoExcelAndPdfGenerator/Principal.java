@@ -26,7 +26,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
 
@@ -40,8 +39,6 @@ public class Principal extends JFrame {
 	private JTextField jlocal;
 	private JTextField jtitulo;
 	private JTable table;
-	@SuppressWarnings("unused")
-	private DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
 	private static int alinhamento = SwingConstants.LEFT;
 	private File pathfile;
 
@@ -106,7 +103,7 @@ public class Principal extends JFrame {
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
 		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
-
+		
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
 		table.getColumnModel().getColumn(0).setPreferredWidth(50); //coluna LAUDO
@@ -130,40 +127,40 @@ public class Principal extends JFrame {
 		table.getColumnModel().getColumn(6).setPreferredWidth(95); //coluna ATIVO
 		table.getColumnModel().getColumn(6).setResizable(false);
 		table.getColumnModel().getColumn(6).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(7).setPreferredWidth(55); //coluna DISPOSITIVO
+		table.getColumnModel().getColumn(7).setPreferredWidth(80); //coluna DISPOSITIVO
 		table.getColumnModel().getColumn(7).setResizable(false);
 		table.getColumnModel().getColumn(7).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(8).setPreferredWidth(55); //coluna HOSTNAME
+		table.getColumnModel().getColumn(8).setPreferredWidth(85); //coluna HOSTNAME
 		table.getColumnModel().getColumn(8).setResizable(false);
 		table.getColumnModel().getColumn(8).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(9).setPreferredWidth(55); //coluna FABRICANTE
+		table.getColumnModel().getColumn(9).setPreferredWidth(75); //coluna FABRICANTE
 		table.getColumnModel().getColumn(9).setResizable(false);
 		table.getColumnModel().getColumn(9).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(10).setPreferredWidth(55); //coluna MODELO
+		table.getColumnModel().getColumn(10).setPreferredWidth(100); //coluna MODELO
 		table.getColumnModel().getColumn(10).setResizable(false);
 		table.getColumnModel().getColumn(10).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(11).setPreferredWidth(55); //coluna SERVICE TAG
+		table.getColumnModel().getColumn(11).setPreferredWidth(80); //coluna SERVICE TAG
 		table.getColumnModel().getColumn(11).setResizable(false);
 		table.getColumnModel().getColumn(11).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(12).setPreferredWidth(55); //coluna DATA AQUISIÇÃO
+		table.getColumnModel().getColumn(12).setPreferredWidth(95); //coluna DATA AQUISIÇÃO
 		table.getColumnModel().getColumn(12).setResizable(false);
 		table.getColumnModel().getColumn(12).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(13).setPreferredWidth(55); //coluna CPU
+		table.getColumnModel().getColumn(13).setPreferredWidth(245); //coluna CPU
 		table.getColumnModel().getColumn(13).setResizable(false);
 		table.getColumnModel().getColumn(13).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(14).setPreferredWidth(55); //coluna STORAGE
+		table.getColumnModel().getColumn(14).setPreferredWidth(90); //coluna STORAGE
 		table.getColumnModel().getColumn(14).setResizable(false);
 		table.getColumnModel().getColumn(14).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(15).setPreferredWidth(55); //coluna MEMORIA
+		table.getColumnModel().getColumn(15).setPreferredWidth(90); //coluna MEMORIA
 		table.getColumnModel().getColumn(15).setResizable(false);
 		table.getColumnModel().getColumn(15).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(16).setPreferredWidth(55); //coluna TECNICO
+		table.getColumnModel().getColumn(16).setPreferredWidth(160); //coluna TECNICO
 		table.getColumnModel().getColumn(16).setResizable(false);
 		table.getColumnModel().getColumn(16).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(17).setPreferredWidth(55); //coluna OBSERVAÇÕES
+		table.getColumnModel().getColumn(17).setPreferredWidth(80); //coluna OBSERVAÇÕES
 		table.getColumnModel().getColumn(17).setResizable(false);
 		table.getColumnModel().getColumn(17).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(18).setPreferredWidth(55); //coluna STATUS
+		table.getColumnModel().getColumn(18).setPreferredWidth(60); //coluna STATUS
 		table.getColumnModel().getColumn(18).setResizable(false);
 		table.getColumnModel().getColumn(18).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 
@@ -416,6 +413,15 @@ public class Principal extends JFrame {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		
+		JButton btnAddLinha = new JButton("Adicionar linha");
+		btnAddLinha.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				table.addRowSelectionInterval(0, 2);
+			}
+		});
+		btnAddLinha.setBounds(265, 454, 183, 23);
+		contentPane.add(btnAddLinha);
 	}
 
 	public ArrayList<String> removeEspacos(ArrayList<String> lista) {
