@@ -1,6 +1,5 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -11,7 +10,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -44,7 +45,7 @@ public class Principal extends JFrame {
 	private static int alinhamento = SwingConstants.LEFT;
 	private File pathfile;
 
-	private ArrayList<Integer> laudo = new ArrayList<Integer>();
+	private ArrayList<String> laudo = new ArrayList<String>();
 	private ArrayList<String> nomeSolicitante = new ArrayList<String>();
 	private ArrayList<String> usuario = new ArrayList<String>();
 	private ArrayList<String> centroCusto = new ArrayList<String>();
@@ -59,11 +60,10 @@ public class Principal extends JFrame {
 	private ArrayList<String> dataAquisicao = new ArrayList<String>();
 	private ArrayList<String> cpu = new ArrayList<String>();
 	private ArrayList<String> storage = new ArrayList<String>();
-	private ArrayList<Integer> memoria = new ArrayList<Integer>();
+	private ArrayList<String> memoria = new ArrayList<String>();
 	private ArrayList<String> tecnico = new ArrayList<String>();
 	private ArrayList<String> observacao = new ArrayList<String>();
 	private ArrayList<String> status = new ArrayList<String>();
-
 	private ArrayList<String> colunas = new ArrayList<String>();
 
 	/*
@@ -90,28 +90,82 @@ public class Principal extends JFrame {
 	@SuppressWarnings("static-access")
 	public void preencherTabelaProprietario() {
 		ArrayList<Object[]> dados = new ArrayList<>();
-
-		for (int i = 0; i < laudo.size(); i++) {
-			dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
-					(" " + centroCusto.get(i)), (" " + item.get(i)), (" " + qtd.get(i)), (" " + ativo.get(i)),
-					(" " + dispositivo.get(i)), (" " + hostname.get(i)), (" " + fabricante.get(i)),
-					(" " + modelo.get(i)), (" " + serviceTag.get(i)), (" " + dataAquisicao.get(i)), (" " + cpu.get(i)),
-					(" " + storage.get(i)), (" " + memoria.get(i)), (" " + tecnico.get(i)), (" " + observacao.get(i)),
-					(" " + status.get(i)) });
+		
+		try {
+			for (int i = 0; i < colunas.size(); i++) {
+				dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
+						(" " + centroCusto.get(i)), (" " + item.get(i)), (" " + qtd.get(i)), (" " + ativo.get(i)),
+						(" " + dispositivo.get(i)), (" " + hostname.get(i)), (" " + fabricante.get(i)),
+						(" " + modelo.get(i)), (" " + serviceTag.get(i)), (" " + dataAquisicao.get(i)),
+						(" " + cpu.get(i)), (" " + storage.get(i)), (" " + memoria.get(i)), (" " + tecnico.get(i)),
+						(" " + observacao.get(i)), (" " + status.get(i)) });
+			} 
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
 		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
 
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
-		table.getColumnModel().getColumn(0).setPreferredWidth(45);
+		table.getColumnModel().getColumn(0).setPreferredWidth(50); //coluna LAUDO
 		table.getColumnModel().getColumn(0).setResizable(false);
 		table.getColumnModel().getColumn(0).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		table.getColumnModel().getColumn(1).setPreferredWidth(170); //coluna NOME SOLICITANTE
 		table.getColumnModel().getColumn(1).setResizable(false);
 		table.getColumnModel().getColumn(1).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(2).setPreferredWidth(65); //coluna USUARIO
+		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(3).setPreferredWidth(200); //coluna CENTRO DE CUSTO
+		table.getColumnModel().getColumn(3).setResizable(false);
+		table.getColumnModel().getColumn(3).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(4).setPreferredWidth(190); //coluna ITEM
+		table.getColumnModel().getColumn(4).setResizable(false);
+		table.getColumnModel().getColumn(4).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(5).setPreferredWidth(30); //coluna QTD
+		table.getColumnModel().getColumn(5).setResizable(false);
+		table.getColumnModel().getColumn(5).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(6).setPreferredWidth(95); //coluna ATIVO
+		table.getColumnModel().getColumn(6).setResizable(false);
+		table.getColumnModel().getColumn(6).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(7).setPreferredWidth(55); //coluna DISPOSITIVO
+		table.getColumnModel().getColumn(7).setResizable(false);
+		table.getColumnModel().getColumn(7).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(8).setPreferredWidth(55); //coluna HOSTNAME
+		table.getColumnModel().getColumn(8).setResizable(false);
+		table.getColumnModel().getColumn(8).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(9).setPreferredWidth(55); //coluna FABRICANTE
+		table.getColumnModel().getColumn(9).setResizable(false);
+		table.getColumnModel().getColumn(9).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(10).setPreferredWidth(55); //coluna MODELO
+		table.getColumnModel().getColumn(10).setResizable(false);
+		table.getColumnModel().getColumn(10).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(11).setPreferredWidth(55); //coluna SERVICE TAG
+		table.getColumnModel().getColumn(11).setResizable(false);
+		table.getColumnModel().getColumn(11).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(12).setPreferredWidth(55); //coluna DATA AQUISIÇÃO
+		table.getColumnModel().getColumn(12).setResizable(false);
+		table.getColumnModel().getColumn(12).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(13).setPreferredWidth(55); //coluna CPU
+		table.getColumnModel().getColumn(13).setResizable(false);
+		table.getColumnModel().getColumn(13).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(14).setPreferredWidth(55); //coluna STORAGE
+		table.getColumnModel().getColumn(14).setResizable(false);
+		table.getColumnModel().getColumn(14).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(15).setPreferredWidth(55); //coluna MEMORIA
+		table.getColumnModel().getColumn(15).setResizable(false);
+		table.getColumnModel().getColumn(15).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(16).setPreferredWidth(55); //coluna TECNICO
+		table.getColumnModel().getColumn(16).setResizable(false);
+		table.getColumnModel().getColumn(16).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(17).setPreferredWidth(55); //coluna OBSERVAÇÕES
+		table.getColumnModel().getColumn(17).setResizable(false);
+		table.getColumnModel().getColumn(17).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
+		table.getColumnModel().getColumn(18).setPreferredWidth(55); //coluna STATUS
+		table.getColumnModel().getColumn(18).setResizable(false);
+		table.getColumnModel().getColumn(18).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 
 		// Nao vai reodernar os nomes e titulos do cabeçalho da tabela
 		table.getTableHeader().setReorderingAllowed(false);
@@ -195,84 +249,152 @@ public class Principal extends JFrame {
 		// Button fill/preencher
 		btnPreencher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				XSSFWorkbook work;
+				XSSFSheet sheet;
+				XSSFRow row;
+				
+				//Limpeza dos dados salvos nas listas é como se fosse um F5
+				laudo.clear();
+				nomeSolicitante.clear();
+				usuario.clear();
+				centroCusto.clear();
+				item.clear();
+				qtd.clear();
+				ativo.clear();
+				dispositivo.clear();
+				hostname.clear();
+				fabricante.clear();
+				modelo.clear();
+				serviceTag.clear();
+				dataAquisicao.clear();
+				cpu.clear();
+				storage.clear();
+				memoria.clear();
+				tecnico.clear();
+				observacao.clear();
+				status.clear();
+				colunas.clear();
+				
+				
 				try {
-					int i = 0;
+					int i = 0; //primeira linha
 					int pos = 0;
-
+					
 					// Abre o arquivo excel
-					XSSFWorkbook work = new XSSFWorkbook(new FileInputStream(pathfile));
+					work = new XSSFWorkbook(new FileInputStream(pathfile));
 
 					// Junta todas as planilhas deste arquivo.
 					// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
-					XSSFSheet sheet = work.getSheetAt(0);
+					sheet = work.getSheetAt(0);
 
 					// Linha de referencia (selecionar a partir de uma determinada linha...)
-					XSSFRow row = null;
-					// row = sheet.getRow(i);
+					row = sheet.getRow(i);
 
-					System.out.println("DEBUG -> "+sheet.getRow(2).getCell(4));
 					// Varredura dos cabeçalhos/colunas
-					while ((row = sheet.getRow(i)) != null) {
+					while (row != null) {
 						if (row.getCell(pos).getStringCellValue() != null) {
 							colunas.add(row.getCell(pos).toString());
 							pos++;
 						} else {
+							work.close();
 							break;
 						}
 					}
+
+					// Chegou na ultima linha que possui conteudo da planilha..
+				} catch (FileNotFoundException e1) {
+					JOptionPane.showConfirmDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
+				} catch (NullPointerException e2) {
+					System.out.println("Debug error: " + e2 + " Não há mais linhas com conteúdo no excel...");
+				} catch (IOException e3) {
+					JOptionPane.showConfirmDialog(null, "Arquivo invalido!\nErro: " + e3);
+				}
+				
+				
+				try {
+					int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
+					Date date;
+					String dataFormatada;
+
+					// Abre o arquivo excel
+					work = new XSSFWorkbook(new FileInputStream(pathfile));
+
+					// Junta todas as planilhas deste arquivo.
+					// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
+					sheet = work.getSheetAt(0);
+
+					// Linha de referencia (selecionar a partir de uma determinada linha...)
+					row = sheet.getRow(i);
 					
 					// Copia as informações das linhas da planilhas para arrayslists.
-					i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
-					System.out.println("DEBUG 2 -> "+row.getCell(4));
 					while ((row = sheet.getRow(i)) != null) {
-						System.out.println("DEBUG 2 -> "+row.getCell(4));
-						if (row.getCell(0).getNumericCellValue() != 0 && row.getCell(1).getStringCellValue() != null
-								) {
-
-							laudo.add((int) row.getCell(0).getNumericCellValue());
+						if (row.getCell(0).getNumericCellValue() != 0 && row.getCell(1).getStringCellValue() != null) {
+							laudo.add((int)row.getCell(0).getNumericCellValue() + "");
 							nomeSolicitante.add(row.getCell(1).getStringCellValue());
 							usuario.add(row.getCell(2).getStringCellValue());
 							centroCusto.add(row.getCell(3).getStringCellValue());
 							item.add(row.getCell(4).getStringCellValue());
-							qtd.add(row.getCell(5).getStringCellValue());
+							qtd.add((int)row.getCell(5).getNumericCellValue() + "");
 							ativo.add(row.getCell(6).getStringCellValue());
 							dispositivo.add(row.getCell(7).getStringCellValue());
 							hostname.add(row.getCell(8).getStringCellValue());
 							fabricante.add(row.getCell(9).getStringCellValue());
 							modelo.add(row.getCell(10).getStringCellValue());
 							serviceTag.add(row.getCell(11).getStringCellValue());
-							dataAquisicao.add(row.getCell(12).getStringCellValue());
+							
+							// Data -> dataAquisicao
+							date = row.getCell(12).getDateCellValue();
+							SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+							dataFormatada = sdf.format(date);
+							dataAquisicao.add(dataFormatada);
+
 							cpu.add(row.getCell(13).getStringCellValue());
 							storage.add(row.getCell(14).getStringCellValue());
-							memoria.add((int) row.getCell(15).getNumericCellValue());
+							memoria.add((int)row.getCell(15).getNumericCellValue() + "");
 							tecnico.add(row.getCell(16).getStringCellValue());
 							observacao.add(row.getCell(17).getStringCellValue());
 							status.add(row.getCell(18).getStringCellValue());
+							
 							i++;
 						} else {
+							work.close();
 							break;
 						}
 					}
+
 					// Chegou na ultima linha que possui conteudo da planilha..
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showConfirmDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
-
 				} catch (NullPointerException e2) {
 					System.out.println("Debug error: " + e2 + " Não há mais linhas com conteúdo no excel...");
 				} catch (IOException e3) {
 					JOptionPane.showConfirmDialog(null, "Arquivo invalido!\nErro: " + e3);
 				}
-
-				// debug
-				System.out.println(laudo + "\n" + nomeSolicitante + "\n" + usuario + "\n" + centroCusto + "\n" + item
-						+ "\n" + qtd + "\n" + ativo + "\n" + dispositivo + "\n" + hostname + "\n" + fabricante + "\n"
-						+ modelo + "\n" + serviceTag + "\n" + dataAquisicao + "\n" + cpu + "\n" + storage + "\n"
-						+ memoria + "\n" + tecnico + "\n" + observacao + "\n" + status + "\n");
-
+				
+				
+				// remove os espaços que estão ANTES dos textos contidos nas celulas da planilha
+				laudo = removeEspacos(laudo);
+				nomeSolicitante = removeEspacos(nomeSolicitante);
+				usuario = removeEspacos(usuario);
+				centroCusto = removeEspacos(centroCusto);
+				item = removeEspacos(item);
+				qtd = removeEspacos(qtd);
+				ativo = removeEspacos(ativo);
+				dispositivo = removeEspacos(dispositivo);
+				hostname = removeEspacos(hostname);
+				fabricante = removeEspacos(fabricante);
+				modelo = removeEspacos(modelo);
+				serviceTag = removeEspacos(serviceTag);
+				dataAquisicao = removeEspacos(dataAquisicao);
+				cpu = removeEspacos(cpu);
+				storage = removeEspacos(storage);
+				memoria = removeEspacos(memoria);
+				tecnico = removeEspacos(tecnico);
+				observacao = removeEspacos(observacao);
+				status = removeEspacos(status);
+				
 				// Preenche a tabela
-				preencherTabelaProprietario();
-				colunas.clear();
+				preencherTabelaProprietario();			
 			}
 		});
 
@@ -294,6 +416,14 @@ public class Principal extends JFrame {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
+	}
 
+	public ArrayList<String> removeEspacos(ArrayList<String> lista) {
+		ArrayList<String> listaSemEspacos = new ArrayList<String>();
+
+		for (int i = 0; i < lista.size(); i++) {
+			listaSemEspacos.add(lista.get(i).trim());
+		}
+		return listaSemEspacos;
 	}
 }
