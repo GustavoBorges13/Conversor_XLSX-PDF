@@ -1,11 +1,14 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +16,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -27,13 +33,11 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableCellRenderer;
-//XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
 
+//XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import javax.swing.DropMode;
-import java.awt.Color;
 
 public class Principal extends JFrame {
 	private static final long serialVersionUID = 6391163855934589017L;
@@ -401,6 +405,34 @@ public class Principal extends JFrame {
 		contentPane.add(scrollPane);
 
 		table = new JTable();
+		table.addMouseListener(new MouseAdapter() {
+			boolean isAlreadyOneClick =false;
+			
+			@SuppressWarnings("deprecation")
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (isAlreadyOneClick) {
+					String user = "" + table.getValueAt(table.getSelectedRow(), 0);
+					System.out.println(user);
+					final EditarPlanilha frame = new EditarPlanilha();
+					frame.setVisible(true);
+					
+					isAlreadyOneClick = false;
+				}else {
+					isAlreadyOneClick = true;
+					Timer t = new Timer("doubleclickTimer", false);
+					table.clearSelection();	
+					table.requestDefaultFocus();
+					t.schedule(new TimerTask() {
+						@Override
+						public void run() {
+							isAlreadyOneClick = false;
+					}
+					}, 300);
+				}
+				
+			}
+		});
 		scrollPane.setViewportView(table);
 
 		btnAddLinha = new JButton("Adicionar linha");
