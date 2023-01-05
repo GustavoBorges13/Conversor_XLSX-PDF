@@ -38,6 +38,12 @@ import javax.swing.table.TableCellRenderer;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.awt.Window.Type;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JInternalFrame;
+import javax.swing.JTextPane;
 
 public class Principal extends JFrame {
 	private static final long serialVersionUID = 6391163855934589017L;
@@ -72,11 +78,7 @@ public class Principal extends JFrame {
 	private JButton btnPreencher;
 	private JButton btnXLS;
 	private JButton btnAddLinha;;
-	
-	/*
-	 * Alinhador de fonts da tabela, deixa as fontes centralizadas para a lateral
-	 * Para controlar mude o .LEFT para o que desejar... .CENTER, .RIGHT
-	 */
+
 	public class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -108,7 +110,7 @@ public class Principal extends JFrame {
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
 		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
@@ -202,22 +204,58 @@ public class Principal extends JFrame {
 	}
 
 	public Principal() {
+		setAutoRequestFocus(false);
+		setTitle("E-ServiceDesk application");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 704, 528);
 		setLocationRelativeTo(null);
+		
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		JMenu mnNewMenu = new JMenu("Ajuda");
+		menuBar.add(mnNewMenu);
+		
+		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre");
+		mnNewMenu.add(mntmNewMenuItem);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+		
+		JInternalFrame internalFrame = new JInternalFrame("Sobre a aplicação");
+		internalFrame.setClosable(true);
+		internalFrame.setBounds(78, 25, 529, 383);
+		contentPane.add(internalFrame);
+		internalFrame.getContentPane().setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Creditos");
+		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(10, 11, 493, 19);
+		internalFrame.getContentPane().add(lblNewLabel);
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(10, 41, 493, 301);
+		internalFrame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		JTextPane txtpnAplicaoDesenvolvidaPara = new JTextPane();
+		txtpnAplicaoDesenvolvidaPara.setEnabled(false);
+		txtpnAplicaoDesenvolvidaPara.setEditable(false);
+		txtpnAplicaoDesenvolvidaPara.setText("Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando MAVEN para builds e importações práticas das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depera com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\n\r\nAtt. Gustavo Borges");
+		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 493, 301);
+		panel.add(txtpnAplicaoDesenvolvidaPara);
+		internalFrame.setVisible(true);
 
 		jlocal = new JTextField();
 		jlocal.setBounds(39, 49, 468, 39);
 		contentPane.add(jlocal);
 		jlocal.setColumns(10);
 
-		btnXLS = new JButton("XLS");
+		btnXLS = new JButton("XLSX");
 
 		// button choose file/escolher arquivo
 		btnXLS.addActionListener(new ActionListener() {
@@ -244,7 +282,7 @@ public class Principal extends JFrame {
 					pathfile = fc.getSelectedFile();
 					jlocal.setText(pathfile.toString().trim());
 					jtitulo.setText(fc.getSelectedFile().getName());
-					btnPreencher.setEnabled(true); //Habilita o botao
+					btnPreencher.setEnabled(true); // Habilita o botao
 				}
 			}
 		});
@@ -263,7 +301,7 @@ public class Principal extends JFrame {
 
 				// Limpeza dos dados salvos nas listas é como se fosse um F5
 				limpaListas();
-				
+
 				try {
 					int i = 0; // primeira linha
 					int pos = 0;
@@ -288,7 +326,6 @@ public class Principal extends JFrame {
 							break;
 						}
 					}
-
 					// Chegou na ultima linha que possui conteudo da planilha..
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
@@ -308,52 +345,59 @@ public class Principal extends JFrame {
 						// Junta todas as planilhas deste arquivo.
 						// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
 						sheet = work.getSheetAt(0);
-
+						
 						// Linha de referencia (selecionar a partir de uma determinada linha...)
 						row = sheet.getRow(i);
+						if (colunas.size() == 19) {
+							// Copia as informações das linhas da planilhas para arrayslists.
+							while ((row = sheet.getRow(i)) != null) {
+								if (row.getCell(0).getNumericCellValue() != 0
+										&& row.getCell(1).getStringCellValue() != null) {
+									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
+									nomeSolicitante.add(row.getCell(1).getStringCellValue());
+									usuario.add(row.getCell(2).getStringCellValue());
+									centroCusto.add(row.getCell(3).getStringCellValue());
+									item.add(row.getCell(4).getStringCellValue());
+									qtd.add((int) row.getCell(5).getNumericCellValue() + "");
+									ativo.add(row.getCell(6).getStringCellValue());
+									dispositivo.add(row.getCell(7).getStringCellValue());
+									hostname.add(row.getCell(8).getStringCellValue());
+									fabricante.add(row.getCell(9).getStringCellValue());
+									modelo.add(row.getCell(10).getStringCellValue());
+									serviceTag.add(row.getCell(11).getStringCellValue());
 
-						// Copia as informações das linhas da planilhas para arrayslists.
-						while ((row = sheet.getRow(i)) != null) {
-							if (row.getCell(0).getNumericCellValue() != 0
-									&& row.getCell(1).getStringCellValue() != null) {
-								laudo.add((int) row.getCell(0).getNumericCellValue() + "");
-								nomeSolicitante.add(row.getCell(1).getStringCellValue());
-								usuario.add(row.getCell(2).getStringCellValue());
-								centroCusto.add(row.getCell(3).getStringCellValue());
-								item.add(row.getCell(4).getStringCellValue());
-								qtd.add((int) row.getCell(5).getNumericCellValue() + "");
-								ativo.add(row.getCell(6).getStringCellValue());
-								dispositivo.add(row.getCell(7).getStringCellValue());
-								hostname.add(row.getCell(8).getStringCellValue());
-								fabricante.add(row.getCell(9).getStringCellValue());
-								modelo.add(row.getCell(10).getStringCellValue());
-								serviceTag.add(row.getCell(11).getStringCellValue());
+									// Data -> dataAquisicao
+									date = row.getCell(12).getDateCellValue();
+									SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+									dataFormatada = sdf.format(date);
+									dataAquisicao.add(dataFormatada);
 
-								// Data -> dataAquisicao
-								date = row.getCell(12).getDateCellValue();
-								SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-								dataFormatada = sdf.format(date);
-								dataAquisicao.add(dataFormatada);
+									cpu.add(row.getCell(13).getStringCellValue());
+									storage.add(row.getCell(14).getStringCellValue());
+									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
+									tecnico.add(row.getCell(16).getStringCellValue());
+									observacao.add(row.getCell(17).getStringCellValue());
+									status.add(row.getCell(18).getStringCellValue());
 
-								cpu.add(row.getCell(13).getStringCellValue());
-								storage.add(row.getCell(14).getStringCellValue());
-								memoria.add((int) row.getCell(15).getNumericCellValue() + "");
-								tecnico.add(row.getCell(16).getStringCellValue());
-								observacao.add(row.getCell(17).getStringCellValue());
-								status.add(row.getCell(18).getStringCellValue());
-
-								i++;
-							} else {
-								work.close();
-								break;
+									i++;
+								} else {
+									work.close();
+									break;
+								}
 							}
+						} else {
+							throw new java.lang.ArrayIndexOutOfBoundsException();
 						}
 
-						// Chegou na ultima linha que possui conteudo da planilha..
-					} catch (NullPointerException e2) {
-						System.out.println("Debug error: " + e2 + " Não há mais linhas com conteúdo no excel...");
-					} catch (IOException e3) {
-						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e3);
+					} catch (NullPointerException e1) {
+						System.out.println("Debug error: " + e1 + " Não há mais linhas com conteúdo no excel...");
+					} catch (IOException e2) {
+						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e2);
+					} catch (java.lang.ArrayIndexOutOfBoundsException e3) {
+						JOptionPane.showMessageDialog(null,
+								"Esta não é a planilha que utilizamos em 2022-2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
+										+ " este codigo foi feito especificamente para \nser utilizado com esse tipo de planilha devido as formatações"
+										+ " e quantidade de colunas.\nErro: " + e3);
 					}
 				}
 
@@ -380,7 +424,7 @@ public class Principal extends JFrame {
 
 				// Preenche a tabela
 				preencherTabelaProprietario();
-				
+
 				// Habilita os botoes auxiliares para controlar a planilha
 				btnAddLinha.setEnabled(true);
 			}
@@ -396,9 +440,9 @@ public class Principal extends JFrame {
 		jtitulo.setBounds(39, 131, 468, 39);
 		contentPane.add(jtitulo);
 
-		JLabel lblNewLabel = new JLabel("Titulo da planilha");
-		lblNewLabel.setBounds(39, 106, 105, 14);
-		contentPane.add(lblNewLabel);
+		JLabel lblTituloPlanilha = new JLabel("Titulo da planilha");
+		lblTituloPlanilha.setBounds(39, 106, 105, 14);
+		contentPane.add(lblTituloPlanilha);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(39, 195, 618, 248);
@@ -406,8 +450,8 @@ public class Principal extends JFrame {
 
 		table = new JTable();
 		table.addMouseListener(new MouseAdapter() {
-			boolean isAlreadyOneClick =false;
-			
+			boolean isAlreadyOneClick = false;
+
 			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -416,21 +460,21 @@ public class Principal extends JFrame {
 					System.out.println(user);
 					final EditarPlanilha frame = new EditarPlanilha();
 					frame.setVisible(true);
-					
+					frame.requestFocus();
 					isAlreadyOneClick = false;
-				}else {
+				} else {
 					isAlreadyOneClick = true;
 					Timer t = new Timer("doubleclickTimer", false);
-					table.clearSelection();	
+					table.clearSelection();
 					table.requestDefaultFocus();
 					t.schedule(new TimerTask() {
 						@Override
 						public void run() {
 							isAlreadyOneClick = false;
-					}
+						}
 					}, 300);
 				}
-				
+
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -439,15 +483,19 @@ public class Principal extends JFrame {
 		btnAddLinha.setEnabled(false);
 		btnAddLinha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//Adiciona uma linha em branco ao final da tabela				
-				dados.add(new Object[] {"","","","","","","","","","","","","","","","","","",""});		
-				
-				//Atualiza a planilha
+				// Adiciona uma linha em branco ao final da tabela
+				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
+
+				// Atualiza a planilha
 				table.updateUI();
 			}
 		});
 		btnAddLinha.setBounds(265, 454, 183, 23);
 		contentPane.add(btnAddLinha);
+
+		JLabel lblSelecioneUmaPlanilha = new JLabel("Selecione a planilha de laudo técnico .xlsx");
+		lblSelecioneUmaPlanilha.setBounds(39, 24, 393, 14);
+		contentPane.add(lblSelecioneUmaPlanilha);
 	}
 
 	public ArrayList<String> removeEspacos(ArrayList<String> lista) {
@@ -458,7 +506,7 @@ public class Principal extends JFrame {
 		}
 		return listaSemEspacos;
 	}
-	
+
 	public void limpaListas() {
 		laudo.clear();
 		nomeSolicitante.clear();

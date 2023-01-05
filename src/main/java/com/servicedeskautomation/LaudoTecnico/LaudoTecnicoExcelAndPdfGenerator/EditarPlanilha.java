@@ -85,7 +85,7 @@ public class EditarPlanilha extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("Editar  informações da planilha");
+		JLabel lblNewLabel = new JLabel("Editar informações da planilha");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(10, 11, 414, 21);
@@ -318,7 +318,7 @@ public class EditarPlanilha extends JFrame {
 		
 		comboBoxFabricante = new JComboBox();
 		comboBoxFabricante.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "Dell Inc", "Lenovo"}));
-		comboBoxFabricante.setMaximumRowCount(2);
+		comboBoxFabricante.setMaximumRowCount(3);
 		comboBoxFabricante.setBounds(305, 180, 99, 29);
 		panel.add(comboBoxFabricante);
 		
@@ -493,7 +493,6 @@ public class EditarPlanilha extends JFrame {
 				
 			}
 		});
-		txtObservao.setText("N/D ou Nosso");
 		txtObservao.setColumns(10);
 		txtObservao.setBounds(11, 452, 125, 29);
 		panel.add(txtObservao);
@@ -519,7 +518,6 @@ public class EditarPlanilha extends JFrame {
 				
 			}
 		});
-		txtStatus.setText("N/D");
 		txtStatus.setColumns(10);
 		txtStatus.setBounds(147, 452, 99, 29);
 		panel.add(txtStatus);
@@ -542,11 +540,11 @@ public class EditarPlanilha extends JFrame {
 		
 		comboBoxStorage = new JComboBox();
 		comboBoxStorage.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "250 HD", "300 HD", "500 HD", "750 HD", "1000 HD", "120 SSD", "240 SSD"}));
-		comboBoxStorage.setMaximumRowCount(10);
 		comboBoxStorage.setBounds(11, 333, 99, 29);
 		panel.add(comboBoxStorage);
 		
-		lblNewLabel_1 = new JLabel("---------- Finalização ----------");
+		lblNewLabel_1 = new JLabel("---------------------------------- Informações adicionais ----------------------------------");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_1.setBounds(8, 367, 394, 23);
 		panel.add(lblNewLabel_1);
