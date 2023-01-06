@@ -28,17 +28,16 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.12</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.jgoodies/jgoodies-looks -->
-		<dependency>
-			<groupId>com.jgoodies</groupId>
-			<artifactId>jgoodies-looks</artifactId>
-			<version>2.5.2</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
 		<dependency>
 			<groupId>com.toedter</groupId>
 			<artifactId>jcalendar</artifactId>
 			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.formdev</groupId>
+			<artifactId>flatlaf</artifactId>
+			<version>3.0</version>
 		</dependency>
 	</dependencies>
 	<build>

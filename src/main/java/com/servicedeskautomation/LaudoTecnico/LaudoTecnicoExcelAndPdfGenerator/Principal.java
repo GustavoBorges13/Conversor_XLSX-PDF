@@ -9,10 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,9 +22,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -35,25 +32,21 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -63,12 +56,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.jgoodies.looks.FontPolicies;
-import com.jgoodies.looks.FontPolicy;
-import com.jgoodies.looks.FontSet;
-import com.jgoodies.looks.FontSets;
-import com.jgoodies.looks.plastic.PlasticLookAndFeel;
-
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 public class Principal extends JFrame {
 	private static final long serialVersionUID = 6391163855934589017L;
@@ -104,10 +94,6 @@ public class Principal extends JFrame {
 	private JButton btnXLS;
 	private JButton btnAddLinha;
 	private JInternalFrame internalFrame;;
-	
-	private JSplitPane splitPane;
-	private JComponent[] beans;
-
 	
 	
 	public class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
@@ -221,12 +207,11 @@ public class Principal extends JFrame {
 	}
 
 	public Principal() {
-		initializeLookAndFeels();
 		setAutoRequestFocus(false);
 		setTitle("E-ServiceDesk application");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 704, 552);
+		setBounds(100, 100, 704, 580);
 		setLocationRelativeTo(null);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -262,6 +247,16 @@ public class Principal extends JFrame {
 		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.Event.CTRL_MASK));
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
+		
+		JMenu mnNewMenu_1 = new JMenu("Tema");
+		mnNewMenu_1.setMnemonic('T');
+		menuBar.add(mnNewMenu_1);
+		
+		JCheckBoxMenuItem CheckTema1 = new JCheckBoxMenuItem("Tema 1");
+		mnNewMenu_1.add(CheckTema1);
+		
+		JCheckBoxMenuItem CheckTema2 = new JCheckBoxMenuItem("Tema 2");
+		mnNewMenu_1.add(CheckTema2);
 
 		contentPane = new JPanel();
 		contentPane.setOpaque(false);
@@ -271,7 +266,13 @@ public class Principal extends JFrame {
 		contentPane.setLayout(null);
 
 		internalFrame = new JInternalFrame("Sobre a aplicação");
+		internalFrame.setEnabled(false);
 		internalFrame.setFocusable(false);
+		
+		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame.getUI());
+		for (MouseListener listener : basicInternalFrameUI.getNorthPane().getMouseListeners()) {
+		    basicInternalFrameUI.getNorthPane().removeMouseListener(listener);
+		}
 		internalFrame.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
@@ -294,8 +295,7 @@ public class Principal extends JFrame {
 
 		internalFrame.pack();
 		internalFrame.getContentPane().setLayout(null);
-		internalFrame.setBounds(39, 0, 618, 490);
-		internalFrame.setEnabled(false);
+		internalFrame.setBounds(39, 0, 618, 508);
 		internalFrame.setOpaque(true);
 		internalFrame.setClosable(true);
 		internalFrame.setVisible(false);
@@ -308,7 +308,7 @@ public class Principal extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(240, 240, 240));
-		panel.setBounds(10, 41, 588, 404);
+		panel.setBounds(10, 41, 588, 437);
 		internalFrame.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -324,8 +324,8 @@ public class Principal extends JFrame {
 		txtpnAplicaoDesenvolvidaPara.setParagraphAttributes(attr, true);
 		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
 		txtpnAplicaoDesenvolvidaPara.setText(
-				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando eclipse e buildado no MAVEN justamente para realização de builds, limpezas e mais facildiade nas importações das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depara com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\n\r\nAtt. Gustavo Borges.");
-		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 588, 404);
+				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando eclipse e buildado no MAVEN justamente para realização de builds, limpezas e mais facildiade nas importações das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depara com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\nAtt. Gustavo Borges.");
+		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 588, 426);
 		panel.add(txtpnAplicaoDesenvolvidaPara);
 
 		JSeparator separator = new JSeparator();
@@ -625,6 +625,7 @@ public class Principal extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel(new FlatIntelliJLaf());
 					Principal frame = new Principal();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -632,41 +633,5 @@ public class Principal extends JFrame {
 				}
 			}
 		});
-	}
-
-	/**
-	 * Installs the JGoodies Look & Feels, if available, in classpath.
-	 */
-	public final void initializeLookAndFeels() {
-		// if in classpath thry to load JGoodies Plastic Look & Feel
-		try {
-			LookAndFeelInfo[] lnfs = UIManager.getInstalledLookAndFeels();
-			boolean found = false;
-			for (int i = 0; i < lnfs.length; i++) {
-				if (lnfs[i].getName().equals("JGoodies Plastic 3D")) {
-					found = true;
-				}
-			}
-			if (!found) {
-				UIManager.installLookAndFeel("JGoodies Plastic 3D", "com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
-			}
-			String os = System.getProperty("os.name");
-			FontSet fontSet = null;
-			if (os.startsWith("Windows")) {
-				fontSet = FontSets.createDefaultFontSet(new Font("arial unicode MS", Font.PLAIN, 12));
-			} else {
-				fontSet = FontSets.createDefaultFontSet(new Font("arial unicode", Font.PLAIN, 12));
-			}
-			FontPolicy fixedPolicy = FontPolicies.createFixedPolicy(fontSet);
-			PlasticLookAndFeel.setFontPolicy(fixedPolicy);
-
-			UIManager.setLookAndFeel("com.jgoodies.looks.plastic.Plastic3DLookAndFeel");
-		} catch (Throwable t) {
-			try {
-				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 }
