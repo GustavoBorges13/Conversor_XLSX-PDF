@@ -11,7 +11,6 @@
 		<maven.compiler.source>1.8.0</maven.compiler.source>
 		<maven.compiler.target>1.8.0</maven.compiler.target>
 	</properties>
-	
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -28,6 +27,18 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.12</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.jgoodies/jgoodies-looks -->
+		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>jgoodies-looks</artifactId>
+			<version>2.5.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
+		<dependency>
+			<groupId>com.toedter</groupId>
+			<artifactId>jcalendar</artifactId>
+			<version>1.4</version>
 		</dependency>
 	</dependencies>
 	<build>
