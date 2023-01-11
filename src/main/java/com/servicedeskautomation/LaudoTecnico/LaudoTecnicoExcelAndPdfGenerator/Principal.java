@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -41,7 +40,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
@@ -50,15 +48,12 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JRadioButtonMenuItem;
 
 public class Principal extends JFrame {
 	private static final long serialVersionUID = 6391163855934589017L;
@@ -94,8 +89,7 @@ public class Principal extends JFrame {
 	private JButton btnXLS;
 	private JButton btnAddLinha;
 	private JInternalFrame internalFrame;;
-	
-	
+
 	public class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -247,14 +241,14 @@ public class Principal extends JFrame {
 		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.Event.CTRL_MASK));
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
-		
+
 		JMenu mnNewMenu_1 = new JMenu("Tema");
 		mnNewMenu_1.setMnemonic('T');
 		menuBar.add(mnNewMenu_1);
-		
+
 		JCheckBoxMenuItem CheckTema1 = new JCheckBoxMenuItem("Tema 1");
 		mnNewMenu_1.add(CheckTema1);
-		
+
 		JCheckBoxMenuItem CheckTema2 = new JCheckBoxMenuItem("Tema 2");
 		mnNewMenu_1.add(CheckTema2);
 
@@ -268,10 +262,11 @@ public class Principal extends JFrame {
 		internalFrame = new JInternalFrame("Sobre a aplicação");
 		internalFrame.setEnabled(false);
 		internalFrame.setFocusable(false);
-		
-		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame.getUI());
+
+		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame
+				.getUI());
 		for (MouseListener listener : basicInternalFrameUI.getNorthPane().getMouseListeners()) {
-		    basicInternalFrameUI.getNorthPane().removeMouseListener(listener);
+			basicInternalFrameUI.getNorthPane().removeMouseListener(listener);
 		}
 		internalFrame.addFocusListener(new FocusAdapter() {
 			@Override
@@ -324,7 +319,7 @@ public class Principal extends JFrame {
 		txtpnAplicaoDesenvolvidaPara.setParagraphAttributes(attr, true);
 		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
 		txtpnAplicaoDesenvolvidaPara.setText(
-				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando eclipse e buildado no MAVEN justamente para realização de builds, limpezas e mais facildiade nas importações das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depara com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\nAtt. Gustavo Borges.");
+				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando eclipse e buildado no MAVEN justamente para realização de builds, limpezas e mais facilidade nas importações das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depara com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\nAtt. Gustavo Borges.");
 		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 588, 426);
 		panel.add(txtpnAplicaoDesenvolvidaPara);
 
@@ -489,7 +484,7 @@ public class Principal extends JFrame {
 					}
 				}
 
-				// remove os espaços que estão ANTES dos textos contidos nas celulas da planilha
+				// remove os espaços/pontos que estão ANTES dos textos contidos nas celulas da planilha
 				laudo = removeEspacos(laudo);
 				nomeSolicitante = removeEspacos(nomeSolicitante);
 				usuario = removeEspacos(usuario);
@@ -500,6 +495,7 @@ public class Principal extends JFrame {
 				dispositivo = removeEspacos(dispositivo);
 				hostname = removeEspacos(hostname);
 				fabricante = removeEspacos(fabricante);
+				fabricante = removePontuacoes(fabricante);
 				modelo = removeEspacos(modelo);
 				serviceTag = removeEspacos(serviceTag);
 				dataAquisicao = removeEspacos(dataAquisicao);
@@ -544,11 +540,141 @@ public class Principal extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (isAlreadyOneClick) {
+					int linhaSelecionada = table.getSelectedRow();
 					String user = "" + table.getValueAt(table.getSelectedRow(), 0);
 					System.out.println(user);
-					final EditarPlanilha frame = new EditarPlanilha();
+					EditarPlanilha frame = new EditarPlanilha();
 					frame.setVisible(true);
 					frame.requestFocus();
+					
+					
+					//Design - Deixar os textos em preto e Transpor dados da tabela para a janela nova
+					if(laudo.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtLaudo.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtLaudo.setForeground(Color.BLACK);
+						EditarPlanilha.txtLaudo.setText(laudo.get(linhaSelecionada));
+					}
+					
+					if(nomeSolicitante.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtNomeSolicitante.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtNomeSolicitante.setForeground(Color.BLACK);
+						EditarPlanilha.txtNomeSolicitante.setText(nomeSolicitante.get(linhaSelecionada));
+					}
+					
+					if(usuario.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtUsuario.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtUsuario.setForeground(Color.BLACK);
+						EditarPlanilha.txtUsuario.setText(usuario.get(linhaSelecionada));
+					}
+					
+					if(centroCusto.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtCentroDeCusto.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtCentroDeCusto.setForeground(Color.BLACK);
+						EditarPlanilha.txtCentroDeCusto.setText(centroCusto.get(linhaSelecionada));
+					}
+					
+					if(item.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtItem.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtItem.setForeground(Color.BLACK);
+						EditarPlanilha.txtItem.setText(item.get(linhaSelecionada));
+					}
+			
+					if(qtd.get(linhaSelecionada).equals("") ||EditarPlanilha.comboBoxQuantidade.getSelectedIndex()==0) 
+						EditarPlanilha.comboBoxQuantidade.setForeground(Color.RED);
+					else {
+						EditarPlanilha.comboBoxQuantidade.setForeground(Color.BLACK);
+						EditarPlanilha.comboBoxQuantidade.setSelectedIndex(Integer.parseInt(qtd.get(linhaSelecionada)));
+					}
+					
+					if(ativo.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtAtivo.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtAtivo.setForeground(Color.BLACK);
+						EditarPlanilha.txtAtivo.setText(ativo.get(linhaSelecionada));
+					}
+					
+					if(dispositivo.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtDispositivo.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtDispositivo.setForeground(Color.BLACK);
+						EditarPlanilha.txtDispositivo.setText(dispositivo.get(linhaSelecionada));
+					}
+					
+					if(hostname.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtHostname.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtHostname.setForeground(Color.BLACK);
+						EditarPlanilha.txtHostname.setText(hostname.get(linhaSelecionada));
+					}
+					
+					if(EditarPlanilha.comboBoxFabricante.getSelectedIndex()==0) 
+						EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
+					else {
+						EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
+						EditarPlanilha.comboBoxFabricante.setSelectedItem(fabricante.get(linhaSelecionada));
+					}
+					
+					if(modelo.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtModelo.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtModelo.setForeground(Color.BLACK);
+						EditarPlanilha.txtModelo.setText(modelo.get(linhaSelecionada));
+					}
+					
+					if(serviceTag.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtServiceTag.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtServiceTag.setForeground(Color.BLACK);
+						EditarPlanilha.txtServiceTag.setText(serviceTag.get(linhaSelecionada));
+					}
+
+					if(dataAquisicao.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtDdmmyyyy.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtDdmmyyyy.setForeground(Color.BLACK);
+						EditarPlanilha.txtDdmmyyyy.setText(dataAquisicao.get(linhaSelecionada));
+					}
+					
+					if(cpu.get(linhaSelecionada).equals("")) 
+						EditarPlanilha.txtCpu.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtCpu.setForeground(Color.BLACK);
+						EditarPlanilha.txtCpu.setText(cpu.get(linhaSelecionada));
+					}
+					
+					if(EditarPlanilha.comboBoxStorage.getSelectedIndex()==0) 
+						EditarPlanilha.comboBoxStorage.setForeground(Color.RED);
+					else {
+						EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+						EditarPlanilha.comboBoxStorage.setSelectedIndex(Integer.parseInt(storage.get(linhaSelecionada)));
+					}
+					/*
+					if(EditarPlanilha.spinner_memoria.getValue() == '0') 
+						EditarPlanilha.c.setForeground(Color.RED);
+					else {
+						EditarPlanilha.c.setForeground(Color.BLACK);
+						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
+					}
+					*/
+					
+					EditarPlanilha.txtNomeDoTecnico.setForeground(Color.BLACK);
+					EditarPlanilha.txtObservao.setForeground(Color.BLACK);
+					EditarPlanilha.txtStatus.setForeground(Color.BLACK);
+					
+
+					
+					
+					EditarPlanilha.txtNomeDoTecnico.setText(tecnico.get(linhaSelecionada));
+					EditarPlanilha.txtObservao.setText(observacao.get(linhaSelecionada));
+					EditarPlanilha.txtStatus.setText(status.get(linhaSelecionada));
+	
+					
+					
 					isAlreadyOneClick = false;
 				} else {
 					isAlreadyOneClick = true;
@@ -562,7 +688,6 @@ public class Principal extends JFrame {
 						}
 					}, 300);
 				}
-
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -596,6 +721,16 @@ public class Principal extends JFrame {
 
 	}
 
+	public ArrayList<String> removePontuacoes(ArrayList<String> lista) {
+		ArrayList<String> listaSemEspacos = new ArrayList<String>();
+
+		for (int i = 0; i < lista.size(); i++) {
+			listaSemEspacos.add(lista.get(i).replace(".", ""));
+		}
+		return listaSemEspacos;
+
+	}
+	
 	public void limpaListas() {
 		laudo.clear();
 		nomeSolicitante.clear();

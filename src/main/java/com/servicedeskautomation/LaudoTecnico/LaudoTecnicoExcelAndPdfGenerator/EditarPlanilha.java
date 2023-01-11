@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -15,7 +14,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.Component;
-
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
@@ -25,38 +23,41 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.AncestorEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
 
+@SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JFrame {
 
 	private static final long serialVersionUID = -7565309808695712383L;
 	private JPanel contentPane;
-	private JTextField txtLaudo;
-	private JTextField txtNomeSolicitante;
-	private JTextField txtUsuario;
-	private JTextField txtCentroDeCusto;
-	private JTextField txtItem;
-	private JTextField txtAtivo;
-	private JTextField txtDispositivo;
-	private JTextField txtHostname;
-	private JComboBox comboBoxFabricante;
+	static JTextField txtLaudo;
+	static JTextField txtNomeSolicitante;
+	static JTextField txtUsuario;
+	static JTextField txtCentroDeCusto;
+	static JTextField txtItem;
+	static JTextField txtAtivo;
+	static JTextField txtDispositivo;
+	static JTextField txtHostname;
+	static JTextField txtModelo;
+	static JTextField txtServiceTag;
+	static JTextField txtDdmmyyyy;
+	static JTextField txtCpu;
+	static JTextField txtNomeDoTecnico;
+	static JTextField txtObservao;
+	static JTextField txtStatus;
+	static JComboBox comboBoxFabricante;
+	static JComboBox comboBoxStorage;
+	static JComboBox comboBoxQuantidade;
+	static JSpinner spinner_memoria;
 	private JLabel lblFabricante;
-	private JTextField txtModelo;
-	private JTextField txtServiceTag;
-	private JTextField txtDdmmyyyy;
 	private JLabel lblDataAquisicao;
-	private JTextField txtCpu;
 	private JLabel lblsStorage;
-	private JTextField txtNomeDoTecnico;
-	private JTextField txtObservao;
-	private JTextField txtStatus;
 	private JLabel lblObservacao;
 	private JLabel lblStatus;
-	private JComboBox comboBoxStorage;
+	static Component c; //controla a cor do spinner_memoria
+
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -71,7 +72,7 @@ public class EditarPlanilha extends JFrame {
 		});
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	public EditarPlanilha() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 450, 632);
@@ -80,6 +81,7 @@ public class EditarPlanilha extends JFrame {
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+		@SuppressWarnings("unused")
 		Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
 		// rect.getMaxX() - getWidth();
 
@@ -242,7 +244,7 @@ public class EditarPlanilha extends JFrame {
 		txtItem.setBounds(10, 124, 285, 29);
 		panel.add(txtItem);
 
-		JComboBox comboBoxQuantidade = new JComboBox();
+		comboBoxQuantidade = new JComboBox();
 		comboBoxQuantidade.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				requestFocus();
@@ -510,9 +512,9 @@ public class EditarPlanilha extends JFrame {
 		lblMemoria.setBounds(116, 308, 83, 29);
 		panel.add(lblMemoria);
 
-		JSpinner spinner_memoria = new JSpinner();
+		spinner_memoria = new JSpinner();
 		spinner_memoria.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
-		Component c = spinner_memoria.getEditor().getComponent(0);
+		c = spinner_memoria.getEditor().getComponent(0);
 		c.setForeground(Color.RED);
 		spinner_memoria.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
