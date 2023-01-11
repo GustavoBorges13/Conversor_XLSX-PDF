@@ -56,7 +56,7 @@ public class EditarPlanilha extends JFrame {
 	private JLabel lblsStorage;
 	private JLabel lblObservacao;
 	private JLabel lblStatus;
-	static Component c; //controla a cor do spinner_memoria
+	static Component c; //contro
 
 
 	public static void main(String[] args) {
@@ -104,7 +104,7 @@ public class EditarPlanilha extends JFrame {
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Modo edi\u00E7\u00E3o : :", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 43, 414, 539);
+		panel.setBounds(10, 36, 414, 546);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -132,7 +132,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtLaudo.setToolTipText("");
 		txtLaudo.setText("N° Laudo");
-		txtLaudo.setBounds(10, 23, 99, 29);
+		txtLaudo.setBounds(15, 37, 99, 29);
 		panel.add(txtLaudo);
 		txtLaudo.setColumns(10);
 
@@ -160,7 +160,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtNomeSolicitante.setText("Nome do solicitante");
 		txtNomeSolicitante.setColumns(10);
-		txtNomeSolicitante.setBounds(119, 23, 285, 29);
+		txtNomeSolicitante.setBounds(124, 37, 276, 29);
 		panel.add(txtNomeSolicitante);
 
 		txtUsuario = new JTextField();
@@ -187,7 +187,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtUsuario.setText("Usuário");
 		txtUsuario.setColumns(10);
-		txtUsuario.setBounds(10, 63, 99, 29);
+		txtUsuario.setBounds(15, 90, 98, 29);
 		panel.add(txtUsuario);
 
 		txtCentroDeCusto = new JTextField();
@@ -214,7 +214,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtCentroDeCusto.setText("Centro de Custo");
 		txtCentroDeCusto.setColumns(10);
-		txtCentroDeCusto.setBounds(119, 63, 285, 29);
+		txtCentroDeCusto.setBounds(123, 90, 277, 29);
 		panel.add(txtCentroDeCusto);
 
 		txtItem = new JTextField();
@@ -241,7 +241,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtItem.setText("Item");
 		txtItem.setColumns(10);
-		txtItem.setBounds(10, 124, 285, 29);
+		txtItem.setBounds(15, 144, 291, 29);
 		panel.add(txtItem);
 
 		comboBoxQuantidade = new JComboBox();
@@ -268,14 +268,15 @@ public class EditarPlanilha extends JFrame {
 				}
 			}
 		});
-		comboBoxQuantidade.setMaximumRowCount(10);
+		comboBoxQuantidade.setMaximumRowCount(6);
 		comboBoxQuantidade
-				.setModel(new DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
-		comboBoxQuantidade.setBounds(305, 124, 99, 29);
+				.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"}));
+		comboBoxQuantidade.setBounds(311, 144, 89, 29);
 		panel.add(comboBoxQuantidade);
 
 		JLabel lblQTD = new JLabel("Quantidade:");
-		lblQTD.setBounds(305, 99, 99, 29);
+		lblQTD.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblQTD.setBounds(311, 119, 89, 29);
 		panel.add(lblQTD);
 
 		txtAtivo = new JTextField();
@@ -302,7 +303,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtAtivo.setText("Ativo");
 		txtAtivo.setColumns(10);
-		txtAtivo.setBounds(10, 180, 99, 29);
+		txtAtivo.setBounds(15, 198, 106, 29);
 		panel.add(txtAtivo);
 
 		txtDispositivo = new JTextField();
@@ -329,7 +330,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtDispositivo.setText("Dispositivo");
 		txtDispositivo.setColumns(10);
-		txtDispositivo.setBounds(119, 180, 80, 29);
+		txtDispositivo.setBounds(128, 198, 69, 29);
 		panel.add(txtDispositivo);
 
 		txtHostname = new JTextField();
@@ -356,7 +357,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtHostname.setText("Hostname");
 		txtHostname.setColumns(10);
-		txtHostname.setBounds(209, 180, 86, 29);
+		txtHostname.setBounds(204, 198, 102, 29);
 		panel.add(txtHostname);
 
 		comboBoxFabricante = new JComboBox();
@@ -385,11 +386,12 @@ public class EditarPlanilha extends JFrame {
 		});
 		comboBoxFabricante.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "Dell Inc", "Lenovo" }));
 		comboBoxFabricante.setMaximumRowCount(3);
-		comboBoxFabricante.setBounds(305, 180, 99, 29);
+		comboBoxFabricante.setBounds(311, 198, 89, 29);
 		panel.add(comboBoxFabricante);
 
 		lblFabricante = new JLabel("Fabricante:");
-		lblFabricante.setBounds(305, 157, 99, 29);
+		lblFabricante.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblFabricante.setBounds(311, 175, 89, 29);
 		panel.add(lblFabricante);
 
 		txtModelo = new JTextField();
@@ -416,7 +418,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtModelo.setText("Modelo");
 		txtModelo.setColumns(10);
-		txtModelo.setBounds(11, 234, 153, 29);
+		txtModelo.setBounds(15, 258, 152, 29);
 		panel.add(txtModelo);
 
 		txtServiceTag = new JTextField();
@@ -443,7 +445,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtServiceTag.setText("Service TAG");
 		txtServiceTag.setColumns(10);
-		txtServiceTag.setBounds(174, 234, 122, 29);
+		txtServiceTag.setBounds(177, 258, 129, 29);
 		panel.add(txtServiceTag);
 
 		txtDdmmyyyy = new JTextField();
@@ -470,11 +472,12 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtDdmmyyyy.setText("dd/mm/yyyy");
 		txtDdmmyyyy.setColumns(10);
-		txtDdmmyyyy.setBounds(306, 234, 99, 29);
+		txtDdmmyyyy.setBounds(309, 258, 91, 29);
 		panel.add(txtDdmmyyyy);
 
 		lblDataAquisicao = new JLabel("Data aquisição:");
-		lblDataAquisicao.setBounds(306, 212, 99, 29);
+		lblDataAquisicao.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblDataAquisicao.setBounds(309, 236, 99, 29);
 		panel.add(lblDataAquisicao);
 
 		txtCpu = new JTextField();
@@ -501,15 +504,17 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtCpu.setText("CPU");
 		txtCpu.setColumns(10);
-		txtCpu.setBounds(11, 274, 394, 29);
+		txtCpu.setBounds(15, 309, 385, 29);
 		panel.add(txtCpu);
 
 		lblsStorage = new JLabel("Storage (GB):");
-		lblsStorage.setBounds(11, 308, 83, 29);
+		lblsStorage.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblsStorage.setBounds(15, 337, 83, 29);
 		panel.add(lblsStorage);
 
 		JLabel lblMemoria = new JLabel("Memória (GB):");
-		lblMemoria.setBounds(116, 308, 83, 29);
+		lblMemoria.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblMemoria.setBounds(124, 337, 79, 29);
 		panel.add(lblMemoria);
 
 		spinner_memoria = new JSpinner();
@@ -529,7 +534,7 @@ public class EditarPlanilha extends JFrame {
 			}
 		});
 
-		spinner_memoria.setBounds(117, 333, 83, 29);
+		spinner_memoria.setBounds(124, 362, 99, 29);
 		panel.add(spinner_memoria);
 
 		txtNomeDoTecnico = new JTextField();
@@ -556,7 +561,7 @@ public class EditarPlanilha extends JFrame {
 		});
 		txtNomeDoTecnico.setText("Nome do técnico");
 		txtNomeDoTecnico.setColumns(10);
-		txtNomeDoTecnico.setBounds(11, 376, 394, 29);
+		txtNomeDoTecnico.setBounds(15, 415, 385, 29);
 		panel.add(txtNomeDoTecnico);
 
 		txtObservao = new JTextField();
@@ -581,7 +586,7 @@ public class EditarPlanilha extends JFrame {
 			}
 		});
 		txtObservao.setColumns(10);
-		txtObservao.setBounds(11, 435, 125, 29);
+		txtObservao.setBounds(15, 466, 190, 29);
 		panel.add(txtObservao);
 
 		txtStatus = new JTextField();
@@ -606,24 +611,22 @@ public class EditarPlanilha extends JFrame {
 			}
 		});
 		txtStatus.setColumns(10);
-		txtStatus.setBounds(147, 435, 99, 29);
+		txtStatus.setBounds(220, 466, 180, 29);
 		panel.add(txtStatus);
 
 		lblObservacao = new JLabel("Observação:");
-		lblObservacao.setBounds(10, 410, 83, 29);
+		lblObservacao.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblObservacao.setBounds(15, 442, 85, 29);
 		panel.add(lblObservacao);
 
 		lblStatus = new JLabel("Status:");
-		lblStatus.setBounds(88, 410, 83, 29);
+		lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblStatus.setBounds(220, 442, 83, 29);
 		panel.add(lblStatus);
 
 		JButton btnSave = new JButton("Salvar");
-		btnSave.setBounds(14, 504, 129, 23);
+		btnSave.setBounds(146, 512, 129, 23);
 		panel.add(btnSave);
-
-		JButton btnAdicionar = new JButton("Adicionar");
-		btnAdicionar.setBounds(155, 504, 129, 23);
-		panel.add(btnAdicionar);
 
 		comboBoxStorage = new JComboBox();
 		comboBoxStorage.addActionListener(new ActionListener() {
@@ -651,8 +654,68 @@ public class EditarPlanilha extends JFrame {
 		});
 		comboBoxStorage.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "250 HD", "300 HD", "500 HD",
 				"750 HD", "1000 HD", "120 SSD", "240 SSD" }));
-		comboBoxStorage.setBounds(11, 333, 99, 29);
+		comboBoxStorage.setBounds(15, 362, 99, 29);
 		panel.add(comboBoxStorage);
+		
+		JLabel lblChamado = new JLabel("Chamado:");
+		lblChamado.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblChamado.setBounds(15, 15, 93, 29);
+		panel.add(lblChamado);
+		
+		JLabel lblNomeDoColaborador = new JLabel("Nome do colaborador:");
+		lblNomeDoColaborador.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblNomeDoColaborador.setBounds(124, 15, 147, 29);
+		panel.add(lblNomeDoColaborador);
+		
+		JLabel lblUsurioDeRede = new JLabel("Usuário de rede:");
+		lblUsurioDeRede.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblUsurioDeRede.setBounds(15, 68, 102, 29);
+		panel.add(lblUsurioDeRede);
+		
+		JLabel lblDescrioDoItem = new JLabel("Descrição do item:");
+		lblDescrioDoItem.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblDescrioDoItem.setBounds(15, 121, 128, 29);
+		panel.add(lblDescrioDoItem);
+		
+		JLabel lblCentroDeCusto = new JLabel("Centro de custo:");
+		lblCentroDeCusto.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblCentroDeCusto.setBounds(124, 68, 195, 29);
+		panel.add(lblCentroDeCusto);
+		
+		JLabel lblAtivo = new JLabel("Ativo:");
+		lblAtivo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblAtivo.setBounds(15, 175, 106, 29);
+		panel.add(lblAtivo);
+		
+		JLabel lblDispositivo = new JLabel("Dispositivo:");
+		lblDispositivo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblDispositivo.setBounds(128, 175, 69, 29);
+		panel.add(lblDispositivo);
+		
+		JLabel lblHostname = new JLabel("Hostname:");
+		lblHostname.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblHostname.setBounds(204, 175, 102, 29);
+		panel.add(lblHostname);
+		
+		JLabel lblModelo = new JLabel("Modelo:");
+		lblModelo.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblModelo.setBounds(15, 236, 105, 29);
+		panel.add(lblModelo);
+		
+		JLabel lblServiceTag = new JLabel("Service TAG:");
+		lblServiceTag.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblServiceTag.setBounds(177, 237, 129, 29);
+		panel.add(lblServiceTag);
+		
+		JLabel lblEspecificaesDoProcessador = new JLabel("Especificações do processador:");
+		lblEspecificaesDoProcessador.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblEspecificaesDoProcessador.setBounds(15, 286, 189, 29);
+		panel.add(lblEspecificaesDoProcessador);
+		
+		JLabel lblNomeDoTcnico = new JLabel("Nome do técnico (elaborador do laudo):");
+		lblNomeDoTcnico.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblNomeDoTcnico.setBounds(15, 391, 237, 29);
+		panel.add(lblNomeDoTcnico);
 		requestFocus();
 	}
 }

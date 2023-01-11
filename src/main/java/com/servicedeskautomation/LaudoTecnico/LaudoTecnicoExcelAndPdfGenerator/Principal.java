@@ -12,6 +12,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,6 +24,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -48,12 +51,13 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import javax.swing.JCheckBoxMenuItem;
 
 public class Principal extends JFrame {
 	private static final long serialVersionUID = 6391163855934589017L;
@@ -88,7 +92,10 @@ public class Principal extends JFrame {
 	private JButton btnPreencher;
 	private JButton btnXLS;
 	private JButton btnAddLinha;
-	private JInternalFrame internalFrame;;
+	private JInternalFrame internalFrame;
+	private JButton btnSalvarAlteracoes;
+	private JButton btnGerarArquivoPdf;
+	static JButton btnEditar;;
 
 	public class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
@@ -205,7 +212,7 @@ public class Principal extends JFrame {
 		setTitle("E-ServiceDesk application");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 704, 580);
+		setBounds(100, 100, 755, 580);
 		setLocationRelativeTo(null);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -242,7 +249,7 @@ public class Principal extends JFrame {
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
 
-		JMenu mnNewMenu_1 = new JMenu("Tema");
+		JMenu mnNewMenu_1 = new JMenu("Tema (Beta)");
 		mnNewMenu_1.setMnemonic('T');
 		menuBar.add(mnNewMenu_1);
 
@@ -290,7 +297,7 @@ public class Principal extends JFrame {
 
 		internalFrame.pack();
 		internalFrame.getContentPane().setLayout(null);
-		internalFrame.setBounds(39, 0, 618, 508);
+		internalFrame.setBounds(39, 0, 654, 508);
 		internalFrame.setOpaque(true);
 		internalFrame.setClosable(true);
 		internalFrame.setVisible(false);
@@ -298,12 +305,12 @@ public class Principal extends JFrame {
 		JLabel lblNewLabel = new JLabel("Creditos");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(10, 11, 588, 19);
+		lblNewLabel.setBounds(10, 11, 618, 19);
 		internalFrame.getContentPane().add(lblNewLabel);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(240, 240, 240));
-		panel.setBounds(10, 41, 588, 437);
+		panel.setBounds(10, 41, 618, 437);
 		internalFrame.getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -320,19 +327,19 @@ public class Principal extends JFrame {
 		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
 		txtpnAplicaoDesenvolvidaPara.setText(
 				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando eclipse e buildado no MAVEN justamente para realização de builds, limpezas e mais facilidade nas importações das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depara com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\nAtt. Gustavo Borges.");
-		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 588, 426);
+		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 618, 426);
 		panel.add(txtpnAplicaoDesenvolvidaPara);
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(105, 105, 105));
-		separator.setBounds(11, 33, 586, 2);
+		separator.setBounds(11, 33, 617, 2);
 		internalFrame.getContentPane().add(separator);
 
 		jlocal = new JTextField();
 		jlocal.setFocusable(false);
 		jlocal.setEditable(false);
 		jlocal.setBackground(new Color(255, 255, 255));
-		jlocal.setBounds(39, 49, 468, 39);
+		jlocal.setBounds(39, 49, 521, 39);
 		contentPane.add(jlocal);
 		jlocal.setColumns(10);
 		jlocal.setOpaque(true);
@@ -366,9 +373,24 @@ public class Principal extends JFrame {
 					btnPreencher.setEnabled(true); // Habilita o botao
 					requestFocus();
 				}
+				
+				// Habilita os botoes auxiliares para controlar a planilha
+				btnAddLinha.setEnabled(false);
+				btnEditar.setEnabled(false);
+				btnSalvarAlteracoes.setEnabled(false);
+				btnGerarArquivoPdf.setEnabled(false);
+				btnPreencher.setEnabled(true);
+				
+				//Limpa selecoes
+				table.clearSelection();
+				contentPane.requestFocus();
+				
+				//Limpa tabela se estiver aberta antes
+				limpaListas();
+				table.createDefaultColumnsFromModel();
 			}
 		});
-		btnXLS.setBounds(541, 49, 113, 39);
+		btnXLS.setBounds(583, 49, 113, 39);
 		contentPane.add(btnXLS);
 
 		btnPreencher = new JButton("Preencher");
@@ -484,7 +506,8 @@ public class Principal extends JFrame {
 					}
 				}
 
-				// remove os espaços/pontos que estão ANTES dos textos contidos nas celulas da planilha
+				// remove os espaços/pontos que estão ANTES dos textos contidos nas celulas da
+				// planilha
 				laudo = removeEspacos(laudo);
 				nomeSolicitante = removeEspacos(nomeSolicitante);
 				usuario = removeEspacos(usuario);
@@ -511,17 +534,18 @@ public class Principal extends JFrame {
 
 				// Habilita os botoes auxiliares para controlar a planilha
 				btnAddLinha.setEnabled(true);
+				btnEditar.setEnabled(false);
 			}
 		});
 
-		btnPreencher.setBounds(541, 131, 113, 39);
+		btnPreencher.setBounds(583, 131, 113, 39);
 		contentPane.add(btnPreencher);
 
 		jtitulo = new JTextField();
 		jtitulo.setDisabledTextColor(new Color(0, 0, 0));
 		jtitulo.setEnabled(false);
 		jtitulo.setColumns(10);
-		jtitulo.setBounds(39, 131, 468, 39);
+		jtitulo.setBounds(39, 131, 521, 39);
 		contentPane.add(jtitulo);
 
 		JLabel lblTituloPlanilha = new JLabel("Titulo da planilha");
@@ -529,158 +553,185 @@ public class Principal extends JFrame {
 		contentPane.add(lblTituloPlanilha);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(39, 195, 618, 248);
+		scrollPane.setBounds(39, 195, 657, 248);
 		contentPane.add(scrollPane);
 
 		table = new JTable();
 		table.addMouseListener(new MouseAdapter() {
 			boolean isAlreadyOneClick = false;
 
-			@SuppressWarnings("deprecation")
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
-					String user = "" + table.getValueAt(table.getSelectedRow(), 0);
-					System.out.println(user);
 					EditarPlanilha frame = new EditarPlanilha();
+
+					// Foco total para a nova janela aberta
 					frame.setVisible(true);
 					frame.requestFocus();
-					
-					
-					//Design - Deixar os textos em preto e Transpor dados da tabela para a janela nova
-					if(laudo.get(linhaSelecionada).equals("")) 
+
+					// Deixa a janela principal desativada
+					Principal.this.setEnabled(false);
+
+					// Evento pra verificar se a janela de edicao foi fechada
+					frame.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosing(WindowEvent e) {
+							Principal.this.setEnabled(true);
+							btnEditar.setEnabled(false);
+							table.clearSelection();
+							contentPane.requestFocus();
+						}
+					});
+
+					// Design - Deixar os textos em preto e Transpor dados da tabela para a janela
+					// nova
+					if (laudo.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtLaudo.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtLaudo.setForeground(Color.BLACK);
 						EditarPlanilha.txtLaudo.setText(laudo.get(linhaSelecionada));
 					}
-					
-					if(nomeSolicitante.get(linhaSelecionada).equals("")) 
+
+					if (nomeSolicitante.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtNomeSolicitante.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtNomeSolicitante.setForeground(Color.BLACK);
 						EditarPlanilha.txtNomeSolicitante.setText(nomeSolicitante.get(linhaSelecionada));
 					}
-					
-					if(usuario.get(linhaSelecionada).equals("")) 
+
+					if (usuario.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtUsuario.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtUsuario.setForeground(Color.BLACK);
 						EditarPlanilha.txtUsuario.setText(usuario.get(linhaSelecionada));
 					}
-					
-					if(centroCusto.get(linhaSelecionada).equals("")) 
+
+					if (centroCusto.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtCentroDeCusto.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtCentroDeCusto.setForeground(Color.BLACK);
 						EditarPlanilha.txtCentroDeCusto.setText(centroCusto.get(linhaSelecionada));
 					}
-					
-					if(item.get(linhaSelecionada).equals("")) 
+
+					if (item.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtItem.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtItem.setForeground(Color.BLACK);
 						EditarPlanilha.txtItem.setText(item.get(linhaSelecionada));
 					}
-			
-					if(qtd.get(linhaSelecionada).equals("") ||EditarPlanilha.comboBoxQuantidade.getSelectedIndex()==0) 
+
+					if (qtd.get(linhaSelecionada) == null)
 						EditarPlanilha.comboBoxQuantidade.setForeground(Color.RED);
 					else {
 						EditarPlanilha.comboBoxQuantidade.setForeground(Color.BLACK);
 						EditarPlanilha.comboBoxQuantidade.setSelectedIndex(Integer.parseInt(qtd.get(linhaSelecionada)));
 					}
-					
-					if(ativo.get(linhaSelecionada).equals("")) 
+
+					if (ativo.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtAtivo.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtAtivo.setForeground(Color.BLACK);
 						EditarPlanilha.txtAtivo.setText(ativo.get(linhaSelecionada));
 					}
-					
-					if(dispositivo.get(linhaSelecionada).equals("")) 
+
+					if (dispositivo.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtDispositivo.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtDispositivo.setForeground(Color.BLACK);
 						EditarPlanilha.txtDispositivo.setText(dispositivo.get(linhaSelecionada));
 					}
-					
-					if(hostname.get(linhaSelecionada).equals("")) 
+
+					if (hostname.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtHostname.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtHostname.setForeground(Color.BLACK);
 						EditarPlanilha.txtHostname.setText(hostname.get(linhaSelecionada));
 					}
-					
-					if(EditarPlanilha.comboBoxFabricante.getSelectedIndex()==0) 
-						EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
-					else {
-						EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
-						EditarPlanilha.comboBoxFabricante.setSelectedItem(fabricante.get(linhaSelecionada));
+
+					for (int i = 0; i <= EditarPlanilha.comboBoxFabricante.getItemCount() - 1; i++) {
+						if (!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i)))
+							EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
+						else {
+							EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
+							break;
+						}
 					}
-					
-					if(modelo.get(linhaSelecionada).equals("")) 
+
+					if (modelo.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtModelo.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtModelo.setForeground(Color.BLACK);
 						EditarPlanilha.txtModelo.setText(modelo.get(linhaSelecionada));
 					}
-					
-					if(serviceTag.get(linhaSelecionada).equals("")) 
+
+					if (serviceTag.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtServiceTag.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtServiceTag.setForeground(Color.BLACK);
 						EditarPlanilha.txtServiceTag.setText(serviceTag.get(linhaSelecionada));
 					}
 
-					if(dataAquisicao.get(linhaSelecionada).equals("")) 
+					if (dataAquisicao.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtDdmmyyyy.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtDdmmyyyy.setForeground(Color.BLACK);
 						EditarPlanilha.txtDdmmyyyy.setText(dataAquisicao.get(linhaSelecionada));
 					}
-					
-					if(cpu.get(linhaSelecionada).equals("")) 
+
+					if (cpu.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtCpu.setForeground(Color.RED);
 					else {
 						EditarPlanilha.txtCpu.setForeground(Color.BLACK);
 						EditarPlanilha.txtCpu.setText(cpu.get(linhaSelecionada));
 					}
-					
-					if(EditarPlanilha.comboBoxStorage.getSelectedIndex()==0) 
+
+					if (EditarPlanilha.comboBoxStorage.getSelectedIndex() == 0)
 						EditarPlanilha.comboBoxStorage.setForeground(Color.RED);
 					else {
 						EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
-						EditarPlanilha.comboBoxStorage.setSelectedIndex(Integer.parseInt(storage.get(linhaSelecionada)));
+						EditarPlanilha.comboBoxStorage
+								.setSelectedIndex(Integer.parseInt(storage.get(linhaSelecionada)));
 					}
-					/*
-					if(EditarPlanilha.spinner_memoria.getValue() == '0') 
+
+					if ((Integer) EditarPlanilha.spinner_memoria.getValue() == '0')
 						EditarPlanilha.c.setForeground(Color.RED);
 					else {
 						EditarPlanilha.c.setForeground(Color.BLACK);
 						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
 					}
-					*/
-					
-					EditarPlanilha.txtNomeDoTecnico.setForeground(Color.BLACK);
-					EditarPlanilha.txtObservao.setForeground(Color.BLACK);
-					EditarPlanilha.txtStatus.setForeground(Color.BLACK);
-					
 
-					
-					
-					EditarPlanilha.txtNomeDoTecnico.setText(tecnico.get(linhaSelecionada));
-					EditarPlanilha.txtObservao.setText(observacao.get(linhaSelecionada));
-					EditarPlanilha.txtStatus.setText(status.get(linhaSelecionada));
-	
-					
-					
+					if (tecnico.get(linhaSelecionada).equals(""))
+						EditarPlanilha.txtNomeDoTecnico.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtNomeDoTecnico.setForeground(Color.BLACK);
+						EditarPlanilha.txtNomeDoTecnico.setText(tecnico.get(linhaSelecionada));
+					}
+					if (observacao.get(linhaSelecionada).equals(""))
+						EditarPlanilha.txtObservao.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtObservao.setForeground(Color.BLACK);
+						EditarPlanilha.txtObservao.setText(observacao.get(linhaSelecionada));
+					}
+					if (status.get(linhaSelecionada).equals(""))
+						EditarPlanilha.txtStatus.setForeground(Color.RED);
+					else {
+						EditarPlanilha.txtStatus.setForeground(Color.BLACK);
+						EditarPlanilha.txtStatus.setText(status.get(linhaSelecionada));
+					}
+
 					isAlreadyOneClick = false;
 				} else {
 					isAlreadyOneClick = true;
 					Timer t = new Timer("doubleclickTimer", false);
-					table.clearSelection();
-					table.requestDefaultFocus();
+
+					// Habilita botoes
+					btnEditar.setEnabled(true);
+
+					// Limpeza de selecao
+					// table.clearSelection();
+					// table.requestDefaultFocus();
 					t.schedule(new TimerTask() {
 						@Override
 						public void run() {
@@ -692,7 +743,7 @@ public class Principal extends JFrame {
 		});
 		scrollPane.setViewportView(table);
 
-		btnAddLinha = new JButton("Adicionar linha");
+		btnAddLinha = new JButton("Adicionar linha no final da planilha");
 		btnAddLinha.setEnabled(false);
 		btnAddLinha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -701,14 +752,51 @@ public class Principal extends JFrame {
 
 				// Atualiza a planilha
 				table.updateUI();
+				table.requestFocus();
+				table.setRowSelectionInterval(table.getRowCount() - 1, table.getRowCount() - 1);
 			}
 		});
-		btnAddLinha.setBounds(265, 454, 183, 23);
+		btnAddLinha.setBounds(154, 454, 237, 23);
 		contentPane.add(btnAddLinha);
 
 		JLabel lblSelecioneUmaPlanilha = new JLabel("Selecione a planilha de laudo técnico .xlsx");
 		lblSelecioneUmaPlanilha.setBounds(39, 24, 393, 14);
 		contentPane.add(lblSelecioneUmaPlanilha);
+
+		btnEditar = new JButton("Editar");
+		btnEditar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = table.getSelectedRow();
+				if (selectedRow != -1) {
+					//Point p = table.getMousePosition();
+					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0,
+							0, 1, false);
+					table.dispatchEvent(me);
+					me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1,
+							false, MouseEvent.BUTTON1);
+					table.dispatchEvent(me);
+				}
+			}
+		});
+		btnEditar.setEnabled(false);
+		btnEditar.setBounds(39, 454, 105, 23);
+		contentPane.add(btnEditar);
+
+		btnSalvarAlteracoes = new JButton("Salvar alterações");
+		btnSalvarAlteracoes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnSalvarAlteracoes.setEnabled(false);
+		btnSalvarAlteracoes.setBounds(401, 454, 138, 23);
+		contentPane.add(btnSalvarAlteracoes);
+
+		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
+		btnGerarArquivoPdf.setEnabled(false);
+		btnGerarArquivoPdf.setBounds(549, 454, 147, 23);
+		contentPane.add(btnGerarArquivoPdf);
+
 	}
 
 	public ArrayList<String> removeEspacos(ArrayList<String> lista) {
@@ -730,7 +818,7 @@ public class Principal extends JFrame {
 		return listaSemEspacos;
 
 	}
-	
+
 	public void limpaListas() {
 		laudo.clear();
 		nomeSolicitante.clear();
@@ -755,6 +843,14 @@ public class Principal extends JFrame {
 		dados.clear();
 	}
 
+	public void verificarJanelaEdicao() {
+		if (EditarPlanilha.getWindows() == null) {
+			System.out.println("Janela EditarPlanilha aberta");
+		} else {
+			System.out.println("Janela EditarPlanilha fechada");
+		}
+	}
+
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
@@ -769,4 +865,5 @@ public class Principal extends JFrame {
 			}
 		});
 	}
+
 }
