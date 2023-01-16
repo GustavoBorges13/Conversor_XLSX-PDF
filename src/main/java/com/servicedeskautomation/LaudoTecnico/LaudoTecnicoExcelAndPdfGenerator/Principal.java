@@ -863,7 +863,6 @@ public class Principal extends JFrame {
 						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
 					}
 
-					System.out.println(linhaSelecionada);
 					if (tecnico.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtNomeDoTecnico.setForeground(Color.RED);
 					else {
