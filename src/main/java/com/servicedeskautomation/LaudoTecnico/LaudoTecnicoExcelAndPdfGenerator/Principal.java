@@ -58,46 +58,54 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import javax.swing.ScrollPaneConstants;
 
 public class Principal extends JFrame {
+	// Variaveis Locais
 	private static final long serialVersionUID = 6391163855934589017L;
 	private JPanel contentPane;
 	private JTextField jlocal;
 	private JTextField jtitulo;
-	private JTable table;
+	static JTable table;
 	private static int alinhamento = SwingConstants.LEFT;
 	private File pathfile;
-
-	private ArrayList<String> laudo = new ArrayList<String>();
-	private ArrayList<String> nomeSolicitante = new ArrayList<String>();
-	private ArrayList<String> usuario = new ArrayList<String>();
-	private ArrayList<String> centroCusto = new ArrayList<String>();
-	private ArrayList<String> item = new ArrayList<String>();
-	private ArrayList<String> qtd = new ArrayList<String>();
-	private ArrayList<String> ativo = new ArrayList<String>();
-	private ArrayList<String> dispositivo = new ArrayList<String>();
-	private ArrayList<String> hostname = new ArrayList<String>();
-	private ArrayList<String> fabricante = new ArrayList<String>();
-	private ArrayList<String> modelo = new ArrayList<String>();
-	private ArrayList<String> serviceTag = new ArrayList<String>();
-	private ArrayList<String> dataAquisicao = new ArrayList<String>();
-	private ArrayList<String> cpu = new ArrayList<String>();
-	private ArrayList<String> storage = new ArrayList<String>();
-	private ArrayList<String> memoria = new ArrayList<String>();
-	private ArrayList<String> tecnico = new ArrayList<String>();
-	private ArrayList<String> observacao = new ArrayList<String>();
-	private ArrayList<String> status = new ArrayList<String>();
-	private ArrayList<String> colunas = new ArrayList<String>();
-	private ArrayList<Object[]> dados = new ArrayList<>();
 	private JButton btnPreencher;
 	private JButton btnXLS;
 	private JButton btnAddLinha;
 	private JInternalFrame internalFrame;
 	private JButton btnSalvarAlteracoes;
 	private JButton btnGerarArquivoPdf;
-	static JButton btnEditar;;
+	static JButton btnEditar;
+	private JTextPane txtpnAplicaoDesenvolvidaPara;;
 
-	public class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
+	// Database
+	static ArrayList<String> laudo = new ArrayList<String>();
+	static ArrayList<String> nomeSolicitante = new ArrayList<String>();
+	static ArrayList<String> usuario = new ArrayList<String>();
+	static ArrayList<String> centroCusto = new ArrayList<String>();
+	static ArrayList<String> item = new ArrayList<String>();
+	static ArrayList<String> qtd = new ArrayList<String>();
+	static ArrayList<String> ativo = new ArrayList<String>();
+	static ArrayList<String> dispositivo = new ArrayList<String>();
+	static ArrayList<String> hostname = new ArrayList<String>();
+	static ArrayList<String> fabricante = new ArrayList<String>();
+	static ArrayList<String> modelo = new ArrayList<String>();
+	static ArrayList<String> serviceTag = new ArrayList<String>();
+	static ArrayList<String> dataAquisicao = new ArrayList<String>();
+	static ArrayList<String> cpu = new ArrayList<String>();
+	static ArrayList<String> storage = new ArrayList<String>();
+	static ArrayList<String> memoria = new ArrayList<String>();
+	static ArrayList<String> tecnico = new ArrayList<String>();
+	static ArrayList<String> observacao = new ArrayList<String>();
+	static ArrayList<String> status = new ArrayList<String>();
+	static ArrayList<String> colunas = new ArrayList<String>();
+	static ArrayList<Object[]> dados = new ArrayList<>();
+	static ArrayList<String> storageType = new ArrayList<String>();
+	static ArrayList<String> storageValue = new ArrayList<String>();
+	static String[] storageSpliter;
+	static Principal frame;
+	
+	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
 		public HorizontalAlignmentHeaderRenderer(int horizontalAlignment) {
@@ -115,7 +123,9 @@ public class Principal extends JFrame {
 	}
 
 	@SuppressWarnings("static-access")
-	public void preencherTabelaProprietario() {
+	public static void preencherTabelaProprietario() {
+		dados.clear();
+		
 		try {
 			for (int i = 0; i < colunas.size(); i++) {
 				dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
@@ -230,8 +240,8 @@ public class Principal extends JFrame {
 				internalFrame.setFocusable(true);
 				internalFrame.setVisible(true);
 				internalFrame.requestFocus();
+				txtpnAplicaoDesenvolvidaPara.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 				jlocal.setOpaque(false);
-
 			}
 		});
 
@@ -242,7 +252,6 @@ public class Principal extends JFrame {
 						"Conversor XLSX-PDF<br/>Versão XXX <br/><br/>Gustavo Borges<br/><a href=\"https://github.com/GustavoBorges13\">https://github.com/GustavoBorges13</a>"),
 						"About...", JOptionPane.INFORMATION_MESSAGE);
 			}
-
 		});
 		mntmNewMenuItem_1.setMnemonic('S');
 		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.Event.CTRL_MASK));
@@ -270,11 +279,13 @@ public class Principal extends JFrame {
 		internalFrame.setEnabled(false);
 		internalFrame.setFocusable(false);
 
+		// Janela Ajuda-Sobre (Sobre a aplicacao)
 		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame
 				.getUI());
 		for (MouseListener listener : basicInternalFrameUI.getNorthPane().getMouseListeners()) {
 			basicInternalFrameUI.getNorthPane().removeMouseListener(listener);
 		}
+
 		internalFrame.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
@@ -297,7 +308,7 @@ public class Principal extends JFrame {
 
 		internalFrame.pack();
 		internalFrame.getContentPane().setLayout(null);
-		internalFrame.setBounds(39, 0, 654, 508);
+		internalFrame.setBounds(39, 0, 664, 508);
 		internalFrame.setOpaque(true);
 		internalFrame.setClosable(true);
 		internalFrame.setVisible(false);
@@ -305,34 +316,38 @@ public class Principal extends JFrame {
 		JLabel lblNewLabel = new JLabel("Creditos");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(10, 11, 618, 19);
+		lblNewLabel.setBounds(10, 11, 628, 19);
 		internalFrame.getContentPane().add(lblNewLabel);
 
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(240, 240, 240));
-		panel.setBounds(10, 41, 618, 437);
+		panel.setBounds(10, 41, 628, 426);
 		internalFrame.getContentPane().add(panel);
 		panel.setLayout(null);
+		SimpleAttributeSet attr = new SimpleAttributeSet();
+		attr.copyAttributes();
+		StyleConstants.setAlignment(attr, StyleConstants.ALIGN_JUSTIFIED);
 
-		JTextPane txtpnAplicaoDesenvolvidaPara = new JTextPane();
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane_1.setBounds(0, 0, 628, 426);
+		panel.add(scrollPane_1);
+
+		txtpnAplicaoDesenvolvidaPara = new JTextPane();
+		txtpnAplicaoDesenvolvidaPara.setAutoscrolls(false);
+		scrollPane_1.setViewportView(txtpnAplicaoDesenvolvidaPara);
 
 		txtpnAplicaoDesenvolvidaPara.setDisabledTextColor(new Color(0, 0, 0));
 		txtpnAplicaoDesenvolvidaPara.setEnabled(false);
 		txtpnAplicaoDesenvolvidaPara.setEditable(false);
 		txtpnAplicaoDesenvolvidaPara.setBackground(new Color(240, 240, 240));
-		SimpleAttributeSet attr = new SimpleAttributeSet();
-		attr.copyAttributes();
-		StyleConstants.setAlignment(attr, StyleConstants.ALIGN_JUSTIFIED);
 		txtpnAplicaoDesenvolvidaPara.setParagraphAttributes(attr, true);
 		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
 		txtpnAplicaoDesenvolvidaPara.setText(
-				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j.\r\n\r\nO projeto foi desenvolvido utilizando eclipse e buildado no MAVEN justamente para realização de builds, limpezas e mais facilidade nas importações das APIs.\r\n\r\nSobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depara com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.\"\r\n\r\nAtt. Gustavo Borges.");
-		txtpnAplicaoDesenvolvidaPara.setBounds(0, 0, 618, 426);
-		panel.add(txtpnAplicaoDesenvolvidaPara);
-
+				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\nO projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa... e falando na transição, eu utilizei o gitbash do github para salvar os commits do projeto livremente, para mais informações acesse a aba Ajuda-Sobre (Ctrl+S).\r\n\r\nSobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\nAo selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. \r\nCaso o usuario esteja satisfeito, poderá selecionar a linha em especifico e utilizar a ferramenta de EXPORTAR, onde fará será realizado uma automação, transcrevendo os dados da linha selecionada para um documento WORD formatado no padrão da empresa e logo seguinte salva-lo em PDF na pasta alvo que posteriormente será aberto automaticamente para revisão do mesmo para ser enviado ao cliente sucessivamente.\r\n\r\nAtt. Gustavo Borges.");
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(105, 105, 105));
-		separator.setBounds(11, 33, 617, 2);
+		separator.setBounds(11, 33, 627, 2);
 		internalFrame.getContentPane().add(separator);
 
 		jlocal = new JTextField();
@@ -373,19 +388,19 @@ public class Principal extends JFrame {
 					btnPreencher.setEnabled(true); // Habilita o botao
 					requestFocus();
 				}
-				
+
 				// Habilita os botoes auxiliares para controlar a planilha
 				btnAddLinha.setEnabled(false);
 				btnEditar.setEnabled(false);
 				btnSalvarAlteracoes.setEnabled(false);
 				btnGerarArquivoPdf.setEnabled(false);
 				btnPreencher.setEnabled(true);
-				
-				//Limpa selecoes
+
+				// Limpa selecoes
 				table.clearSelection();
 				contentPane.requestFocus();
-				
-				//Limpa tabela se estiver aberta antes
+
+				// Limpa tabela se estiver aberta antes
 				limpaListas();
 				table.createDefaultColumnsFromModel();
 			}
@@ -406,7 +421,7 @@ public class Principal extends JFrame {
 
 				// Limpeza dos dados salvos nas listas é como se fosse um F5
 				limpaListas();
-
+				
 				try {
 					int i = 0; // primeira linha
 					int pos = 0;
@@ -441,6 +456,7 @@ public class Principal extends JFrame {
 				} finally {
 					try {
 						int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
+						int pos = 0; // valor default
 						Date date;
 						String dataFormatada;
 
@@ -458,6 +474,9 @@ public class Principal extends JFrame {
 							while ((row = sheet.getRow(i)) != null) {
 								if (row.getCell(0).getNumericCellValue() != 0
 										&& row.getCell(1).getStringCellValue() != null) {
+									storageSpliter = null; // limpa o vetor auxiliar
+
+									// Criando o DataBase Local (Armazenando os valores em Arraylists)
 									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
 									nomeSolicitante.add(row.getCell(1).getStringCellValue());
 									usuario.add(row.getCell(2).getStringCellValue());
@@ -470,15 +489,20 @@ public class Principal extends JFrame {
 									fabricante.add(row.getCell(9).getStringCellValue());
 									modelo.add(row.getCell(10).getStringCellValue());
 									serviceTag.add(row.getCell(11).getStringCellValue());
-
-									// Data -> dataAquisicao
+									// Date -> dataAquisicao
 									date = row.getCell(12).getDateCellValue();
 									SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 									dataFormatada = sdf.format(date);
 									dataAquisicao.add(dataFormatada);
-
 									cpu.add(row.getCell(13).getStringCellValue());
 									storage.add(row.getCell(14).getStringCellValue());
+									storage = removeEspacos(storage);
+									storageSpliter = storage.get(i - 1).split(" ");
+									storageValue.add(storageSpliter[pos]);
+									storageType.add(storageSpliter[pos + 1]);
+									// Debug Storage...
+									// System.out.println("Value: " + storageValue.get(i-1) + " Type: " +
+									// storageType.get(i-1));
 									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
 									tecnico.add(row.getCell(16).getStringCellValue());
 									observacao.add(row.getCell(17).getStringCellValue());
@@ -523,7 +547,7 @@ public class Principal extends JFrame {
 				serviceTag = removeEspacos(serviceTag);
 				dataAquisicao = removeEspacos(dataAquisicao);
 				cpu = removeEspacos(cpu);
-				storage = removeEspacos(storage);
+				// storage = removeEspacos(storage); //foi usado no looping ^-^
 				memoria = removeEspacos(memoria);
 				tecnico = removeEspacos(tecnico);
 				observacao = removeEspacos(observacao);
@@ -557,6 +581,7 @@ public class Principal extends JFrame {
 		contentPane.add(scrollPane);
 
 		table = new JTable();
+		table.setAutoscrolls(false);
 		table.addMouseListener(new MouseAdapter() {
 			boolean isAlreadyOneClick = false;
 
@@ -565,6 +590,8 @@ public class Principal extends JFrame {
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
 					EditarPlanilha frame = new EditarPlanilha();
+					int toleranciaHD_SSD = 0;
+					int pos = 0; // valor default
 
 					// Foco total para a nova janela aberta
 					frame.setVisible(true);
@@ -687,12 +714,146 @@ public class Principal extends JFrame {
 						EditarPlanilha.txtCpu.setText(cpu.get(linhaSelecionada));
 					}
 
-					if (EditarPlanilha.comboBoxStorage.getSelectedIndex() == 0)
-						EditarPlanilha.comboBoxStorage.setForeground(Color.RED);
-					else {
-						EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
-						EditarPlanilha.comboBoxStorage
-								.setSelectedIndex(Integer.parseInt(storage.get(linhaSelecionada)));
+					// System.out.println("Type: "+storageType.get(linhaSelecionada)+" Value:
+					// "+Integer.parseInt(storageValue.get(linhaSelecionada)));
+					// --- HD ---
+					if (storageType.get(linhaSelecionada).equals("HD")) {
+						toleranciaHD_SSD = 20;
+						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 180 + toleranciaHD_SSD) { // Range
+																														// 180GB
+							storageSpliter = null;
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "180 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 180 + toleranciaHD_SSD
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 250 + toleranciaHD_SSD) { // Range
+																														// 250GB
+							storageSpliter = null;
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "250 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 250 + toleranciaHD_SSD
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 300 + toleranciaHD_SSD) { // Range
+																														// 300GB
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "300 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 300 + toleranciaHD_SSD
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 500 + toleranciaHD_SSD) { // Range
+																														// 500GB
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "500 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 500 + toleranciaHD_SSD
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 750 + toleranciaHD_SSD) { // Range
+																														// 750GB
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "750 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 750 + toleranciaHD_SSD
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 1000 + toleranciaHD_SSD) { // Range
+																														// 1000GB
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "1000 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 1000 + toleranciaHD_SSD) { // Range
+																														// +1000GB
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "1000 HD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						}
+
+					// --- SSD ---
+					} else if (storageType.get(linhaSelecionada).equals("SSD")) {
+						toleranciaHD_SSD = 30;
+						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 120 + toleranciaHD_SSD) { // Range
+																														// 120GB
+							storageSpliter = null;
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "120 SSD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 120 + toleranciaHD_SSD
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 240 + toleranciaHD_SSD) { // Range
+																														// 240GB
+							storageSpliter = null;
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "240 SSD"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						}
+						
+					// --- SSD-NVMe ---
+					} else if (storageType.get(linhaSelecionada).equals("SSD-NVMe")) {
+						toleranciaHD_SSD = 50;
+						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
+								&& Integer.parseInt(storageValue.get(linhaSelecionada)) <= 256 + toleranciaHD_SSD) { // Range
+																														// 256GB
+							storageSpliter = null;
+							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
+							// seja compativel com as nossas amostras disponiveis.
+							storage.set(linhaSelecionada, "256 SSD-NVMe"); // Valor novo!!!
+							storageSpliter = storage.get(linhaSelecionada).split(" ");
+							storageValue.set(linhaSelecionada, storageSpliter[pos]);
+							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
+
+						}
 					}
 
 					if ((Integer) EditarPlanilha.spinner_memoria.getValue() == '0')
@@ -702,6 +863,7 @@ public class Principal extends JFrame {
 						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
 					}
 
+					System.out.println(linhaSelecionada);
 					if (tecnico.get(linhaSelecionada).equals(""))
 						EditarPlanilha.txtNomeDoTecnico.setForeground(Color.RED);
 					else {
@@ -709,13 +871,13 @@ public class Principal extends JFrame {
 						EditarPlanilha.txtNomeDoTecnico.setText(tecnico.get(linhaSelecionada));
 					}
 					if (observacao.get(linhaSelecionada).equals(""))
-						EditarPlanilha.txtObservao.setForeground(Color.RED);
+						EditarPlanilha.txtObservao.setForeground(Color.LIGHT_GRAY);
 					else {
 						EditarPlanilha.txtObservao.setForeground(Color.BLACK);
 						EditarPlanilha.txtObservao.setText(observacao.get(linhaSelecionada));
 					}
 					if (status.get(linhaSelecionada).equals(""))
-						EditarPlanilha.txtStatus.setForeground(Color.RED);
+						EditarPlanilha.txtStatus.setForeground(Color.LIGHT_GRAY);
 					else {
 						EditarPlanilha.txtStatus.setForeground(Color.BLACK);
 						EditarPlanilha.txtStatus.setText(status.get(linhaSelecionada));
@@ -769,12 +931,12 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow != -1) {
-					//Point p = table.getMousePosition();
-					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0,
-							0, 1, false);
+					// Point p = table.getMousePosition();
+					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0,
+							1, false);
 					table.dispatchEvent(me);
-					me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1,
-							false, MouseEvent.BUTTON1);
+					me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1, false,
+							MouseEvent.BUTTON1);
 					table.dispatchEvent(me);
 				}
 			}
@@ -819,7 +981,7 @@ public class Principal extends JFrame {
 
 	}
 
-	public void limpaListas() {
+	public static void limpaListas() {
 		laudo.clear();
 		nomeSolicitante.clear();
 		usuario.clear();
@@ -841,6 +1003,9 @@ public class Principal extends JFrame {
 		status.clear();
 		colunas.clear();
 		dados.clear();
+		storageSpliter = null;
+		storageType.clear();
+		storageValue.clear();
 	}
 
 	public void verificarJanelaEdicao() {
@@ -854,10 +1019,11 @@ public class Principal extends JFrame {
 	public static void main(String[] args) {
 
 		EventQueue.invokeLater(new Runnable() {
+
 			public void run() {
 				try {
 					UIManager.setLookAndFeel(new FlatIntelliJLaf());
-					Principal frame = new Principal();
+					frame = new Principal();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
