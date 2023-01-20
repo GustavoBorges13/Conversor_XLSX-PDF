@@ -55,4 +55,9 @@ public class ModeloTabela extends AbstractTableModel {
 		linhas.add(row);
 		fireTableRowsInserted(linhas.size() - 1, linhas.size() - 1);
 	}
+	
+	public void removeRow(int row) {
+		this.linhas.remove(row);
+		this.fireTableRowsDeleted(row, row);
+	}
 }
