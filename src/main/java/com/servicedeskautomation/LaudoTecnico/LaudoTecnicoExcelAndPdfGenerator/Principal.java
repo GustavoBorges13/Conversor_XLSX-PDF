@@ -17,7 +17,9 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,6 +43,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -52,13 +55,17 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.util.CellUtil;
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import javax.swing.ScrollPaneConstants;
 
 public class Principal extends JFrame {
 	// Variaveis Locais
@@ -105,7 +112,8 @@ public class Principal extends JFrame {
 	static String[] storageSpliter;
 	static Principal frame;
 	private JButton btnRemover;
-	
+	private int qtdLinhasTemp;
+
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -126,7 +134,7 @@ public class Principal extends JFrame {
 	@SuppressWarnings("static-access")
 	public static void preencherTabelaProprietario() {
 		dados.clear();
-		
+
 		try {
 			for (int i = 0; i < colunas.size(); i++) {
 				dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
@@ -147,61 +155,61 @@ public class Principal extends JFrame {
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
 		table.getColumnModel().getColumn(0).setPreferredWidth(50); // coluna LAUDO
-		table.getColumnModel().getColumn(0).setResizable(false);
+		table.getColumnModel().getColumn(0).setResizable(true);
 		table.getColumnModel().getColumn(0).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(1).setPreferredWidth(170); // coluna NOME SOLICITANTE
-		table.getColumnModel().getColumn(1).setResizable(false);
+		table.getColumnModel().getColumn(1).setResizable(true);
 		table.getColumnModel().getColumn(1).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(2).setPreferredWidth(65); // coluna USUARIO
-		table.getColumnModel().getColumn(2).setResizable(false);
+		table.getColumnModel().getColumn(2).setResizable(true);
 		table.getColumnModel().getColumn(2).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(3).setPreferredWidth(200); // coluna CENTRO DE CUSTO
-		table.getColumnModel().getColumn(3).setResizable(false);
+		table.getColumnModel().getColumn(3).setResizable(true);
 		table.getColumnModel().getColumn(3).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(4).setPreferredWidth(190); // coluna ITEM
-		table.getColumnModel().getColumn(4).setResizable(false);
+		table.getColumnModel().getColumn(4).setResizable(true);
 		table.getColumnModel().getColumn(4).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(5).setPreferredWidth(30); // coluna QTD
-		table.getColumnModel().getColumn(5).setResizable(false);
+		table.getColumnModel().getColumn(5).setResizable(true);
 		table.getColumnModel().getColumn(5).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(6).setPreferredWidth(95); // coluna ATIVO
-		table.getColumnModel().getColumn(6).setResizable(false);
+		table.getColumnModel().getColumn(6).setResizable(true);
 		table.getColumnModel().getColumn(6).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(7).setPreferredWidth(80); // coluna DISPOSITIVO
-		table.getColumnModel().getColumn(7).setResizable(false);
+		table.getColumnModel().getColumn(7).setResizable(true);
 		table.getColumnModel().getColumn(7).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(8).setPreferredWidth(85); // coluna HOSTNAME
-		table.getColumnModel().getColumn(8).setResizable(false);
+		table.getColumnModel().getColumn(8).setResizable(true);
 		table.getColumnModel().getColumn(8).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(9).setPreferredWidth(75); // coluna FABRICANTE
-		table.getColumnModel().getColumn(9).setResizable(false);
+		table.getColumnModel().getColumn(9).setResizable(true);
 		table.getColumnModel().getColumn(9).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(10).setPreferredWidth(100); // coluna MODELO
-		table.getColumnModel().getColumn(10).setResizable(false);
+		table.getColumnModel().getColumn(10).setResizable(true);
 		table.getColumnModel().getColumn(10).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(11).setPreferredWidth(80); // coluna SERVICE TAG
-		table.getColumnModel().getColumn(11).setResizable(false);
+		table.getColumnModel().getColumn(11).setResizable(true);
 		table.getColumnModel().getColumn(11).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(12).setPreferredWidth(95); // coluna DATA AQUISIÇÃO
-		table.getColumnModel().getColumn(12).setResizable(false);
+		table.getColumnModel().getColumn(12).setResizable(true);
 		table.getColumnModel().getColumn(12).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(13).setPreferredWidth(245); // coluna CPU
-		table.getColumnModel().getColumn(13).setResizable(false);
+		table.getColumnModel().getColumn(13).setResizable(true);
 		table.getColumnModel().getColumn(13).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(14).setPreferredWidth(90); // coluna STORAGE
-		table.getColumnModel().getColumn(14).setResizable(false);
+		table.getColumnModel().getColumn(14).setResizable(true);
 		table.getColumnModel().getColumn(14).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(15).setPreferredWidth(90); // coluna MEMORIA
-		table.getColumnModel().getColumn(15).setResizable(false);
+		table.getColumnModel().getColumn(15).setResizable(true);
 		table.getColumnModel().getColumn(15).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(16).setPreferredWidth(110); // coluna TECNICO
-		table.getColumnModel().getColumn(16).setResizable(false);
+		table.getColumnModel().getColumn(16).setResizable(true);
 		table.getColumnModel().getColumn(16).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(17).setPreferredWidth(120); // coluna OBSERVAÇÕES
-		table.getColumnModel().getColumn(17).setResizable(false);
+		table.getColumnModel().getColumn(17).setResizable(true);
 		table.getColumnModel().getColumn(17).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(18).setPreferredWidth(80); // coluna STATUS
-		table.getColumnModel().getColumn(18).setResizable(false);
+		table.getColumnModel().getColumn(18).setResizable(true);
 		table.getColumnModel().getColumn(18).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 
 		// Nao vai reodernar os nomes e titulos do cabeçalho da tabela
@@ -361,7 +369,7 @@ public class Principal extends JFrame {
 		jlocal.setOpaque(true);
 		btnXLS = new JButton("XLSX");
 
-		// button choose file/escolher arquivo
+		// BUTTON CHOOSER FILE
 		btnXLS.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
@@ -410,6 +418,7 @@ public class Principal extends JFrame {
 		btnXLS.setBounds(583, 49, 113, 39);
 		contentPane.add(btnXLS);
 
+		// BUTTON FILL
 		btnPreencher = new JButton("Preencher");
 		btnPreencher.setFocusable(false);
 		btnPreencher.setEnabled(false);
@@ -424,7 +433,7 @@ public class Principal extends JFrame {
 
 				// Limpeza dos dados salvos nas listas é como se fosse um F5
 				limpaListas();
-				
+
 				try {
 					int i = 0; // primeira linha
 					int pos = 0;
@@ -460,8 +469,6 @@ public class Principal extends JFrame {
 					try {
 						int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
 						int pos = 0; // valor default
-						Date date;
-						String dataFormatada;
 
 						// Abre o arquivo excel
 						work = new XSSFWorkbook(new FileInputStream(pathfile));
@@ -474,49 +481,72 @@ public class Principal extends JFrame {
 						row = sheet.getRow(i);
 						if (colunas.size() == 19) {
 							// Copia as informações das linhas da planilhas para arrayslists.
-							while ((row = sheet.getRow(i)) != null) {
-								if (row.getCell(0).getNumericCellValue() != 0
-										&& row.getCell(1).getStringCellValue() != null) {
-									storageSpliter = null; // limpa o vetor auxiliar
+							while ((row = sheet.getRow(i)) != null && row.getCell(0).getCellType() != CellType.BLANK) {
+								storageSpliter = null; // limpa o vetor auxiliar
 
-									// Criando o DataBase Local (Armazenando os valores em Arraylists)
+								// Criando o DataBase Local (Armazenando os valores em Arraylists)
+								if (row.getCell(0).getCellType() == CellType.STRING)
+									laudo.add(row.getCell(0).getStringCellValue());
+								else
 									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
-									nomeSolicitante.add(row.getCell(1).getStringCellValue());
-									usuario.add(row.getCell(2).getStringCellValue());
-									centroCusto.add(row.getCell(3).getStringCellValue());
-									item.add(row.getCell(4).getStringCellValue());
+								nomeSolicitante.add(row.getCell(1).getStringCellValue());
+								usuario.add(row.getCell(2).getStringCellValue());
+								centroCusto.add(row.getCell(3).getStringCellValue());
+								item.add(row.getCell(4).getStringCellValue());
+								if (row.getCell(5).getCellType() == CellType.STRING)
+									qtd.add(row.getCell(5).getStringCellValue());
+								else
 									qtd.add((int) row.getCell(5).getNumericCellValue() + "");
-									ativo.add(row.getCell(6).getStringCellValue());
-									dispositivo.add(row.getCell(7).getStringCellValue());
-									hostname.add(row.getCell(8).getStringCellValue());
-									fabricante.add(row.getCell(9).getStringCellValue());
-									modelo.add(row.getCell(10).getStringCellValue());
-									serviceTag.add(row.getCell(11).getStringCellValue());
-									// Date -> dataAquisicao
-									date = row.getCell(12).getDateCellValue();
-									SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-									dataFormatada = sdf.format(date);
-									dataAquisicao.add(dataFormatada);
-									cpu.add(row.getCell(13).getStringCellValue());
-									storage.add(row.getCell(14).getStringCellValue());
-									storage = removeEspacos(storage);
-									storageSpliter = storage.get(i - 1).split(" ");
-									storageValue.add(storageSpliter[pos]);
-									storageType.add(storageSpliter[pos + 1]);
-									// Debug Storage...
-									// System.out.println("Value: " + storageValue.get(i-1) + " Type: " +
-									// storageType.get(i-1));
-									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
-									tecnico.add(row.getCell(16).getStringCellValue());
-									observacao.add(row.getCell(17).getStringCellValue());
-									status.add(row.getCell(18).getStringCellValue());
+								ativo.add(row.getCell(6).getStringCellValue());
+								dispositivo.add(row.getCell(7).getStringCellValue());
+								hostname.add(row.getCell(8).getStringCellValue());
+								fabricante.add(row.getCell(9).getStringCellValue());
+								modelo.add(row.getCell(10).getStringCellValue());
+								serviceTag.add(row.getCell(11).getStringCellValue());
+								String dateString = null;
+								if (row.getCell(12).getCellType() == CellType.STRING) {
+									try {
+										dateString = row.getCell(12).getStringCellValue();
+										SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-									i++;
+										Date date = sdf.parse(dateString);
+										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+										String formattedDate = sdf2.format(date);
+										dataAquisicao.add(formattedDate);
+										// JOptionPane.showMessageDialog(null, "DateString -> " + dateString + "\nDate
+										// -> "
+										// + date + "\nFormatted Date -> " + formattedDate);
+									} catch (ParseException e2) {
+										System.out.println("Debug date -> " + e2);
+									}
 								} else {
-									work.close();
-									break;
+									Date date = row.getCell(12).getDateCellValue();
+									SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+									String formattedDate = sdf2.format(date);
+									dataAquisicao.add(formattedDate);
+									// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
+									// Date -> " + formattedDate);
 								}
+
+								cpu.add(row.getCell(13).getStringCellValue());
+								storage.add(row.getCell(14).getStringCellValue());
+								storage = removeEspacos(storage);
+								storageSpliter = storage.get(i - 1).split(" ");
+								storageValue.add(storageSpliter[pos]);
+								storageType.add(storageSpliter[pos + 1]);
+								if (row.getCell(15).getCellType() == CellType.STRING)
+									memoria.add(row.getCell(15).getStringCellValue());
+								else
+									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
+								tecnico.add(row.getCell(16).getStringCellValue());
+								observacao.add(row.getCell(17).getStringCellValue());
+								status.add(row.getCell(18).getStringCellValue());
+
+								i++;
 							}
+							qtdLinhasTemp = laudo.size();
+							work.close();
+
 						} else {
 							throw new java.lang.ArrayIndexOutOfBoundsException();
 						}
@@ -620,29 +650,32 @@ public class Principal extends JFrame {
 					// nova
 					EditarPlanilha.txtLaudo.setForeground(Color.BLACK);
 					EditarPlanilha.txtLaudo.setText(laudo.get(linhaSelecionada));
-			
+
 					EditarPlanilha.txtNomeSolicitante.setForeground(Color.BLACK);
 					EditarPlanilha.txtNomeSolicitante.setText(nomeSolicitante.get(linhaSelecionada));
-					
+
 					EditarPlanilha.txtUsuario.setForeground(Color.BLACK);
 					EditarPlanilha.txtUsuario.setText(usuario.get(linhaSelecionada));
-					
+
 					EditarPlanilha.txtCentroDeCusto.setForeground(Color.BLACK);
 					EditarPlanilha.txtCentroDeCusto.setText(centroCusto.get(linhaSelecionada));
 
 					EditarPlanilha.txtItem.setForeground(Color.BLACK);
 					EditarPlanilha.txtItem.setText(item.get(linhaSelecionada));
-					
-					if (qtd.get(linhaSelecionada) == null)
-						EditarPlanilha.comboBoxQuantidade.setForeground(Color.RED);
-					else {
-						EditarPlanilha.comboBoxQuantidade.setForeground(Color.BLACK);
-						EditarPlanilha.comboBoxQuantidade.setSelectedIndex(Integer.parseInt(qtd.get(linhaSelecionada)));
+
+					for (int i = 0; i <= EditarPlanilha.comboBoxQuantidade.getItemCount() - 1; i++) {
+						if (!qtd.get(linhaSelecionada).equals(EditarPlanilha.comboBoxQuantidade.getItemAt(i)))
+							EditarPlanilha.comboBoxQuantidade.setForeground(Color.RED);
+						else {
+							EditarPlanilha.comboBoxQuantidade.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxQuantidade.setSelectedIndex(i);
+							break;
+						}
 					}
-					
+
 					EditarPlanilha.txtAtivo.setForeground(Color.BLACK);
 					EditarPlanilha.txtAtivo.setText(ativo.get(linhaSelecionada));
-					
+
 					for (int i = 0; i <= EditarPlanilha.comboBoxDispositivo.getItemCount() - 1; i++) {
 						if (!dispositivo.get(linhaSelecionada).equals(EditarPlanilha.comboBoxDispositivo.getItemAt(i)))
 							EditarPlanilha.comboBoxDispositivo.setForeground(Color.RED);
@@ -652,10 +685,9 @@ public class Principal extends JFrame {
 							break;
 						}
 					}
-					
+
 					EditarPlanilha.txtHostname.setForeground(Color.BLACK);
 					EditarPlanilha.txtHostname.setText(hostname.get(linhaSelecionada));
-					
 
 					for (int i = 0; i <= EditarPlanilha.comboBoxFabricante.getItemCount() - 1; i++) {
 						if (!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i)))
@@ -672,10 +704,10 @@ public class Principal extends JFrame {
 
 					EditarPlanilha.txtServiceTag.setForeground(Color.BLACK);
 					EditarPlanilha.txtServiceTag.setText(serviceTag.get(linhaSelecionada));
-					
+
 					EditarPlanilha.txtDdmmyyyy.setForeground(Color.BLACK);
 					EditarPlanilha.txtDdmmyyyy.setText(dataAquisicao.get(linhaSelecionada));
-	
+
 					EditarPlanilha.txtCpu.setForeground(Color.BLACK);
 					EditarPlanilha.txtCpu.setText(cpu.get(linhaSelecionada));
 
@@ -771,7 +803,7 @@ public class Principal extends JFrame {
 
 						}
 
-					// --- SSD ---
+						// --- SSD ---
 					} else if (storageType.get(linhaSelecionada).equals("SSD")) {
 						toleranciaHD_SSD = 30;
 						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
@@ -800,8 +832,8 @@ public class Principal extends JFrame {
 							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
-						}else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 120 + toleranciaHD_SSD) { // Range
-																														// +240GB
+						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 120 + toleranciaHD_SSD) { // Range
+																													// +240GB
 							storageSpliter = null;
 							// Atribuindo um novo valor arredondado/aproximado caso o valor encontrado não
 							// seja compativel com as nossas amostras disponiveis.
@@ -812,9 +844,9 @@ public class Principal extends JFrame {
 							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
-}
-						
-					// --- SSD-NVMe ---
+						}
+
+						// --- SSD-NVMe ---
 					} else if (storageType.get(linhaSelecionada).equals("SSD-NVMe")) {
 						toleranciaHD_SSD = 50;
 						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
@@ -831,17 +863,29 @@ public class Principal extends JFrame {
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						}
+					} else {
+						storageSpliter = null;
+						// PADRAO
+						EditarPlanilha.comboBoxStorage.setForeground(Color.RED);
+						EditarPlanilha.comboBoxStorage.setSelectedIndex(0);
 					}
 
-					EditarPlanilha.c.setForeground(Color.BLACK);
-					EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
+					int memoryTemp = Integer.parseInt(memoria.get(linhaSelecionada));
+					if (memoryTemp == 0) {
+						EditarPlanilha.c.setForeground(Color.RED);
+						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
+
+					} else {
+						EditarPlanilha.c.setForeground(Color.BLACK);
+						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
+					}
 
 					EditarPlanilha.txtNomeDoTecnico.setForeground(Color.BLACK);
 					EditarPlanilha.txtNomeDoTecnico.setText(tecnico.get(linhaSelecionada));
-					
+
 					EditarPlanilha.txtObservao.setForeground(Color.BLACK);
 					EditarPlanilha.txtObservao.setText(observacao.get(linhaSelecionada));
-		
+
 					EditarPlanilha.txtStatus.setForeground(Color.BLACK);
 					EditarPlanilha.txtStatus.setText(status.get(linhaSelecionada));
 
@@ -853,7 +897,7 @@ public class Principal extends JFrame {
 					// Habilita botoes
 					btnEditar.setEnabled(true);
 					btnRemover.setEnabled(true);
-					
+
 					// Limpeza de selecao
 					// table.clearSelection();
 					// table.requestDefaultFocus();
@@ -868,12 +912,19 @@ public class Principal extends JFrame {
 		});
 		scrollPane.setViewportView(table);
 
+		// BUTTO ADD ROW
 		btnAddLinha = new JButton("Adicionar linha no final da planilha");
 		btnAddLinha.setEnabled(false);
 		btnAddLinha.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				// Habilita botoes
+				btnEditar.setEnabled(true);
+				btnRemover.setEnabled(true);
+				btnSalvarAlteracoes.setEnabled(true);
+
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
+
 				adicionarArrayList();
 				// Atualiza a planilha
 				table.updateUI();
@@ -888,6 +939,7 @@ public class Principal extends JFrame {
 		lblSelecioneUmaPlanilha.setBounds(39, 24, 393, 14);
 		contentPane.add(lblSelecioneUmaPlanilha);
 
+		// BUTTON EDIT
 		btnEditar = new JButton("Editar");
 		btnEditar.addActionListener(new ActionListener() {
 			@Override
@@ -908,41 +960,161 @@ public class Principal extends JFrame {
 		btnEditar.setBounds(39, 454, 105, 23);
 		contentPane.add(btnEditar);
 
+		// BUTTON SAVE
 		btnSalvarAlteracoes = new JButton("Salvar alterações");
 		btnSalvarAlteracoes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				XSSFWorkbook work = null;
+				int reply = JOptionPane.showConfirmDialog(null, "Você realmente deseja salvar (S/N)?", "Salvamento",
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					try {
+						// Abra o arquivo xlsx existente
+						int j = 0;
+						work = new XSSFWorkbook(new FileInputStream(pathfile));
+
+						// Junta todas as planilhas deste arquivo.
+						// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
+						// Obtenha a planilha desejada
+						XSSFSheet sheet = work.getSheetAt(0);
+						XSSFRow row;
+						XSSFCell cell = null;
+						
+						for (int k = 1; k <= laudo.size(); k++) {
+							XSSFRow row2 = sheet.getRow(k);
+							// Iterar sobre as células da linha
+							for (int i = 0; i <= row2.getLastCellNum(); i++) {
+								XSSFCell cell2 = row2.getCell(i);
+								if (cell2 != null) {
+									cell2.setCellValue("");
+								}
+							}
+						}
+						
+						
+						// Transcreve os valores do arraylist para as celulas da planilha...
+						for (int i = 1; i <= laudo.size(); i++) { // Obtendo a linha desejada
+							row = sheet.getRow(i);
+
+							// SALVANDO NEW DADOS NA PLANILHA!
+							// Alterando valores das celulas...
+							cell = row.getCell(0); // Obtem a celula desejada -> Coluna
+							cell.setCellValue(Integer.parseInt(laudo.get(j))); // Alterando o valor das células da
+																				// planilha
+							cell.setCellType(CellType.NUMERIC); // Define o tipo da celula
+							cell = row.getCell(1);
+							cell.setCellValue(nomeSolicitante.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(2);
+							cell.setCellValue(usuario.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(3);
+							cell.setCellValue(centroCusto.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(4);
+							cell.setCellValue(item.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(5);
+							cell.setCellValue(Integer.parseInt(qtd.get(j)));
+							cell.setCellType(CellType.NUMERIC);
+							cell = row.getCell(6);
+							cell.setCellValue(ativo.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(7);
+							cell.setCellValue(dispositivo.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(8);
+							cell.setCellValue(hostname.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(9);
+							cell.setCellValue(fabricante.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(10);
+							cell.setCellValue(modelo.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(11);
+							cell.setCellValue(serviceTag.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(12);
+							cell.setCellValue(dataAquisicao.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(13);
+							cell.setCellValue(cpu.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(14);
+							cell.setCellValue(storage.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(15);
+							cell.setCellValue(Integer.parseInt(memoria.get(j)));
+							cell.setCellType(CellType.NUMERIC);
+							cell = row.getCell(16);
+							cell.setCellValue(tecnico.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(17);
+							cell.setCellValue(observacao.get(j));
+							cell.setCellType(CellType.STRING);
+							cell = row.getCell(18);
+							cell.setCellValue(status.get(j));
+							cell.setCellType(CellType.STRING);
+
+							j++;
+						}
+
+						try {
+							// Salvar alterações na planilha!
+							work.write(new FileOutputStream(pathfile));
+							work.close(); // Fecha a planilha
+							JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
+
+							// Desabilita botoes
+							btnSalvarAlteracoes.setEnabled(false);
+							btnEditar.setEnabled(false);
+
+						} catch (FileNotFoundException e) {
+							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
+						}
+
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				} else {
+					requestFocus();
+				}
 			}
 		});
 		btnSalvarAlteracoes.setEnabled(false);
 		btnSalvarAlteracoes.setBounds(401, 454, 138, 23);
 		contentPane.add(btnSalvarAlteracoes);
 
+		// BUTTON GENERATE PDF FILE
 		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
 		btnGerarArquivoPdf.setEnabled(false);
 		btnGerarArquivoPdf.setBounds(549, 454, 147, 23);
 		contentPane.add(btnGerarArquivoPdf);
-		
+
+		// BUTTON REMOVE
 		btnRemover = new JButton("Remover");
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int selectedRow = table.getSelectedRow();
 				if (selectedRow != -1) {
-				    ModeloTabela model = (ModeloTabela) table.getModel();
-				    
-				    // Remove a linha da tabela
-				    model.removeRow(selectedRow);
-				    
-				    // Limpa a base de dados
-				    removerArrayList(selectedRow);
-				    
-				    // Atualiza a tabela
+					ModeloTabela model = (ModeloTabela) table.getModel();
+
+					// Remove a linha da tabela
+					model.removeRow(selectedRow);
+
+					// Limpa a base de dados
+					removerArrayList(selectedRow);
+
+					// Atualiza a tabela
 					preencherTabelaProprietario();
 					table.updateUI();
 					table.requestFocus();
-					
-					// Desabilita botoes
+
+					// Desabilita/habilita botoes
 					btnEditar.setEnabled(false);
 					btnRemover.setEnabled(false);
+					btnSalvarAlteracoes.setEnabled(true);
 				}
 			}
 		});
@@ -1006,7 +1178,7 @@ public class Principal extends JFrame {
 			System.out.println("Janela EditarPlanilha fechada");
 		}
 	}
-	
+
 	public void adicionarArrayList() {
 		laudo.add("");
 		nomeSolicitante.add("");
@@ -1023,12 +1195,14 @@ public class Principal extends JFrame {
 		dataAquisicao.add("");
 		cpu.add("");
 		storage.add("");
-		memoria.add("");
+		storageType.add("");
+		storageValue.add("");
+		memoria.add("0");
 		tecnico.add("");
 		observacao.add("");
 		status.add("");
 	}
-	
+
 	public void removerArrayList(int pos) {
 		laudo.remove(pos);
 		nomeSolicitante.remove(pos);
@@ -1045,16 +1219,16 @@ public class Principal extends JFrame {
 		dataAquisicao.remove(pos);
 		cpu.remove(pos);
 		storage.remove(pos);
+		storageType.remove(pos);
+		storageValue.remove(pos);
 		memoria.remove(pos);
 		tecnico.remove(pos);
 		observacao.remove(pos);
 		status.remove(pos);
 	}
-	
+
 	public static void main(String[] args) {
-
 		EventQueue.invokeLater(new Runnable() {
-
 			public void run() {
 				try {
 					UIManager.setLookAndFeel(new FlatIntelliJLaf());

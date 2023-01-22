@@ -232,7 +232,28 @@ public class EditarPlanilha extends JFrame {
 		panel.add(txtServiceTag);
 
 		txtDdmmyyyy = new JTextField();
-		txtDdmmyyyy.setForeground(Color.BLACK);
+		txtDdmmyyyy.setForeground(new Color(255,114,118));
+		txtDdmmyyyy.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				if (txtDdmmyyyy.getText().equals("dd-mm-yyyy")) {
+					txtDdmmyyyy.setText("");
+					txtDdmmyyyy.setForeground(Color.BLACK);
+				} else {
+					txtDdmmyyyy.selectAll();
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (txtDdmmyyyy.getText().equals("")) {
+					txtDdmmyyyy.setForeground(new Color(255,114,118));
+					txtDdmmyyyy.setText("dd-mm-yyyy");
+				}
+
+			}
+		});
+		txtDdmmyyyy.setText("dd-mm-yyyy");
 		txtDdmmyyyy.setColumns(10);
 		txtDdmmyyyy.setBounds(314, 258, 98, 29);
 		panel.add(txtDdmmyyyy);
@@ -352,7 +373,7 @@ public class EditarPlanilha extends JFrame {
 						|| txtAtivo.getText().equals("") ||  comboBoxDispositivo.getSelectedIndex() == 0
 						|| txtHostname.getText().equals("") || comboBoxFabricante.getSelectedIndex() == 0
 						|| txtModelo.getText().equals("") || txtServiceTag.getText().equals("")
-						|| txtDdmmyyyy.getText().equals("") || txtCpu.getText().equals("")
+						|| txtDdmmyyyy.getText().equals("dd-mm-yyyy") || txtCpu.getText().equals("")
 						|| comboBoxStorage.getSelectedIndex() == 0 || ((int) spinner_memoria.getValue()) == 0
 						|| txtNomeDoTecnico.getText().equals("")) {
 
