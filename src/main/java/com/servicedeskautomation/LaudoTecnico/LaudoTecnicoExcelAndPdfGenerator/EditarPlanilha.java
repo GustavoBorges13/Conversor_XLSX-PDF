@@ -74,7 +74,7 @@ public class EditarPlanilha extends JFrame {
 
 	@SuppressWarnings({ "unchecked" })
 	public EditarPlanilha() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 465, 632);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -437,8 +437,8 @@ public class EditarPlanilha extends JFrame {
 
 				if (flag) {
 					// Fechamento da janela
-					dispose();
-
+					hide();
+					
 					// volta a janela principal para o estado anterior
 					Principal.frame.setEnabled(true);
 					Principal.btnEditar.setEnabled(false);
