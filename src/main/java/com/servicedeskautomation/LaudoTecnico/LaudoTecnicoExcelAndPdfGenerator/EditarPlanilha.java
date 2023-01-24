@@ -437,7 +437,7 @@ public class EditarPlanilha extends JFrame {
 
 				if (flag) {
 					// Fechamento da janela
-					hide();
+				
 					
 					// volta a janela principal para o estado anterior
 					Principal.frame.setEnabled(true);
