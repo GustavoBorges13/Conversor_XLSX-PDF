@@ -5,7 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,7 +28,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -57,6 +57,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
@@ -68,9 +69,13 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import java.awt.Toolkit;
 
 public class Principal extends JFrame {
 	// Variaveis Locais
@@ -80,7 +85,8 @@ public class Principal extends JFrame {
 	private JTextField jtitulo;
 	static JTable table;
 	private static int alinhamento = SwingConstants.LEFT;
-	private File pathfile;
+	private File pathfileExcel;
+	private File pathfileWord;
 	private JButton btnPreencher;
 	private JButton btnXLS;
 	private JButton btnAddLinha;
@@ -232,7 +238,8 @@ public class Principal extends JFrame {
 	}
 
 	public Principal() {
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/resource/icon-ServiceDesk.png")));	
+		setIconImage(
+				Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/resource/icon-ServiceDesk.png")));
 		setAutoRequestFocus(false);
 		setTitle("E-ServiceDesk application");
 		setResizable(false);
@@ -399,8 +406,8 @@ public class Principal extends JFrame {
 				if (resultado == JFileChooser.CANCEL_OPTION) {
 					requestFocus();
 				} else {
-					pathfile = fc.getSelectedFile();
-					jlocal.setText(pathfile.toString().trim());
+					pathfileExcel = fc.getSelectedFile();
+					jlocal.setText(pathfileExcel.toString().trim());
 					jtitulo.setText(fc.getSelectedFile().getName());
 					btnPreencher.setEnabled(true); // Habilita o botao
 					requestFocus();
@@ -447,7 +454,7 @@ public class Principal extends JFrame {
 					int pos = 0;
 
 					// Abre o arquivo excel
-					work = new XSSFWorkbook(new FileInputStream(pathfile));
+					work = new XSSFWorkbook(new FileInputStream(pathfileExcel));
 
 					// Junta todas as planilhas deste arquivo.
 					// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
@@ -479,7 +486,7 @@ public class Principal extends JFrame {
 						int pos = 0; // valor default
 
 						// Abre o arquivo excel
-						work = new XSSFWorkbook(new FileInputStream(pathfile));
+						work = new XSSFWorkbook(new FileInputStream(pathfileExcel));
 
 						// Junta todas as planilhas deste arquivo.
 						// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
@@ -503,8 +510,9 @@ public class Principal extends JFrame {
 									laudo.add(row.getCell(0).getStringCellValue());
 								else if (row.getCell(0).getCellType() == CellType.NUMERIC)
 									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
-								else laudo.add("");
-								
+								else
+									laudo.add("");
+
 								nomeSolicitante.add(row.getCell(1).getStringCellValue());
 								usuario.add(row.getCell(2).getStringCellValue());
 								centroCusto.add(row.getCell(3).getStringCellValue());
@@ -664,12 +672,16 @@ public class Principal extends JFrame {
 							if (selectedRow != -1 && table.getValueAt(selectedRow, 0) == "") {
 								btnRemover.doClick();
 							}
+							
 							Principal.this.setEnabled(true);
+							
+							//Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
 							btnRemover.setEnabled(false);
 							table.clearSelection();
 							contentPane.requestFocus();
-
+							btnGerarArquivoPdf.setEnabled(false);
+							
 						}
 
 						@Override
@@ -930,7 +942,8 @@ public class Principal extends JFrame {
 					// Habilita botoes
 					btnEditar.setEnabled(true);
 					btnRemover.setEnabled(true);
-
+					btnGerarArquivoPdf.setEnabled(true);
+					
 					// Limpeza de selecao
 					// table.clearSelection();
 					// table.requestDefaultFocus();
@@ -1017,7 +1030,7 @@ public class Principal extends JFrame {
 					try {
 						// Abra o arquivo xlsx existente
 						int g = 1;
-						work = new XSSFWorkbook(new FileInputStream(pathfile));
+						work = new XSSFWorkbook(new FileInputStream(pathfileExcel));
 
 						// Junta todas as planilhas deste arquivo.
 						// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
@@ -1052,7 +1065,7 @@ public class Principal extends JFrame {
 						escreverPlanilha(work, cell, sheet, textStyle);
 
 						// Salvar alterações na planilha!
-						work.write(new FileOutputStream(pathfile));
+						work.write(new FileOutputStream(pathfileExcel));
 
 						// Adicionando mais linhas se estiver perto da linha de aviso (AMARELO)
 						int limitador = 3;
@@ -1064,14 +1077,15 @@ public class Principal extends JFrame {
 
 						try {
 							// Salvar alterações na planilha!
-							work.write(new FileOutputStream(pathfile));
+							work.write(new FileOutputStream(pathfileExcel));
 							work.close(); // Fecha a planilha
 							JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
 
 							// Desabilita botoes
 							btnSalvarAlteracoes.setEnabled(false);
 							btnEditar.setEnabled(false);
-
+							btnGerarArquivoPdf.setEnabled(false);
+							
 						} catch (FileNotFoundException e) {
 							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
 						}
@@ -1089,6 +1103,57 @@ public class Principal extends JFrame {
 
 		// BUTTON GENERATE PDF FILE
 		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
+		btnGerarArquivoPdf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				pathfileWord = new File("Data");;
+				pathfileWord.mkdirs();
+				File[] listOfFiles = pathfileWord.listFiles();
+				File file = null;
+				int numberOfFiles = listOfFiles.length;
+				
+				//AUTO GENERATED FILES 
+				//Cria um especime de backup na pasta data para salvar os arquivos docx
+				if(numberOfFiles>=0) {
+					file = new File(pathfileWord, "ModeloLaudo-AutoGenerated-"+numberOfFiles+".docx");
+				}
+				
+				XWPFDocument document = new XWPFDocument();
+				FileOutputStream out;
+
+				try {
+
+					CTSectPr sectPr = document.getDocument().getBody().addNewSectPr();
+					CTPageSz pageSz = sectPr.addNewPgSz();
+					CTPageMar pageMar = sectPr.addNewPgMar();
+
+					//SETANDO MARGENS DO DOCUMENTO
+					//mm para polegadas -> multiplicar o valor em mm por 0,0393701
+					//cm para polegadas -> multiplicar o valor em cm por 0,393701
+					//polegadas para Twips -> multiplicar o valor polegadas por 1440 twips/polegadas
+					//1 polegada = 1440 Twips.
+					pageSz.setOrient(STPageOrientation.PORTRAIT);
+					pageSz.setW(BigInteger.valueOf(11900));  // 210mm = 8,267716535433071inch = 11904 twips
+					pageSz.setH(BigInteger.valueOf(16840));  // 297mm = 11,692913385826772inch = 16680 twips
+
+					pageMar.setTop(BigInteger.valueOf(1417)); // 2,5mm
+					pageMar.setRight(BigInteger.valueOf(1700)); // 3mm
+					pageMar.setBottom(BigInteger.valueOf(1417)); // 2,5mm
+					pageMar.setLeft(BigInteger.valueOf(1700)); // 3mm
+					
+					
+					out = new FileOutputStream(file);
+					document.write(out);
+					out.close();
+					document.close();
+					JOptionPane.showMessageDialog(Principal.this, "Documento gerado com sucesso!");
+
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		btnGerarArquivoPdf.setEnabled(false);
 		btnGerarArquivoPdf.setBounds(532, 485, 164, 23);
 		contentPane.add(btnGerarArquivoPdf);
@@ -1116,6 +1181,7 @@ public class Principal extends JFrame {
 					btnEditar.setEnabled(false);
 					btnRemover.setEnabled(false);
 					btnSalvarAlteracoes.setEnabled(true);
+					btnGerarArquivoPdf.setEnabled(false);
 				}
 			}
 		});
@@ -1353,7 +1419,7 @@ public class Principal extends JFrame {
 				j++;
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException e) {
-			System.out.println("Escrevendo na planilha Exception -> NumberFormat or IndexOutOfBounds"+e);
+			System.out.println("Escrevendo na planilha Exception -> NumberFormat or IndexOutOfBounds" + e);
 		}
 	}
 

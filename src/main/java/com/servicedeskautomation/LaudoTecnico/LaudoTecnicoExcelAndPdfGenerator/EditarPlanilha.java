@@ -377,7 +377,7 @@ public class EditarPlanilha extends JFrame {
 						|| comboBoxStorage.getSelectedIndex() == 0 || ((int) spinner_memoria.getValue()) == 0
 						|| txtNomeDoTecnico.getText().equals("")) {
 
-					JOptionPane.showMessageDialog(null,
+					JOptionPane.showMessageDialog(EditarPlanilha.this,
 							"Existem alguns campos obrigatórios (*) em brancos ou você\nnão selecionou nem um item das caixas de seleções.\nPor favor preencha os campos.",
 							"Erro ao salvar...", JOptionPane.INFORMATION_MESSAGE);
 					flag = false;
