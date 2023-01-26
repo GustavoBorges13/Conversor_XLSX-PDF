@@ -22,11 +22,14 @@ import javax.swing.JSpinner;
 import javax.swing.JButton;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
+import java.awt.event.KeyAdapter;
 
 @SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JFrame {
@@ -58,6 +61,8 @@ public class EditarPlanilha extends JFrame {
 	private JLabel lblStatus;
 	static Component c; // contro
 	static JComboBox comboBoxDispositivo;
+	private int linhaSelecionada;
+	private JButton btnSave;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -109,30 +114,85 @@ public class EditarPlanilha extends JFrame {
 		panel.setLayout(null);
 
 		txtLaudo = new JTextField();
+		txtLaudo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtLaudo.setForeground(Color.BLACK);
 		txtLaudo.setBounds(15, 37, 99, 29);
 		panel.add(txtLaudo);
 		txtLaudo.setColumns(10);
 
 		txtNomeSolicitante = new JTextField();
+		txtNomeSolicitante.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtNomeSolicitante.setForeground(Color.BLACK);
 		txtNomeSolicitante.setColumns(10);
 		txtNomeSolicitante.setBounds(124, 37, 288, 29);
 		panel.add(txtNomeSolicitante);
 
 		txtUsuario = new JTextField();
+		txtUsuario.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtUsuario.setForeground(Color.BLACK);
 		txtUsuario.setColumns(10);
 		txtUsuario.setBounds(15, 90, 98, 29);
 		panel.add(txtUsuario);
 
 		txtCentroDeCusto = new JTextField();
+		txtCentroDeCusto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtCentroDeCusto.setForeground(Color.BLACK);
 		txtCentroDeCusto.setColumns(10);
 		txtCentroDeCusto.setBounds(123, 90, 289, 29);
 		panel.add(txtCentroDeCusto);
 
 		txtItem = new JTextField();
+		txtItem.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtItem.setForeground(Color.BLACK);
 		txtItem.setColumns(10);
 		txtItem.setBounds(15, 144, 296, 29);
@@ -174,12 +234,34 @@ public class EditarPlanilha extends JFrame {
 		panel.add(lblQTD);
 
 		txtAtivo = new JTextField();
+		txtAtivo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtAtivo.setForeground(Color.BLACK);
 		txtAtivo.setColumns(10);
 		txtAtivo.setBounds(15, 198, 99, 29);
 		panel.add(txtAtivo);
 
 		txtHostname = new JTextField();
+		txtHostname.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtHostname.setForeground(Color.BLACK);
 		txtHostname.setColumns(10);
 		txtHostname.setBounds(220, 198, 91, 29);
@@ -220,19 +302,52 @@ public class EditarPlanilha extends JFrame {
 		panel.add(lblFabricante);
 
 		txtModelo = new JTextField();
+		txtModelo.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtModelo.setForeground(Color.BLACK);
 		txtModelo.setColumns(10);
 		txtModelo.setBounds(15, 258, 152, 29);
 		panel.add(txtModelo);
 
 		txtServiceTag = new JTextField();
+		txtServiceTag.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtServiceTag.setForeground(Color.BLACK);
 		txtServiceTag.setColumns(10);
 		txtServiceTag.setBounds(177, 258, 129, 29);
 		panel.add(txtServiceTag);
 
 		txtDdmmyyyy = new JTextField();
-		txtDdmmyyyy.setForeground(new Color(255,114,118));
+		txtDdmmyyyy.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
+		txtDdmmyyyy.setForeground(new Color(255, 114, 118));
 		txtDdmmyyyy.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
@@ -247,7 +362,7 @@ public class EditarPlanilha extends JFrame {
 			@Override
 			public void focusLost(FocusEvent e) {
 				if (txtDdmmyyyy.getText().equals("")) {
-					txtDdmmyyyy.setForeground(new Color(255,114,118));
+					txtDdmmyyyy.setForeground(new Color(255, 114, 118));
 					txtDdmmyyyy.setText("dd-mm-yyyy");
 				}
 
@@ -264,6 +379,17 @@ public class EditarPlanilha extends JFrame {
 		panel.add(lblDataAquisicao);
 
 		txtCpu = new JTextField();
+		txtCpu.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtCpu.setForeground(Color.BLACK);
 		txtCpu.setColumns(10);
 		txtCpu.setBounds(15, 309, 397, 29);
@@ -280,6 +406,17 @@ public class EditarPlanilha extends JFrame {
 		panel.add(lblMemoria);
 
 		spinner_memoria = new JSpinner();
+		spinner_memoria.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		spinner_memoria
 				.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
 		c = spinner_memoria.getEditor().getComponent(0);
@@ -326,23 +463,56 @@ public class EditarPlanilha extends JFrame {
 				"500 HD", "750 HD", "1000 HD", "120 SSD", "240 SSD", "256 SSD-NVMe" }));
 		comboBoxStorage.setBounds(15, 362, 132, 29);
 		panel.add(comboBoxStorage);
-		
+
 		spinner_memoria.setBounds(157, 362, 99, 29);
 		panel.add(spinner_memoria);
 
 		txtNomeDoTecnico = new JTextField();
+		txtNomeDoTecnico.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtNomeDoTecnico.setForeground(Color.BLACK);
 		txtNomeDoTecnico.setColumns(10);
 		txtNomeDoTecnico.setBounds(15, 415, 397, 29);
 		panel.add(txtNomeDoTecnico);
 
 		txtObservao = new JTextField();
+		txtObservao.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtObservao.setForeground(Color.BLACK);
 		txtObservao.setColumns(10);
 		txtObservao.setBounds(15, 466, 190, 29);
 		panel.add(txtObservao);
 
 		txtStatus = new JTextField();
+		txtStatus.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}	
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}	
+			}
+		});
 		txtStatus.setForeground(Color.BLACK);
 		txtStatus.setColumns(10);
 		txtStatus.setBounds(220, 466, 192, 29);
@@ -360,32 +530,59 @@ public class EditarPlanilha extends JFrame {
 		lblStatus.setBounds(220, 442, 83, 29);
 		panel.add(lblStatus);
 
-		JButton btnSave = new JButton("Salvar");
+		btnSave = new JButton("Salvar");
 		btnSave.addActionListener(new ActionListener() {
+			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
-				int linhaSelecionada = Principal.table.getSelectedRow();
+				linhaSelecionada = Principal.table.getSelectedRow();
 				boolean flag = false;
-
+				String sLaudo = txtLaudo.getText();
+				// String sQtd = comboBoxQuantidade.getSelectedIndex()+"";
+				String Memoria = spinner_memoria.getValue().toString();
+				String dateString = txtDdmmyyyy.getText();
+				
 				// Manipulando os arraylist (dadabase)
 				if (txtLaudo.getText().equals("") || txtNomeSolicitante.getText().equals("")
 						|| txtUsuario.getText().equals("") || txtCentroDeCusto.getText().equals("")
 						|| txtItem.getText().equals("") || comboBoxQuantidade.getSelectedIndex() == 0
-						|| txtAtivo.getText().equals("") ||  comboBoxDispositivo.getSelectedIndex() == 0
+						|| txtAtivo.getText().equals("") || comboBoxDispositivo.getSelectedIndex() == 0
 						|| txtHostname.getText().equals("") || comboBoxFabricante.getSelectedIndex() == 0
 						|| txtModelo.getText().equals("") || txtServiceTag.getText().equals("")
-						|| txtDdmmyyyy.getText().equals("dd-mm-yyyy") || txtCpu.getText().equals("")
+						|| txtDdmmyyyy.getText().equals("dd/mm/yyyy") || txtCpu.getText().equals("")
 						|| comboBoxStorage.getSelectedIndex() == 0 || ((int) spinner_memoria.getValue()) == 0
 						|| txtNomeDoTecnico.getText().equals("")) {
 
 					JOptionPane.showMessageDialog(EditarPlanilha.this,
 							"Existem alguns campos obrigatórios (*) em brancos ou você\nnão selecionou nem um item das caixas de seleções.\nPor favor preencha os campos.",
 							"Erro ao salvar...", JOptionPane.INFORMATION_MESSAGE);
-					flag = false;
+					return;
+				} else if (sLaudo.matches("[a-zA-Z]+")) { // Verificar se é uma string
+					JOptionPane.showMessageDialog(EditarPlanilha.this,
+							"O campo de numero do laudo contem letras, por favor digite apenas numeros.",
+							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				} else if (!sLaudo.matches("[0-9]{6}")) { // Verificar se tem 6 digitos
+					JOptionPane.showMessageDialog(EditarPlanilha.this,
+							"O campo de numero do laudo contem menos de 6 digitos, por favor digite 6 digitos!",
+							"Erro length", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				} else if (Memoria.matches("[a-zA-Z]+")) { // Verificar se é uma string
+					JOptionPane.showMessageDialog(EditarPlanilha.this,
+							"O campo de memoria contem letras, por favor digite apenas numeros.",
+							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
+					return;
+				}else if (!dateString.matches("\\d{2}/\\d{2}/\\d{4}")) { // -> dd/MM/yyyy
+					JOptionPane.showMessageDialog(EditarPlanilha.this,
+							"O campo de data não está no formato solicitado (dd/MM/yyyy), por favor reescreva.",
+							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
+					return;
+					
 				} else {
+							
 					Principal.btnSalvarAlteracoes.setEnabled(true);
 					flag = true;
 					for (int coluna = 0; coluna <= Principal.laudo.size(); coluna++) {
-					
+
 						// Manipulando os arraylist (dadabase)
 						Principal.laudo.set(linhaSelecionada, txtLaudo.getText());
 						Principal.nomeSolicitante.set(linhaSelecionada, txtNomeSolicitante.getText());
@@ -406,7 +603,6 @@ public class EditarPlanilha extends JFrame {
 						Principal.tecnico.set(linhaSelecionada, txtNomeDoTecnico.getText());
 						Principal.observacao.set(linhaSelecionada, txtObservao.getText());
 						Principal.status.set(linhaSelecionada, txtStatus.getText());
-						
 
 						// Modificando os valores da tabela de forma temporaria (sem salvar na planilha
 						// apenas visual)
@@ -418,7 +614,8 @@ public class EditarPlanilha extends JFrame {
 						Principal.table.setValueAt(comboBoxFabricante.getSelectedItem().toString(), linhaSelecionada,
 								coluna); // BUG
 						Principal.table.setValueAt(txtAtivo.getText(), linhaSelecionada, coluna);
-						Principal.table.setValueAt(comboBoxDispositivo.getSelectedItem().toString(), linhaSelecionada, coluna);
+						Principal.table.setValueAt(comboBoxDispositivo.getSelectedItem().toString(), linhaSelecionada,
+								coluna);
 						Principal.table.setValueAt(txtHostname.getText(), linhaSelecionada, coluna);
 						Principal.table.setValueAt(comboBoxFabricante.getSelectedItem().toString(), linhaSelecionada,
 								coluna); // BUG
@@ -437,8 +634,8 @@ public class EditarPlanilha extends JFrame {
 
 				if (flag) {
 					// Fechamento da janela
-				
-					
+					hide();
+
 					// volta a janela principal para o estado anterior
 					Principal.frame.setEnabled(true);
 					Principal.btnEditar.setEnabled(false);
@@ -516,9 +713,10 @@ public class EditarPlanilha extends JFrame {
 		lblNomeDoTcnico.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		lblNomeDoTcnico.setBounds(15, 391, 237, 29);
 		panel.add(lblNomeDoTcnico);
-		
+
 		comboBoxDispositivo = new JComboBox();
 		comboBoxDispositivo.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent arg0) {
 				requestFocus();
 			}
@@ -541,11 +739,36 @@ public class EditarPlanilha extends JFrame {
 				}
 			}
 		});
-		comboBoxDispositivo.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "Desktop", "Notebook"}));
+		comboBoxDispositivo.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "Desktop", "Notebook" }));
 		comboBoxDispositivo.setMaximumRowCount(3);
 		comboBoxDispositivo.setForeground(Color.RED);
 		comboBoxDispositivo.setBounds(121, 198, 94, 29);
 		panel.add(comboBoxDispositivo);
 		requestFocus();
+		
+		addKeyListener(new KeyHandler() {
+			  public void keyPressed(KeyEvent e) {
+					if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+						dispose();
+					}	
+					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+						btnSave.doClick();
+					}	
+			    }
+		});
+	}
+
+	private class KeyHandler implements KeyListener {
+		public void keyPressed(KeyEvent e) {
+			// código para executar quando uma tecla é pressionada
+		}
+
+		public void keyReleased(KeyEvent e) {
+			// código para executar quando uma tecla é liberada
+		}
+
+		public void keyTyped(KeyEvent e) {
+			// código para executar quando uma tecla é digitada
+		}
 	}
 }

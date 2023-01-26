@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -57,10 +56,10 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
@@ -74,7 +73,6 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class Principal extends JFrame {
@@ -95,6 +93,7 @@ public class Principal extends JFrame {
 	private JButton btnGerarArquivoPdf;
 	static JButton btnEditar;
 	private JTextPane txtpnAplicaoDesenvolvidaPara;;
+	public int KEYCODE_ESC = 27;
 
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
@@ -500,9 +499,7 @@ public class Principal extends JFrame {
 									|| ((row = sheet.getRow(i)) != null
 											&& row.getCell(1).getCellType() != CellType.BLANK)
 									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(2).getCellType() != CellType.BLANK)
-									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(3).getCellType() != CellType.BLANK)) {
+											&& row.getCell(2).getCellType() != CellType.BLANK)) {
 								storageSpliter = null; // limpa o vetor auxiliar
 
 								// Criando o DataBase Local (Armazenando os valores em Arraylists)
@@ -527,10 +524,37 @@ public class Principal extends JFrame {
 								fabricante.add(row.getCell(9).getStringCellValue());
 								modelo.add(row.getCell(10).getStringCellValue());
 								serviceTag.add(row.getCell(11).getStringCellValue());
-								String dateString = null;
-								dateString = row.getCell(12).getStringCellValue();
-								if (dateString != null && !dateString.isEmpty()) {
+
+								try {
+									if (row.getCell(12).getCellType() == CellType.NUMERIC) {
+										String dateString = row.getCell(12).getNumericCellValue() + "";
+										try {
+											SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+											Date date = sdf.parse(dateString);
+											SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+											String formattedDate = sdf2.format(date);
+											dataAquisicao.add(formattedDate);
+											// JOptionPane.showMessageDialog(null, "DateString -> " + dateString +
+											// "\nDate
+											// -> "
+											// + date + "\nFormatted Date -> " + formattedDate);
+										} catch (ParseException e1) {
+											System.out.println("Debug date Formatacao-> " + e1);
+										}
+									} else if (DateUtil.isCellDateFormatted(row.getCell(12))) {
+										Date date = row.getCell(12).getDateCellValue();
+										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+										String formattedDate = sdf2.format(date);
+										dataAquisicao.add(formattedDate);
+										// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
+										// Date -> " + formattedDate);
+									}
+								} catch (IllegalStateException e2) {
+									System.out.println("Debug Date Type -> " + e2);
+								} finally {
 									if (row.getCell(12).getCellType() == CellType.STRING) {
+										String dateString = row.getCell(12).getStringCellValue();
 										try {
 											SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -545,16 +569,8 @@ public class Principal extends JFrame {
 										} catch (ParseException e2) {
 											System.out.println("Debug date -> " + e2);
 										}
-									} else {
-										Date date = row.getCell(12).getDateCellValue();
-										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-										String formattedDate = sdf2.format(date);
-										dataAquisicao.add(formattedDate);
-										// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
-										// Date -> " + formattedDate);
 									}
 								}
-
 								cpu.add(row.getCell(13).getStringCellValue());
 								if ((row.getCell(14).getStringCellValue()) != null
 										&& !(row.getCell(14).getStringCellValue()).isEmpty()) {
@@ -672,20 +688,36 @@ public class Principal extends JFrame {
 							if (selectedRow != -1 && table.getValueAt(selectedRow, 0) == "") {
 								btnRemover.doClick();
 							}
-							
+
 							Principal.this.setEnabled(true);
-							
-							//Habilita/desabilita botoes
+
+							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
 							btnRemover.setEnabled(false);
 							table.clearSelection();
 							contentPane.requestFocus();
 							btnGerarArquivoPdf.setEnabled(false);
-							
+
+							// frame.setVisible(false);
 						}
 
 						@Override
 						public void windowClosed(WindowEvent e) {
+							int selectedRow = table.getSelectedRow();
+							if (selectedRow != -1 && table.getValueAt(selectedRow, 0) == "") {
+								btnRemover.doClick();
+							}
+
+							Principal.this.setEnabled(true);
+
+							// Habilita/desabilita botoes
+							btnEditar.setEnabled(false);
+							btnRemover.setEnabled(false);
+							table.clearSelection();
+							contentPane.requestFocus();
+							btnGerarArquivoPdf.setEnabled(false);
+
+							// frame.setVisible(false);
 
 						}
 
@@ -943,7 +975,7 @@ public class Principal extends JFrame {
 					btnEditar.setEnabled(true);
 					btnRemover.setEnabled(true);
 					btnGerarArquivoPdf.setEnabled(true);
-					
+
 					// Limpeza de selecao
 					// table.clearSelection();
 					// table.requestDefaultFocus();
@@ -1085,7 +1117,7 @@ public class Principal extends JFrame {
 							btnSalvarAlteracoes.setEnabled(false);
 							btnEditar.setEnabled(false);
 							btnGerarArquivoPdf.setEnabled(false);
-							
+
 						} catch (FileNotFoundException e) {
 							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
 						}
@@ -1105,18 +1137,19 @@ public class Principal extends JFrame {
 		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
 		btnGerarArquivoPdf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				pathfileWord = new File("Data");;
+				pathfileWord = new File("Data");
+				;
 				pathfileWord.mkdirs();
 				File[] listOfFiles = pathfileWord.listFiles();
 				File file = null;
 				int numberOfFiles = listOfFiles.length;
-				
-				//AUTO GENERATED FILES 
-				//Cria um especime de backup na pasta data para salvar os arquivos docx
-				if(numberOfFiles>=0) {
-					file = new File(pathfileWord, "ModeloLaudo-AutoGenerated-"+numberOfFiles+".docx");
+
+				// AUTO GENERATED FILES
+				// Cria um especime de backup na pasta data para salvar os arquivos docx
+				if (numberOfFiles >= 0) {
+					file = new File(pathfileWord, "ModeloLaudo-AutoGenerated-" + numberOfFiles + ".docx");
 				}
-				
+
 				XWPFDocument document = new XWPFDocument();
 				FileOutputStream out;
 
@@ -1126,21 +1159,21 @@ public class Principal extends JFrame {
 					CTPageSz pageSz = sectPr.addNewPgSz();
 					CTPageMar pageMar = sectPr.addNewPgMar();
 
-					//SETANDO MARGENS DO DOCUMENTO
-					//mm para polegadas -> multiplicar o valor em mm por 0,0393701
-					//cm para polegadas -> multiplicar o valor em cm por 0,393701
-					//polegadas para Twips -> multiplicar o valor polegadas por 1440 twips/polegadas
-					//1 polegada = 1440 Twips.
+					// SETANDO MARGENS DO DOCUMENTO
+					// mm para polegadas -> multiplicar o valor em mm por 0,0393701
+					// cm para polegadas -> multiplicar o valor em cm por 0,393701
+					// polegadas para Twips -> multiplicar o valor polegadas por 1440
+					// twips/polegadas
+					// 1 polegada = 1440 Twips.
 					pageSz.setOrient(STPageOrientation.PORTRAIT);
-					pageSz.setW(BigInteger.valueOf(11900));  // 210mm = 8,267716535433071inch = 11904 twips
-					pageSz.setH(BigInteger.valueOf(16840));  // 297mm = 11,692913385826772inch = 16680 twips
+					pageSz.setW(BigInteger.valueOf(11900)); // 210mm = 8,267716535433071inch = 11904 twips
+					pageSz.setH(BigInteger.valueOf(16840)); // 297mm = 11,692913385826772inch = 16680 twips
 
 					pageMar.setTop(BigInteger.valueOf(1417)); // 2,5mm
 					pageMar.setRight(BigInteger.valueOf(1700)); // 3mm
 					pageMar.setBottom(BigInteger.valueOf(1417)); // 2,5mm
 					pageMar.setLeft(BigInteger.valueOf(1700)); // 3mm
-					
-					
+
 					out = new FileOutputStream(file);
 					document.write(out);
 					out.close();
