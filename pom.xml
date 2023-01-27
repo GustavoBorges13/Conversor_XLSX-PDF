@@ -31,6 +31,12 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>4.1.2</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+		<!-- Thanks for using https://jar-download.com -->
 		<!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
 		<dependency>
 			<groupId>com.toedter</groupId>
