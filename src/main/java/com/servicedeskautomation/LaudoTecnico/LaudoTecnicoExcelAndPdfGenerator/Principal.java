@@ -777,7 +777,6 @@ public class Principal extends JFrame {
 								break;
 							}
 							EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
-							
 						} else {
 							EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
 							EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
@@ -994,6 +993,17 @@ public class Principal extends JFrame {
 							isAlreadyOneClick = false;
 						}
 					}, 300);
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				int linhaSelecionada = table.getSelectedRow();
+				if(table.isRowSelected(linhaSelecionada)) {
+					// Habilita botoes
+					btnEditar.setEnabled(true);
+					btnRemover.setEnabled(true);
+					btnGerarArquivoPdf.setEnabled(true);
 				}
 			}
 		});
