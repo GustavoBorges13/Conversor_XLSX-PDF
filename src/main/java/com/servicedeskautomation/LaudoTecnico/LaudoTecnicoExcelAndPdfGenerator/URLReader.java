@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 public class URLReader {
-
-	public static void copyURLToFile(URL url, File file) {
-
+	public void copyURLToFile(URL url, File file) {
 		try {
 			InputStream input = url.openStream();
 			if (file.exists()) {
@@ -35,24 +35,10 @@ public class URLReader {
 
 			input.close();
 			output.close();
-
-			System.out.println("Arquivo '" + file + "' baixado com sucesso!");
 		} catch (IOException ioEx) {
-			ioEx.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Não foi possível encontrar os arquivos necessários para o download."
+					+ " Favor entrar em contato com o administrador do programa.\n" + ioEx);
+			System.exit(0);
 		}
 	}
-
-	public static void main(String[] args) throws IOException {
-
-		// URL que aponta para o arquivo a ser baixado
-		String sUrl = "http://localhost:8080/TestFile/file.zip";
-
-		URL url = new URL(sUrl);
-
-		// Local onde será baixado
-		File file = new File(Principal.pathfileWord,"/Modelo/modelo laudo.docx");
-
-		URLReader.copyURLToFile(url, file);
-	}
-
 }
