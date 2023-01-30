@@ -236,7 +236,7 @@ public class Principal extends JFrame {
 
 	public Principal() {
 		setIconImage(
-				Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/resource/icon-ServiceDesk.png")));
+				Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/resources/icon-ServiceDesk.png")));
 		setAutoRequestFocus(false);
 		setTitle("E-ServiceDesk application");
 		setResizable(false);

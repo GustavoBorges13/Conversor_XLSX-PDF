@@ -27,7 +27,7 @@ public class SplashAnimation extends JFrame {
 	private JPanel contentPane;
 	private JProgressBar jProgressBarTelaSplash;
 	private JLabel jLabelMostraProgresso;
-	private Image img_logo = new ImageIcon(SplashAnimation.class.getResource("/resource/Logo_HPE_menor.png")).getImage()
+	private Image img_logo = new ImageIcon(SplashAnimation.class.getResource("/resources/Logo_HPE_menor.png")).getImage()
 			.getScaledInstance(292, 73, Image.SCALE_SMOOTH);
 
 	public SplashAnimation() {
@@ -86,9 +86,9 @@ public class SplashAnimation extends JFrame {
 				boolean flagNecessarioAtualizar = false;
 				boolean flagDownloading = false;
 				boolean flagLoading = false;
-				String userHome = System.getProperty("user.home");
+				//String userHome = System.getProperty("user.home");
 				String fileName = "modelo laudo.docx";
-				String pathRestante = "/Documents/ConversorXLSX-PDF/data";
+				String pathRestante = "data";
 				
 				for (int i = 0; i < 101; i++) {
 					try {
@@ -98,7 +98,7 @@ public class SplashAnimation extends JFrame {
 						// 40%
 						if (jProgressBarTelaSplash.getValue() <= 20) {
 							jLabelMostraProgresso.setText("Verificando arquivos de integridade...");
-							File pathExists = new File(userHome + "/" + pathRestante + "/" + fileName);
+							File pathExists = new File(pathRestante+"/"+fileName);
 							if(pathExists.exists()) {
 								flagLoading=true;
 							}else {
@@ -128,6 +128,7 @@ public class SplashAnimation extends JFrame {
 							jLabelMostraProgresso.setText("Conectando com o sistema...");
 							Principal tela = new Principal();
 							tela.setVisible(true);
+							tela.requestFocus();
 							SplashAnimation.this.dispose();
 						}
 					} catch (Exception e) {
@@ -141,9 +142,9 @@ public class SplashAnimation extends JFrame {
 
 	public void downloadFile() {
 		URLReader baixarArquivo = new URLReader();
-		String userHome = System.getProperty("user.home");
+		//String userHome = System.getProperty("user.home");
 		String fileName = "modelo laudo.docx";
-		String pathRestante = "/Documents/ConversorXLSX-PDF/data";
+		String pathRestante = "data";
 
 		// URL que aponta para o arquivo a ser baixado
 		String sUrl = "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx";
@@ -159,7 +160,7 @@ public class SplashAnimation extends JFrame {
 		}
 
 		// Local onde será baixado
-		File folder = new File(userHome + pathRestante);
+		File folder = new File(pathRestante);
 		folder.mkdirs();
 		File file = new File(folder, fileName);
 		baixarArquivo.copyURLToFile(url, file);
