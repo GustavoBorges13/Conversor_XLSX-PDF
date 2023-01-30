@@ -19,7 +19,6 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class SplashAnimation extends JFrame {
@@ -86,7 +85,7 @@ public class SplashAnimation extends JFrame {
 				boolean flagNecessarioAtualizar = false;
 				boolean flagDownloading = false;
 				boolean flagLoading = false;
-				//String userHome = System.getProperty("user.home");
+				String userHome = System.getProperty("user.home");
 				String fileName = "modelo laudo.docx";
 				String pathRestante = "data";
 				
@@ -98,7 +97,7 @@ public class SplashAnimation extends JFrame {
 						// 40%
 						if (jProgressBarTelaSplash.getValue() <= 20) {
 							jLabelMostraProgresso.setText("Verificando arquivos de integridade...");
-							File pathExists = new File(pathRestante+"/"+fileName);
+							File pathExists = new File(userHome+"/"+pathRestante+"/"+fileName);
 							if(pathExists.exists()) {
 								flagLoading=true;
 							}else {
@@ -122,7 +121,6 @@ public class SplashAnimation extends JFrame {
 							// 70%
 						} else if (jProgressBarTelaSplash.getValue() <= 80) {
 							jLabelMostraProgresso.setText("Carregando banco de dados...");
-
 							// 100%
 						} else if (jProgressBarTelaSplash.getValue() == 100) {
 							jLabelMostraProgresso.setText("Conectando com o sistema...");
@@ -142,9 +140,9 @@ public class SplashAnimation extends JFrame {
 
 	public void downloadFile() {
 		URLReader baixarArquivo = new URLReader();
-		//String userHome = System.getProperty("user.home");
+		String userHome = System.getProperty("user.home");
 		String fileName = "modelo laudo.docx";
-		String pathRestante = "data";
+		String pathRestante = "/Documents/ConversorXLSX-PDF/data";
 
 		// URL que aponta para o arquivo a ser baixado
 		String sUrl = "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx";
@@ -160,7 +158,7 @@ public class SplashAnimation extends JFrame {
 		}
 
 		// Local onde será baixado
-		File folder = new File(pathRestante);
+		File folder = new File(userHome + pathRestante);
 		folder.mkdirs();
 		File file = new File(folder, fileName);
 		baixarArquivo.copyURLToFile(url, file);
