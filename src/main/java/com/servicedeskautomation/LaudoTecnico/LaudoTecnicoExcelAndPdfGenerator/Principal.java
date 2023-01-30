@@ -20,14 +20,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -57,37 +55,21 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
-import org.apache.poi.wp.usermodel.HeaderFooterType;
 //XSSF = (XML SpreadSheet Format) – Used to reading and writting Open Office XML (XLSX) format files.   
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFHeader;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageMar;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPageSz;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTSectPr;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTbl;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblGridCol;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STPageOrientation;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.awt.event.KeyEvent;
+import java.awt.event.InputEvent;
 
 public class Principal extends JFrame {
 	// Variaveis Locais
@@ -267,9 +249,9 @@ public class Principal extends JFrame {
 		mnNewMenu.setMnemonic('A');
 		menuBar.add(mnNewMenu);
 
-		JMenuItem mntmNewMenuItem = new JMenuItem("Creditos...");
-		mntmNewMenuItem.setMnemonic('C');
-		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke('C', java.awt.Event.CTRL_MASK));
+		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre...");
+		mntmNewMenuItem.setMnemonic('S');
+		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				internalFrame.setFocusable(true);
@@ -280,16 +262,16 @@ public class Principal extends JFrame {
 			}
 		});
 
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Sobre...");
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Creditos...");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, new MessageWithLink(
 						"Conversor XLSX-PDF<br/>Versão XXX <br/><br/>Gustavo Borges<br/><a href=\"https://github.com/GustavoBorges13\">https://github.com/GustavoBorges13</a>"),
-						"About...", JOptionPane.INFORMATION_MESSAGE);
+						"Informações adicionais", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		mntmNewMenuItem_1.setMnemonic('S');
-		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke('S', java.awt.Event.CTRL_MASK));
+		mntmNewMenuItem_1.setMnemonic('C');
+		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
 
@@ -350,7 +332,7 @@ public class Principal extends JFrame {
 		internalFrame.setClosable(true);
 		internalFrame.setVisible(false);
 
-		JLabel lblNewLabel = new JLabel("Creditos");
+		JLabel lblNewLabel = new JLabel("E-ServiceDesk Applications - About");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(10, 11, 628, 19);
@@ -417,13 +399,22 @@ public class Principal extends JFrame {
 				int resultado = fc.showOpenDialog(null);
 
 				if (resultado == JFileChooser.CANCEL_OPTION) {
+					// Limpa selecoes
+					table.clearSelection();
 					requestFocus();
 				} else {
 					pathfileExcel = fc.getSelectedFile();
 					jlocal.setText(pathfileExcel.toString().trim());
 					jtitulo.setText(fc.getSelectedFile().getName());
 					btnPreencher.setEnabled(true); // Habilita o botao
+					
+					// Limpa selecoes
+					table.clearSelection();
 					requestFocus();
+					
+					// Limpa tabela se estiver aberta antes
+					limpaListas();
+					table.createDefaultColumnsFromModel();
 				}
 
 				// Habilita os botoes auxiliares para controlar a planilha
@@ -434,13 +425,7 @@ public class Principal extends JFrame {
 				btnGerarArquivoPdf.setEnabled(false);
 				btnPreencher.setEnabled(true);
 
-				// Limpa selecoes
-				table.clearSelection();
-				contentPane.requestFocus();
-
-				// Limpa tabela se estiver aberta antes
-				limpaListas();
-				table.createDefaultColumnsFromModel();
+				
 			}
 		});
 		btnXLS.setBounds(583, 49, 113, 39);
@@ -539,8 +524,19 @@ public class Principal extends JFrame {
 								modelo.add(row.getCell(10).getStringCellValue());
 								serviceTag.add(row.getCell(11).getStringCellValue());
 
+								//Tratamento de exeptions
 								try {
-									if (row.getCell(12).getCellType() == CellType.NUMERIC) {
+									//Tentativa de salvar o valor da celular (DATE) na lista do tipo String
+									if (DateUtil.isCellDateFormatted(row.getCell(12))) {
+										Date date = row.getCell(12).getDateCellValue();
+										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+										String formattedDate = sdf2.format(date);
+										dataAquisicao.add(formattedDate);
+										// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
+										// Date -> " + formattedDate);
+									
+									//Caso o valor da celula não seja no formato DATE, verificar se é do tipo numero
+									} else if (row.getCell(12).getCellType() == CellType.NUMERIC) {
 										String dateString = row.getCell(12).getNumericCellValue() + "";
 										try {
 											SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -549,24 +545,16 @@ public class Principal extends JFrame {
 											SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
 											String formattedDate = sdf2.format(date);
 											dataAquisicao.add(formattedDate);
-											// JOptionPane.showMessageDialog(null, "DateString -> " + dateString +
-											// "\nDate
-											// -> "
-											// + date + "\nFormatted Date -> " + formattedDate);
 										} catch (ParseException e1) {
 											System.out.println("Debug date Formatacao-> " + e1);
 										}
-									} else if (DateUtil.isCellDateFormatted(row.getCell(12))) {
-										Date date = row.getCell(12).getDateCellValue();
-										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-										String formattedDate = sdf2.format(date);
-										dataAquisicao.add(formattedDate);
-										// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
-										// Date -> " + formattedDate);
 									}
+									
+								//Erro em caso de nâo ser reconhecido o tipo numerico
 								} catch (IllegalStateException e2) {
 									System.out.println("Debug Date Type -> " + e2);
 								} finally {
+									//Verifica se o tipo é string
 									if (row.getCell(12).getCellType() == CellType.STRING) {
 										String dateString = row.getCell(12).getStringCellValue();
 										try {
@@ -585,6 +573,7 @@ public class Principal extends JFrame {
 										}
 									}
 								}
+
 								cpu.add(row.getCell(13).getStringCellValue());
 								if ((row.getCell(14).getStringCellValue()) != null
 										&& !(row.getCell(14).getStringCellValue()).isEmpty()) {
@@ -781,9 +770,15 @@ public class Principal extends JFrame {
 					EditarPlanilha.txtHostname.setText(hostname.get(linhaSelecionada));
 
 					for (int i = 0; i <= EditarPlanilha.comboBoxFabricante.getItemCount() - 1; i++) {
-						if (!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i)))
+						if (!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i))) {
+							if(EditarPlanilha.comboBoxFabricante.getItemAt(i).toString().toUpperCase().contains(fabricante.get(linhaSelecionada).toUpperCase())) {
+								EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
+								EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
+								break;
+							}
 							EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
-						else {
+							
+						} else {
 							EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
 							EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
 							break;
@@ -1152,7 +1147,6 @@ public class Principal extends JFrame {
 		btnGerarArquivoPdf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				pathfileWord = new File("Data");
-				;
 				pathfileWord.mkdirs();
 				File[] listOfFiles = pathfileWord.listFiles();
 				File file = null;
