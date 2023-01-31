@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
-			<version>11.0</version>
+			<version>4.2</version>
 		</dependency>
 		<!-- Thanks for using https://jar-download.com -->
 		<dependency>

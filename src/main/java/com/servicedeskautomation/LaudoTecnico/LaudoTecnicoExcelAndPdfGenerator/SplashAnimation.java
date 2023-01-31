@@ -87,7 +87,7 @@ public class SplashAnimation extends JFrame {
 				boolean flagLoading = false;
 				String userHome = System.getProperty("user.home");
 				String fileName = "modelo laudo.docx";
-				String pathRestante = "data";
+				String pathRestante = "/Documents/ConversorXLSX-PDF/data";
 				
 				for (int i = 0; i < 101; i++) {
 					try {
@@ -97,7 +97,8 @@ public class SplashAnimation extends JFrame {
 						// 40%
 						if (jProgressBarTelaSplash.getValue() <= 20) {
 							jLabelMostraProgresso.setText("Verificando arquivos de integridade...");
-							File pathExists = new File(userHome+"/"+pathRestante+"/"+fileName);
+							File pathExists = new File(userHome+pathRestante+"/"+fileName);
+							
 							if(pathExists.exists()) {
 								flagLoading=true;
 							}else {

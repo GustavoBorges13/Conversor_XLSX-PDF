@@ -10,6 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -20,8 +22,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,8 +70,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
 
 public class Principal extends JFrame {
 	// Variaveis Locais
@@ -88,7 +86,7 @@ public class Principal extends JFrame {
 	private JButton btnAddLinha;
 	private JInternalFrame internalFrame;
 	static JButton btnSalvarAlteracoes;
-	private JButton btnGerarArquivoPdf;
+	static JButton btnGerarArquivoPdf;
 	static JButton btnEditar;
 	private JTextPane txtpnAplicaoDesenvolvidaPara;;
 	public int KEYCODE_ESC = 27;
@@ -210,7 +208,7 @@ public class Principal extends JFrame {
 		table.getColumnModel().getColumn(15).setPreferredWidth(90); // coluna MEMORIA
 		table.getColumnModel().getColumn(15).setResizable(true);
 		table.getColumnModel().getColumn(15).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(16).setPreferredWidth(110); // coluna TECNICO
+		table.getColumnModel().getColumn(16).setPreferredWidth(180); // coluna TECNICO
 		table.getColumnModel().getColumn(16).setResizable(true);
 		table.getColumnModel().getColumn(16).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(17).setPreferredWidth(120); // coluna OBSERVAÇÕES
@@ -227,7 +225,7 @@ public class Principal extends JFrame {
 		table.setAutoResizeMode(table.AUTO_RESIZE_OFF);
 
 		// Faz com que o usuario selecione um dado na tabela POR VEZ
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
 		// Realiza a configuracao de fontes
 		table.getTableHeader().setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 10));
@@ -665,6 +663,7 @@ public class Principal extends JFrame {
 		scrollPane.setBounds(39, 195, 657, 279);
 		contentPane.add(scrollPane);
 
+		// TABLE - TABELA
 		table = new JTable();
 		table.setAutoscrolls(false);
 		table.addMouseListener(new MouseAdapter() {
@@ -674,6 +673,7 @@ public class Principal extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
+					// int[] selectedRows = table.getSelectedRows();
 					EditarPlanilha frame = new EditarPlanilha();
 					int toleranciaHD_SSD = 0;
 					int pos = 0; // valor default
@@ -1057,8 +1057,9 @@ public class Principal extends JFrame {
 		btnEditar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int selectedRow = table.getSelectedRow();
-				if (selectedRow != -1) {
+				int[] selectedRows = table.getSelectedRows();
+				if (selectedRows.length != -1 && selectedRows.length <= 1) {
+
 					// Point p = table.getMousePosition();
 					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0,
 							1, false);
@@ -1066,6 +1067,10 @@ public class Principal extends JFrame {
 					me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1, false,
 							MouseEvent.BUTTON1);
 					table.dispatchEvent(me);
+				} else {
+					JOptionPane.showMessageDialog(null,
+							"Por favor selecione apenas uma linha por vez para editar.\nVocê tentou editar com "
+									+ selectedRows.length + " linhas selecionadas.");
 				}
 			}
 		});
@@ -1158,31 +1163,63 @@ public class Principal extends JFrame {
 		// BUTTON GENERATE PDF FILE
 		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
 		btnGerarArquivoPdf.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent arg0) {
-				URLReader baixarArquivo = new URLReader();
-
-				// URL que aponta para o arquivo a ser baixado
-				String sUrl = "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/blob/main/data/modelo%20laudo.docx";
-
-				URL url = null;
-				try {
-					url = new URL(sUrl);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null,
-							"Não foi possível encontrar os arquivos necessários para o download."
-									+ "\nFavor entrar em contato com o administrador do programa.\nException gerada: "
-									+ e);
+				boolean flagContinuacao = false;
+				int[] linhasSelecionadas = Principal.table.getSelectedRows();
+				
+				if (linhasSelecionadas.length > 1) {
+					for (int i = 0; i < linhasSelecionadas.length-1; i++) {
+						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
+							if (Principal.table.getValueAt(linhasSelecionadas[i], 6)
+									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 6))) {
+								flagContinuacao = true;
+								break;
+							}
+						}
+					}
+				} else {
+					flagContinuacao = true;
 				}
 
-				// Local onde será baixado
-				String userHome = System.getProperty("user.home");
-				File folder = new File(userHome + "/Documents/ConversorXLSX-PDF/data");
-				folder.mkdirs();
-				String fileName = "modelo laudo.docx";
-				File file = new File(folder, fileName);
-				baixarArquivo.copyURLToFile(url, file);
+				if (flagContinuacao) {
+					Principal.frame.setEnabled(false);
+					GerarLaudoPDF gerarLaudo = new GerarLaudoPDF();
+					gerarLaudo.setVisible(true);
 
+					// Evento pra verificar se a janela de edicao foi fechada
+					gerarLaudo.addWindowListener(new WindowAdapter() {
+						@Override
+						public void windowClosing(WindowEvent e) {
+							Principal.this.setEnabled(true);
+
+							// Habilita/desabilita botoes
+							btnEditar.setEnabled(false);
+							btnRemover.setEnabled(false);
+							table.clearSelection();
+							contentPane.requestFocus();
+							btnGerarArquivoPdf.setEnabled(false);
+
+							// frame.setVisible(false);
+						}
+
+						@Override
+						public void windowClosed(WindowEvent e) {
+							Principal.this.setEnabled(true);
+
+							// Habilita/desabilita botoes
+							btnEditar.setEnabled(false);
+							btnRemover.setEnabled(false);
+							table.clearSelection();
+							contentPane.requestFocus();
+							btnGerarArquivoPdf.setEnabled(false);
+							// frame.setVisible(false);
+						}
+					});
+				} else {					
+					JOptionPane.showMessageDialog(null,
+							"Por favor, verifique as linhas que você selecionou, se possuem os mesmos ativos.\nPois não é permitido fazer 1 laudo para computadores diferentes.");
+				}
 			}
 		});
 		btnGerarArquivoPdf.setEnabled(false);

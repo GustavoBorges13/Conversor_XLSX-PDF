@@ -79,6 +79,7 @@ public class EditarPlanilha extends JFrame {
 
 	@SuppressWarnings({ "unchecked" })
 	public EditarPlanilha() {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 465, 632);
 		contentPane = new JPanel();
