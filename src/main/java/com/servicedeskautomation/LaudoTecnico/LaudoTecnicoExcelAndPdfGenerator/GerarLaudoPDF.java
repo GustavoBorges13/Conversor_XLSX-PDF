@@ -183,6 +183,7 @@ public class GerarLaudoPDF extends JFrame {
 		setVisible(true);
 
 		try {
+			int[] linhasSelecionadas = Principal.table.getSelectedRows();
 			String fileName = "modelo laudo.docx";
 			File file = new File(System.getProperty("user.home") + "/Documents/ConversorXLSX-PDF/data/" + fileName);
 			FileInputStream fis;
@@ -192,15 +193,15 @@ public class GerarLaudoPDF extends JFrame {
 				// Nome completo
 				XWPFTable table = document.getTables().get(0); // Obtém a primeira tabela no documento
 				XWPFTableRow row = table.getRow(0); // Obtém a primeira linha da tabela
-				@SuppressWarnings("unused")
-				XWPFTableCell cell = row.getCell(1); // Obtém a segunda célula da linha
-				// cell.setText(Principal.nomeSolicitante.get(linhaSeleciona)); //Adiciona um
-				// novo valor
-				// String currentText = editorPaneConsideracoesTecnicas.getText();
-				// for (int i = 0; i < linhasSelecionadas.length; i++) {
 
-				// }
-				// editorPaneConsideracoesTecnicas.setText(currentText);
+				XWPFTableCell cell = row.getCell(1); // Obtém a segunda célula da linha
+				cell.setText(Principal.nomeSolicitante.get(linhasSelecionadas[0])); // Adiciona um novo valor
+				
+				
+				for (int i = 0; i < linhasSelecionadas.length; i++) {
+					String currentText = editorPaneConsideracoesTecnicas.getText();
+					editorPaneConsideracoesTecnicas.setText(currentText+"    • 0"+Principal.qtd.get(linhasSelecionadas[i])+" "+Principal.item.get(linhasSelecionadas[i])+"\n");
+				}
 
 				fis.close();
 				FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
