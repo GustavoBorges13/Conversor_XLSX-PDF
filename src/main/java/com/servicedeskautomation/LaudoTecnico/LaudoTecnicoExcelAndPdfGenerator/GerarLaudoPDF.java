@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -194,13 +195,16 @@ public class GerarLaudoPDF extends JFrame {
 			File file = new File(System.getProperty("user.home") + "/Documents/ConversorXLSX-PDF/data/" + fileName);
 			FileInputStream fis;
 			fis = new FileInputStream(file.getAbsolutePath());
+
 			try (XWPFDocument document = new XWPFDocument(fis)) {
 				// Atalho code
-				String shortcut1 = "##1##";
-				String shortcut2 = "##2##";
-				String shortcut3 = "##3##";
-				int j = 0;
-				
+				String shortcut1 = "[[1]]";
+				String shortcut2 = "[[2]]";
+				String shortcut3 = "[[3]]";
+
+				// Paragrafos
+				List<XWPFParagraph> paragraphs = document.getParagraphs();
+
 				// Nome completo
 				XWPFTable table = document.getTables().get(0); // Obtém a primeira tabela no documento
 				XWPFTableRow row = table.getRow(0); // Obtém a primeira linha da tabela
@@ -216,23 +220,26 @@ public class GerarLaudoPDF extends JFrame {
 				}
 
 				// Adicionando
-				for (XWPFParagraph paragraph : document.getParagraphs()) {
-					String text = paragraph.getText();
-					//JOptionPane.showMessageDialog(null, "Text -> " + text);
-					if (text.contains(shortcut1)) {
-						text = Principal.laudo.get(j);
-						paragraph.removeRun(j);
-						paragraph.createRun().setText(text);
-					}else if(text.contains(shortcut2)){
-						text = text.replace(shortcut2, editorPaneAnalise.getText());
-						paragraph.removeRun(j);
-						paragraph.createRun().setText(text);
-					}else if(text.contains(shortcut3)){
-						text = text.replace(shortcut3, editorPaneConsideracoesTecnicas.getText());
-						paragraph.removeRun(j);
-						paragraph.createRun().setText(text);
+
+				for (XWPFParagraph paragraph : paragraphs) {
+					List<XWPFRun> runs = paragraph.getRuns();
+
+					for (XWPFRun run : runs) {
+						String text = run.getText(0);
+						JOptionPane.showMessageDialog(null, text);
+						if (text != null && text.contains(shortcut1)) {
+							text = text.replace(shortcut1, Principal.laudo.get(linhasSelecionadas[0]));
+							paragraph.insertNewRun(0).setText(text);
+						} else if (text != null && text.contains(shortcut2)) {
+							String textformated = editorPaneAnalise.getText();
+							text = text.replace(shortcut2, textformated);
+							run.setText(text, 0);
+						} else if (text != null && text.contains(shortcut3)) {
+							String textformated = editorPaneConsideracoesTecnicas.getText();
+							text = text.replace(shortcut3, textformated);
+							run.setText(text, 0);
+						}
 					}
-					j++;
 				}
 
 				fis.close();

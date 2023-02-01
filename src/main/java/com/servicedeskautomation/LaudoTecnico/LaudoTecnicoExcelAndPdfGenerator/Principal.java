@@ -694,7 +694,7 @@ public class Principal extends JFrame {
 								btnRemover.doClick();
 							}
 
-							Principal.frame.setEnabled(true);
+							Principal.this.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
@@ -713,7 +713,7 @@ public class Principal extends JFrame {
 								btnRemover.doClick();
 							}
 
-							Principal.frame.setEnabled(true);
+							Principal.this.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
@@ -1191,13 +1191,13 @@ public class Principal extends JFrame {
 					frame.requestFocus();
 
 					// Deixa a janela principal desativada
-					Principal.frame.setEnabled(false);
+					Principal.this.setEnabled(false);
 
 					// Evento pra verificar se a janela de edicao foi fechada
 					frame.addWindowListener(new WindowAdapter() {
 						@Override
 						public void windowClosing(WindowEvent e) {
-							Principal.frame.setEnabled(true);
+							Principal.this.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
@@ -1211,7 +1211,7 @@ public class Principal extends JFrame {
 
 						@Override
 						public void windowClosed(WindowEvent e) {
-							Principal.frame.setEnabled(true);
+							Principal.this.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
