@@ -694,7 +694,7 @@ public class Principal extends JFrame {
 								btnRemover.doClick();
 							}
 
-							Principal.this.setEnabled(true);
+							Principal.frame.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
@@ -713,7 +713,7 @@ public class Principal extends JFrame {
 								btnRemover.doClick();
 							}
 
-							Principal.this.setEnabled(true);
+							Principal.frame.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
@@ -1167,7 +1167,7 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean flagContinuacao = false;
 				int[] linhasSelecionadas = Principal.table.getSelectedRows();
-				
+
 				if (linhasSelecionadas.length > 1) {
 					for (int i = 0; i < linhasSelecionadas.length-1; i++) {
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
@@ -1183,15 +1183,21 @@ public class Principal extends JFrame {
 				}
 
 				if (flagContinuacao) {
+					
+					GerarLaudoPDF frame = new GerarLaudoPDF();
+					
+					// Foco total para a nova janela aberta
+					frame.setVisible(true);
+					frame.requestFocus();
+
+					// Deixa a janela principal desativada
 					Principal.frame.setEnabled(false);
-					GerarLaudoPDF gerarLaudo = new GerarLaudoPDF();
-					gerarLaudo.setVisible(true);
 
 					// Evento pra verificar se a janela de edicao foi fechada
-					gerarLaudo.addWindowListener(new WindowAdapter() {
+					frame.addWindowListener(new WindowAdapter() {
 						@Override
 						public void windowClosing(WindowEvent e) {
-							Principal.this.setEnabled(true);
+							Principal.frame.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);
@@ -1205,7 +1211,7 @@ public class Principal extends JFrame {
 
 						@Override
 						public void windowClosed(WindowEvent e) {
-							Principal.this.setEnabled(true);
+							Principal.frame.setEnabled(true);
 
 							// Habilita/desabilita botoes
 							btnEditar.setEnabled(false);

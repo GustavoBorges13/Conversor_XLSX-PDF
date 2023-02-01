@@ -1,37 +1,41 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
-import java.awt.Font;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
-import java.awt.Color;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
-import javax.swing.JEditorPane;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.DefaultComboBoxModel;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class GerarLaudoPDF extends JFrame {
 	private static final long serialVersionUID = 4893492449132639712L;
@@ -41,6 +45,7 @@ public class GerarLaudoPDF extends JFrame {
 	private JTextField txtCentroCusto;
 
 	private JEditorPane editorPaneConsideracoesTecnicas;
+	private JEditorPane editorPaneAnalise;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -58,7 +63,8 @@ public class GerarLaudoPDF extends JFrame {
 
 	@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
 	public GerarLaudoPDF() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 770, 632);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -144,7 +150,7 @@ public class GerarLaudoPDF extends JFrame {
 		scrollPane.setBounds(10, 168, 369, 126);
 		panel_1.add(scrollPane);
 
-		JEditorPane editorPaneAnalise = new JEditorPane();
+		editorPaneAnalise = new JEditorPane();
 		scrollPane.setViewportView(editorPaneAnalise);
 
 		JComboBox comboBoxTemplate = new JComboBox();
@@ -189,18 +195,44 @@ public class GerarLaudoPDF extends JFrame {
 			FileInputStream fis;
 			fis = new FileInputStream(file.getAbsolutePath());
 			try (XWPFDocument document = new XWPFDocument(fis)) {
-
+				// Atalho code
+				String shortcut1 = "##1##";
+				String shortcut2 = "##2##";
+				String shortcut3 = "##3##";
+				int j = 0;
+				
 				// Nome completo
 				XWPFTable table = document.getTables().get(0); // Obtém a primeira tabela no documento
 				XWPFTableRow row = table.getRow(0); // Obtém a primeira linha da tabela
 
 				XWPFTableCell cell = row.getCell(1); // Obtém a segunda célula da linha
 				cell.setText(Principal.nomeSolicitante.get(linhasSelecionadas[0])); // Adiciona um novo valor
-				
-				
+
 				for (int i = 0; i < linhasSelecionadas.length; i++) {
 					String currentText = editorPaneConsideracoesTecnicas.getText();
-					editorPaneConsideracoesTecnicas.setText(currentText+"    • 0"+Principal.qtd.get(linhasSelecionadas[i])+" "+Principal.item.get(linhasSelecionadas[i])+"\n");
+					editorPaneConsideracoesTecnicas
+							.setText(currentText + "    • 0" + Principal.qtd.get(linhasSelecionadas[i]) + " "
+									+ Principal.item.get(linhasSelecionadas[i]) + "\n");
+				}
+
+				// Adicionando
+				for (XWPFParagraph paragraph : document.getParagraphs()) {
+					String text = paragraph.getText();
+					JOptionPane.showMessageDialog(null, "Text -> " + text);
+					if (text.contains(shortcut1)) {
+						text = text.replace(shortcut1, Principal.laudo.get(j));
+						paragraph.removeRun(0);
+						paragraph.createRun().setText(text);
+					}else if(text.contains(shortcut2)){
+						text = text.replace(shortcut2, editorPaneAnalise.getText());
+						paragraph.removeRun(0);
+						paragraph.createRun().setText(text);
+					}else if(text.contains(shortcut3)){
+						text = text.replace(shortcut3, editorPaneConsideracoesTecnicas.getText());
+						paragraph.removeRun(0);
+						paragraph.createRun().setText(text);
+					}
+					j++;
 				}
 
 				fis.close();
