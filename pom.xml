@@ -30,6 +30,12 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
 		<!-- Thanks for using https://jar-download.com -->
 		<!-- https://mvnrepository.com/artifact/com.toedter/jcalendar -->
 		<dependency>

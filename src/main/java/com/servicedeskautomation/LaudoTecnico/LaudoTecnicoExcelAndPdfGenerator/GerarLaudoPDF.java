@@ -192,7 +192,9 @@ public class GerarLaudoPDF extends JFrame {
 		try {
 			int[] linhasSelecionadas = Principal.table.getSelectedRows();
 			String fileName = "modelo laudo.docx";
-			File file = new File(System.getProperty("user.home") + "/Documents/ConversorXLSX-PDF/data/" + fileName);
+			String userHome = System.getProperty("user.home");
+			String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
+			File file = new File(userHome + pathRestante + fileName);
 			FileInputStream fis;
 			fis = new FileInputStream(file.getAbsolutePath());
 
@@ -216,39 +218,42 @@ public class GerarLaudoPDF extends JFrame {
 									+ Principal.item.get(linhasSelecionadas[i]) + "\n");
 				}
 
-				// Adicionando
-				List<XWPFParagraph> xwpfParagraphList = document.getParagraphs();
-				// Iterate over paragraph list and check for the replaceable text in each
-				// paragraph
-				for (XWPFParagraph xwpfParagraph : xwpfParagraphList) {
-					for (XWPFRun xwpfRun : xwpfParagraph.getRuns()) {
-						String docText = xwpfRun.getText(0);
-						if (docText != null && docText.equals(shortcut1)) {
-							// replacement and setting position
-							docText = docText.replace((shortcut1), Principal.laudo.get(linhasSelecionadas[0]));
-							xwpfRun.setText(docText, 0);
-						}else if (docText != null && docText.equals(shortcut2)) {
-							// replacement and setting position
-							String textformated = editorPaneAnalise.getText();
-							docText = docText.replace(shortcut2, textformated);
-							xwpfRun.setText(docText, 0);
-						}else if (docText != null && docText.equals(shortcut3)) {
-							// replacement and setting position
-							String textformated = editorPaneConsideracoesTecnicas.getText();
-							docText = docText.replace(shortcut3, textformated);
-							xwpfRun.setText(docText, 0);
-						}
-					}
-				}
+				String laudo = Principal.laudo.get(linhasSelecionadas[0]);
+				String analise = editorPaneAnalise.getText();
+				String consideracoes = editorPaneConsideracoesTecnicas.getText();
+				addCampos(document, laudo, analise, consideracoes, shortcut1);
+				/*
+				 * for (XWPFParagraph paragraph : document.getParagraphs()) { // do something
+				 * with it
+				 * 
+				 * String docText = paragraph.getText(); if (docText.equals(shortcut1)) { //
+				 * replacement and setting position docText = docText.replace((shortcut1),
+				 * Principal.laudo.get(linhasSelecionadas[0]));
+				 * paragraph.createRun().setText(docText); } else if (docText.equals(shortcut2))
+				 * { // replacement and setting position String textformated =
+				 * editorPaneAnalise.getText(); docText = docText.replace(shortcut2,
+				 * textformated); paragraph.removeRun(0);
+				 * paragraph.createRun().setText(docText); } else if (docText.equals(shortcut3))
+				 * { // replacement and setting position String textformated =
+				 * editorPaneConsideracoesTecnicas.getText(); docText =
+				 * docText.replaceAll(shortcut3, textformated); paragraph.removeRun(0);
+				 * paragraph.createRun().setText(docText); } }
+				 */
 
 				// save the docs
 				String[] ativo = Principal.ativo.get(linhasSelecionadas[0]).split(" ");
-				try (FileOutputStream out = new FileOutputStream(System.getProperty("user.home")
-						+ "/Documents/ConversorXLSX-PDF/data/backup/" + Principal.laudo.get(linhasSelecionadas[0])
-						+ " - " + ativo[0] + " - " + Principal.nomeSolicitante.get(linhasSelecionadas[0]))) {
+				// Local onde será baixado
+				File folder = new File(userHome + pathRestante + "backup");
+				folder.mkdirs();
+				try (FileOutputStream out = new FileOutputStream(
+						folder.getPath() + "\\" + Principal.laudo.get(linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+								+ Principal.nomeSolicitante.get(linhasSelecionadas[0]) + ".docx")) {
 					document.write(out);
 					out.close();
 				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		} catch (
@@ -257,5 +262,34 @@ public class GerarLaudoPDF extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public XWPFDocument addCampos(XWPFDocument doc, String laudo, String analise, String consideracoes, String keyword)
+			throws Exception {
+		XWPFParagraph paragraphToReplace = null;
+		for (XWPFParagraph existingPara : doc.getParagraphs()) {
+			if (existingPara.getText().contains(keyword)) {
+				paragraphToReplace = existingPara;
+			}
+		}
+		if (paragraphToReplace != null) {
+			XWPFParagraph newPara = getNewPara(doc, "Nº do Laudo: ", laudo);
+			doc.setParagraph(newPara, doc.getPosOfParagraph(paragraphToReplace));
+			doc.removeBodyElement(doc.getPosOfParagraph(newPara));
+		}
+		return doc;
+	}
+
+	public XWPFParagraph getNewPara(XWPFDocument doc, String textTitle, String laudo) throws Exception {
+		XWPFParagraph paragraph = doc.createParagraph();
+		XWPFRun newRun = paragraph.createRun();
+		newRun.setBold(true);
+		newRun.setText(textTitle);
+
+		newRun = paragraph.createRun();
+		newRun.setBold(false);
+		newRun.setText(laudo);
+		// newRun.addBreak();
+		return paragraph;
 	}
 }
