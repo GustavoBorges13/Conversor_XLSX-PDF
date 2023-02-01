@@ -35,6 +35,9 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.SimpleValue;
+import org.apache.xmlbeans.XmlCursor;
+import org.apache.xmlbeans.XmlObject;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -221,23 +224,10 @@ public class GerarLaudoPDF extends JFrame {
 				String laudo = Principal.laudo.get(linhasSelecionadas[0]);
 				String analise = editorPaneAnalise.getText();
 				String consideracoes = editorPaneConsideracoesTecnicas.getText();
-				addCamposLaudo(document, laudo, analise, consideracoes, shortcut1);
 
-				for (XWPFParagraph paragraph : document.getParagraphs()) {
-					String docText = paragraph.getText();
-					if (docText.equals(shortcut2)) { // Analise campo
-						String textformated = editorPaneAnalise.getText();
-						docText = docText.replace(shortcut2, textformated);
-						paragraph.removeRun(0);
-						paragraph.createRun().setText(docText);
-					} else if (docText.equals(shortcut3)) { // Consideracoes finais campo
-						String textformated = editorPaneConsideracoesTecnicas.getText();
-						docText = docText.replaceAll(shortcut3, textformated);
-						paragraph.removeRun(0);
-						paragraph.createRun().setText(docText);
-					}
-				}
-				
+				WordReplaceTextInFormFields wRTIFF = new WordReplaceTextInFormFields();
+
+
 				String[] ativo = Principal.ativo.get(linhasSelecionadas[0]).split(" ");
 				// Local onde será baixado
 				File folder = new File(userHome + pathRestante + "backup");
@@ -259,34 +249,5 @@ public class GerarLaudoPDF extends JFrame {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public XWPFDocument addCamposLaudo(XWPFDocument doc, String laudo, String analise, String consideracoes,
-			String keyword) throws Exception {
-		XWPFParagraph paragraphToReplace = null;
-		for (XWPFParagraph existingPara : doc.getParagraphs()) {
-			if (existingPara.getText().contains(keyword)) {
-				paragraphToReplace = existingPara;
-			}
-		}
-		if (paragraphToReplace != null) {
-			XWPFParagraph newPara = getNewPara(doc, "Nº do Laudo: ", laudo);
-			doc.setParagraph(newPara, doc.getPosOfParagraph(paragraphToReplace));
-			doc.removeBodyElement(doc.getPosOfParagraph(newPara));
-		}
-		return doc;
-	}
-
-	public XWPFParagraph getNewPara(XWPFDocument doc, String textTitle, String laudo) throws Exception {
-		XWPFParagraph paragraph = doc.createParagraph();
-		XWPFRun newRun = paragraph.createRun();
-		newRun.setBold(true);
-		newRun.setText(textTitle);
-
-		newRun = paragraph.createRun();
-		newRun.setBold(false);
-		newRun.setText(laudo);
-		// newRun.addBreak();
-		return paragraph;
 	}
 }
