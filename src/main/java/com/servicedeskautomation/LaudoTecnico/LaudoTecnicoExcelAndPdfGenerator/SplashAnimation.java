@@ -5,8 +5,13 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +24,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class SplashAnimation extends JFrame {
@@ -28,7 +34,12 @@ public class SplashAnimation extends JFrame {
 	private JLabel jLabelMostraProgresso;
 	private Image img_logo = new ImageIcon(SplashAnimation.class.getResource("/resources/Logo_HPE_menor.png")).getImage()
 			.getScaledInstance(292, 73, Image.SCALE_SMOOTH);
-
+	
+	private boolean flagNecessarioAtualizar = false;
+	private boolean flagDownloading = false;
+	private boolean flagLoading = false;
+	private boolean flagError = false;
+	
 	public SplashAnimation() {
 		setUndecorated(true);
 		TelaSplashCondominio();
@@ -82,9 +93,6 @@ public class SplashAnimation extends JFrame {
 	public void TelaSplashCondominio() {
 		new Thread() {
 			public void run() {
-				boolean flagNecessarioAtualizar = false;
-				boolean flagDownloading = false;
-				boolean flagLoading = false;
 				String userHome = System.getProperty("user.home");
 				String fileName = "modelo laudo.docx";
 				String pathRestante = "/Documents/ConversorXLSX-PDF/data";
@@ -118,12 +126,12 @@ public class SplashAnimation extends JFrame {
 							flagNecessarioAtualizar = false;
 						} else if (jProgressBarTelaSplash.getValue() <= 60 && flagNecessarioAtualizar == true) {
 							jLabelMostraProgresso.setText("Atualizando o modelo de laudo técnico...");
-							downloadFile();
+							atualizarFile();
 							// 70%
 						} else if (jProgressBarTelaSplash.getValue() <= 80) {
 							jLabelMostraProgresso.setText("Carregando banco de dados...");
 							// 100%
-						} else if (jProgressBarTelaSplash.getValue() == 100) {
+						} else if (jProgressBarTelaSplash.getValue() == 100 && flagError==false) {
 							jLabelMostraProgresso.setText("Conectando com o sistema...");
 							Principal tela = new Principal();
 							tela.setVisible(true);
@@ -131,7 +139,7 @@ public class SplashAnimation extends JFrame {
 							SplashAnimation.this.dispose();
 						}
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
+						flagError=false;
 						Logger.getLogger(SplashAnimation.class.getName()).log(Level.SEVERE, null, e);
 					}
 				}
@@ -153,8 +161,9 @@ public class SplashAnimation extends JFrame {
 			url = new URL(sUrl);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
+			flagError=false;
 			JOptionPane.showMessageDialog(null, "Não foi possível encontrar os arquivos necessários para o download."
-					+ " Favor entrar em contato com o administrador do programa.\n" + e);
+					+e);
 			dispose();
 		}
 
@@ -163,5 +172,37 @@ public class SplashAnimation extends JFrame {
 		folder.mkdirs();
 		File file = new File(folder, fileName);
 		baixarArquivo.copyURLToFile(url, file);
+	}
+	
+	public void atualizarFile() {
+		URLReader baixarArquivo = new URLReader();
+		String userHome = System.getProperty("user.home");
+		String fileName = "modelo laudo.docx";
+		String pathRestante = "/Documents/ConversorXLSX-PDF/data";
+
+		// URL que aponta para o arquivo a ser baixado
+		String sUrl = "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx";
+
+		URL url = null;
+		try {
+			url = new URL(sUrl);
+		} catch (MalformedURLException e) {
+			flagError=true;
+			JOptionPane.showMessageDialog(null, "Não foi possível encontrar os arquivos necessários para a atualização."
+					+e);
+			dispose();
+		}
+
+		// Local onde será baixado
+		File folder = new File(userHome + pathRestante);
+		folder.mkdirs();
+
+		try {
+		    InputStream inputStream = url.openStream();
+		    Files.copy(inputStream, Paths.get(folder.getPath()+"\\"+fileName), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			flagError=true;
+		    e.printStackTrace();
+		}
 	}
 }

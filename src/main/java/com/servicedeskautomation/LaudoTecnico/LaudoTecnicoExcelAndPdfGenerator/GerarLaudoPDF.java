@@ -218,18 +218,18 @@ public class GerarLaudoPDF extends JFrame {
 				// Adicionando
 				for (XWPFParagraph paragraph : document.getParagraphs()) {
 					String text = paragraph.getText();
-					JOptionPane.showMessageDialog(null, "Text -> " + text);
+					//JOptionPane.showMessageDialog(null, "Text -> " + text);
 					if (text.contains(shortcut1)) {
-						text = text.replace(shortcut1, Principal.laudo.get(j));
-						paragraph.removeRun(0);
+						text = Principal.laudo.get(j);
+						paragraph.removeRun(j);
 						paragraph.createRun().setText(text);
 					}else if(text.contains(shortcut2)){
 						text = text.replace(shortcut2, editorPaneAnalise.getText());
-						paragraph.removeRun(0);
+						paragraph.removeRun(j);
 						paragraph.createRun().setText(text);
 					}else if(text.contains(shortcut3)){
 						text = text.replace(shortcut3, editorPaneConsideracoesTecnicas.getText());
-						paragraph.removeRun(0);
+						paragraph.removeRun(j);
 						paragraph.createRun().setText(text);
 					}
 					j++;

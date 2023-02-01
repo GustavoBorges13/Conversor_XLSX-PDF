@@ -36,7 +36,7 @@ public class URLReader {
 			output.close();
 		} catch (IOException ioEx) {
 			JOptionPane.showMessageDialog(null, "Não foi possível encontrar os arquivos necessários para o download."
-					+ " Favor entrar em contato com o administrador do programa.\n" + ioEx);
+					+ioEx);
 			System.exit(0);
 		}
 	}
