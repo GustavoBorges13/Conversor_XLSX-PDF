@@ -198,12 +198,9 @@ public class GerarLaudoPDF extends JFrame {
 
 			try (XWPFDocument document = new XWPFDocument(fis)) {
 				// Atalho code
-				String shortcut1 = "[[1]]";
-				String shortcut2 = "[[2]]";
-				String shortcut3 = "[[3]]";
-
-				// Paragrafos
-				List<XWPFParagraph> paragraphs = document.getParagraphs();
+				String shortcut1 = "${laudo}";
+				String shortcut2 = "${analise}";
+				String shortcut3 = "${consideracoesTecnicas}";
 
 				// Nome completo
 				XWPFTable table = document.getTables().get(0); // Obtém a primeira tabela no documento
@@ -220,35 +217,43 @@ public class GerarLaudoPDF extends JFrame {
 				}
 
 				// Adicionando
-
-				for (XWPFParagraph paragraph : paragraphs) {
-					List<XWPFRun> runs = paragraph.getRuns();
-
-					for (XWPFRun run : runs) {
-						String text = run.getText(0);
-						JOptionPane.showMessageDialog(null, text);
-						if (text != null && text.contains(shortcut1)) {
-							text = text.replace(shortcut1, Principal.laudo.get(linhasSelecionadas[0]));
-							paragraph.insertNewRun(0).setText(text);
-						} else if (text != null && text.contains(shortcut2)) {
+				List<XWPFParagraph> xwpfParagraphList = document.getParagraphs();
+				// Iterate over paragraph list and check for the replaceable text in each
+				// paragraph
+				for (XWPFParagraph xwpfParagraph : xwpfParagraphList) {
+					for (XWPFRun xwpfRun : xwpfParagraph.getRuns()) {
+						String docText = xwpfRun.getText(0);
+						if (docText != null && docText.equals(shortcut1)) {
+							// replacement and setting position
+							docText = docText.replace((shortcut1), Principal.laudo.get(linhasSelecionadas[0]));
+							xwpfRun.setText(docText, 0);
+						}else if (docText != null && docText.equals(shortcut2)) {
+							// replacement and setting position
 							String textformated = editorPaneAnalise.getText();
-							text = text.replace(shortcut2, textformated);
-							run.setText(text, 0);
-						} else if (text != null && text.contains(shortcut3)) {
+							docText = docText.replace(shortcut2, textformated);
+							xwpfRun.setText(docText, 0);
+						}else if (docText != null && docText.equals(shortcut3)) {
+							// replacement and setting position
 							String textformated = editorPaneConsideracoesTecnicas.getText();
-							text = text.replace(shortcut3, textformated);
-							run.setText(text, 0);
+							docText = docText.replace(shortcut3, textformated);
+							xwpfRun.setText(docText, 0);
 						}
 					}
 				}
 
-				fis.close();
-				FileOutputStream fos = new FileOutputStream(file.getAbsolutePath());
-				document.write(fos);
-				fos.close();
+				// save the docs
+				String[] ativo = Principal.ativo.get(linhasSelecionadas[0]).split(" ");
+				try (FileOutputStream out = new FileOutputStream(System.getProperty("user.home")
+						+ "/Documents/ConversorXLSX-PDF/data/backup/" + Principal.laudo.get(linhasSelecionadas[0])
+						+ " - " + ativo[0] + " - " + Principal.nomeSolicitante.get(linhasSelecionadas[0]))) {
+					document.write(out);
+					out.close();
+				}
 			}
 
-		} catch (IOException e) {
+		} catch (
+
+		IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
