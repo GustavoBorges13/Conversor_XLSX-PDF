@@ -221,26 +221,23 @@ public class GerarLaudoPDF extends JFrame {
 				String laudo = Principal.laudo.get(linhasSelecionadas[0]);
 				String analise = editorPaneAnalise.getText();
 				String consideracoes = editorPaneConsideracoesTecnicas.getText();
-				addCampos(document, laudo, analise, consideracoes, shortcut1);
-				/*
-				 * for (XWPFParagraph paragraph : document.getParagraphs()) { // do something
-				 * with it
-				 * 
-				 * String docText = paragraph.getText(); if (docText.equals(shortcut1)) { //
-				 * replacement and setting position docText = docText.replace((shortcut1),
-				 * Principal.laudo.get(linhasSelecionadas[0]));
-				 * paragraph.createRun().setText(docText); } else if (docText.equals(shortcut2))
-				 * { // replacement and setting position String textformated =
-				 * editorPaneAnalise.getText(); docText = docText.replace(shortcut2,
-				 * textformated); paragraph.removeRun(0);
-				 * paragraph.createRun().setText(docText); } else if (docText.equals(shortcut3))
-				 * { // replacement and setting position String textformated =
-				 * editorPaneConsideracoesTecnicas.getText(); docText =
-				 * docText.replaceAll(shortcut3, textformated); paragraph.removeRun(0);
-				 * paragraph.createRun().setText(docText); } }
-				 */
+				addCamposLaudo(document, laudo, analise, consideracoes, shortcut1);
 
-				// save the docs
+				for (XWPFParagraph paragraph : document.getParagraphs()) {
+					String docText = paragraph.getText();
+					if (docText.equals(shortcut2)) { // Analise campo
+						String textformated = editorPaneAnalise.getText();
+						docText = docText.replace(shortcut2, textformated);
+						paragraph.removeRun(0);
+						paragraph.createRun().setText(docText);
+					} else if (docText.equals(shortcut3)) { // Consideracoes finais campo
+						String textformated = editorPaneConsideracoesTecnicas.getText();
+						docText = docText.replaceAll(shortcut3, textformated);
+						paragraph.removeRun(0);
+						paragraph.createRun().setText(docText);
+					}
+				}
+				
 				String[] ativo = Principal.ativo.get(linhasSelecionadas[0]).split(" ");
 				// Local onde será baixado
 				File folder = new File(userHome + pathRestante + "backup");
@@ -264,8 +261,8 @@ public class GerarLaudoPDF extends JFrame {
 		}
 	}
 
-	public XWPFDocument addCampos(XWPFDocument doc, String laudo, String analise, String consideracoes, String keyword)
-			throws Exception {
+	public XWPFDocument addCamposLaudo(XWPFDocument doc, String laudo, String analise, String consideracoes,
+			String keyword) throws Exception {
 		XWPFParagraph paragraphToReplace = null;
 		for (XWPFParagraph existingPara : doc.getParagraphs()) {
 			if (existingPara.getText().contains(keyword)) {
