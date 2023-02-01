@@ -1,5 +1,6 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
@@ -48,16 +49,35 @@ public class WordReplaceTextInFormFields {
 	}
 
 	public static void main(String[] args) throws Exception {
+		// Abrindo o arquivo...
+		String fileName = "modelo laudo.docx";
+		String userHome = System.getProperty("user.home");
+		String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
+		File file = new File(userHome + pathRestante + fileName);
+		FileInputStream fis;
+		fis = new FileInputStream(file.getAbsolutePath());
+		XWPFDocument document = new XWPFDocument(fis);
 
-		XWPFDocument document = new XWPFDocument(new FileInputStream("WordTemplate.docx"));
+		// Pegando dados de outras classes
+		String laudo = Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]);
+		String analise = GerarLaudoPDF.editorPaneAnalise.getText();
+		String consideracoes = GerarLaudoPDF.editorPaneConsideracoesTecnicas.getText();
 
-		replaceFormFieldText(document, "Text1", "Mrs.");
-		replaceFormFieldText(document, "Text2", "Janis");
-		replaceFormFieldText(document, "Text3", "Lyn");
-		
-		FileOutputStream out = new FileOutputStream("WordReplaceTextInFormFields.docx");
-		document.write(out);
-		out.close();
-		document.close();
+		// Subistituindo as palavras do bookmarks...
+		replaceFormFieldText(document, "Text1", laudo);
+		replaceFormFieldText(document, "Text2", analise);
+		replaceFormFieldText(document, "Text3", consideracoes);
+
+		String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");
+		// Local onde será baixado
+		File folder = new File(userHome + pathRestante + "backup");
+		folder.mkdirs();
+		try (FileOutputStream out = new FileOutputStream(
+				folder.getPath() + "\\" + Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0]
+						+ " - " + Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".docx")) {
+			document.write(out);
+			out.close();
+			document.close();
+		}
 	}
 }

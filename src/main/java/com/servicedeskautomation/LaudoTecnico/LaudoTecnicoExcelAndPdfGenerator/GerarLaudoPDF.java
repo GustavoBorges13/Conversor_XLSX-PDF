@@ -5,19 +5,12 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -28,17 +21,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.apache.xmlbeans.SimpleValue;
-import org.apache.xmlbeans.XmlCursor;
-import org.apache.xmlbeans.XmlObject;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class GerarLaudoPDF extends JFrame {
@@ -47,9 +29,9 @@ public class GerarLaudoPDF extends JFrame {
 	private JTextField txtNomeTecnico;
 	private JTextField txtUsuarioRede;
 	private JTextField txtCentroCusto;
-
-	private JEditorPane editorPaneConsideracoesTecnicas;
-	private JEditorPane editorPaneAnalise;
+	static JEditorPane editorPaneConsideracoesTecnicas;
+	static JEditorPane editorPaneAnalise;
+	static int[] linhasSelecionadas;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -67,6 +49,8 @@ public class GerarLaudoPDF extends JFrame {
 
 	@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
 	public GerarLaudoPDF() {
+		linhasSelecionadas = Principal.table.getSelectedRows();
+
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setBounds(100, 100, 770, 632);
@@ -192,62 +176,8 @@ public class GerarLaudoPDF extends JFrame {
 		setLocation(x, y);
 		setVisible(true);
 
-		try {
-			int[] linhasSelecionadas = Principal.table.getSelectedRows();
-			String fileName = "modelo laudo.docx";
-			String userHome = System.getProperty("user.home");
-			String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
-			File file = new File(userHome + pathRestante + fileName);
-			FileInputStream fis;
-			fis = new FileInputStream(file.getAbsolutePath());
+		// Executa o metodo de substituicao de valores no documento word...
+		WordReplaceTextInFormFields wRTIFF = new WordReplaceTextInFormFields();
 
-			try (XWPFDocument document = new XWPFDocument(fis)) {
-				// Atalho code
-				String shortcut1 = "${laudo}";
-				String shortcut2 = "${analise}";
-				String shortcut3 = "${consideracoesTecnicas}";
-
-				// Nome completo
-				XWPFTable table = document.getTables().get(0); // Obtém a primeira tabela no documento
-				XWPFTableRow row = table.getRow(0); // Obtém a primeira linha da tabela
-
-				XWPFTableCell cell = row.getCell(1); // Obtém a segunda célula da linha
-				cell.setText(Principal.nomeSolicitante.get(linhasSelecionadas[0])); // Adiciona um novo valor
-
-				for (int i = 0; i < linhasSelecionadas.length; i++) {
-					String currentText = editorPaneConsideracoesTecnicas.getText();
-					editorPaneConsideracoesTecnicas
-							.setText(currentText + "    • 0" + Principal.qtd.get(linhasSelecionadas[i]) + " "
-									+ Principal.item.get(linhasSelecionadas[i]) + "\n");
-				}
-
-				String laudo = Principal.laudo.get(linhasSelecionadas[0]);
-				String analise = editorPaneAnalise.getText();
-				String consideracoes = editorPaneConsideracoesTecnicas.getText();
-
-				WordReplaceTextInFormFields wRTIFF = new WordReplaceTextInFormFields();
-
-
-				String[] ativo = Principal.ativo.get(linhasSelecionadas[0]).split(" ");
-				// Local onde será baixado
-				File folder = new File(userHome + pathRestante + "backup");
-				folder.mkdirs();
-				try (FileOutputStream out = new FileOutputStream(
-						folder.getPath() + "\\" + Principal.laudo.get(linhasSelecionadas[0]) + " - " + ativo[0] + " - "
-								+ Principal.nomeSolicitante.get(linhasSelecionadas[0]) + ".docx")) {
-					document.write(out);
-					out.close();
-				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		} catch (
-
-		IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
