@@ -175,7 +175,6 @@ public class SplashAnimation extends JFrame {
 	}
 	
 	public void atualizarFile() {
-		URLReader baixarArquivo = new URLReader();
 		String userHome = System.getProperty("user.home");
 		String fileName = "modelo laudo.docx";
 		String pathRestante = "/Documents/ConversorXLSX-PDF/data";

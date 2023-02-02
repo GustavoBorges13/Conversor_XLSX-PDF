@@ -202,15 +202,23 @@ public class GerarLaudoPDF extends JFrame {
 			fis = new FileInputStream(file.getAbsolutePath());
 			XWPFDocument document = new XWPFDocument(fis);
 
+			//Transcrevendo os itens para o campo de consideracoes tecnicas e mesclando...
+			for (int i = 0; i < linhasSelecionadas.length; i++) {
+				String currentText = editorPaneConsideracoesTecnicas.getText();
+				editorPaneConsideracoesTecnicas
+						.setText(currentText + "    • 0" + Principal.qtd.get(linhasSelecionadas[i]) + " "
+								+ Principal.item.get(linhasSelecionadas[i]) + "\n");
+			}
+			
 			// Pegando dados de outras classes
 			String laudo = Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]);
 			String analise = GerarLaudoPDF.editorPaneAnalise.getText();
 			String consideracoes = GerarLaudoPDF.editorPaneConsideracoesTecnicas.getText();
 
 			// Subistituindo as palavras do bookmarks...
-			replaceFormFieldText(document, "Text1", laudo);
-			replaceFormFieldText(document, "Text2", analise);
-			replaceFormFieldText(document, "Text3", consideracoes);
+			replaceFormFieldText(document, "Texto1", laudo);
+			replaceFormFieldText(document, "Texto2", analise);
+			replaceFormFieldText(document, "Texto3", consideracoes);
 
 			String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");
 			// Local onde será baixado
@@ -230,7 +238,7 @@ public class GerarLaudoPDF extends JFrame {
 		}
 	}
 
-	private static void replaceFormFieldText(XWPFDocument document, String ffname, String text) {
+	private static void replaceFormFieldText(XWPFDocument document, String keyword, String text) {
 		boolean foundformfield = false;
 		for (XWPFParagraph paragraph : document.getParagraphs()) {
 			for (XWPFRun run : paragraph.getRuns()) {
@@ -245,7 +253,9 @@ public class GerarLaudoPDF extends JFrame {
 						obj = cursor.getObject();
 						obj = obj.selectPath(
 								"declare namespace w='http://schemas.openxmlformats.org/wordprocessingml/2006/main' .//w:ffData/w:name/@w:val")[0];
-						if (ffname.equals(((SimpleValue) obj).getStringValue())) {
+						JOptionPane.showMessageDialog(null,
+								"ffname -> " + keyword + "\nobj -> " + ((SimpleValue) obj).getStringValue());
+						if (keyword.equals(((SimpleValue) obj).getStringValue())) {
 							foundformfield = true;
 						} else {
 							foundformfield = false;
