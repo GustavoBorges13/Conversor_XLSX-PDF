@@ -10,6 +10,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -29,12 +32,18 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLevelSuffix;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -202,14 +211,14 @@ public class GerarLaudoPDF extends JFrame {
 			fis = new FileInputStream(file.getAbsolutePath());
 			XWPFDocument document = new XWPFDocument(fis);
 
-			//Transcrevendo os itens para o campo de consideracoes tecnicas e mesclando...
-			for (int i = 0; i < linhasSelecionadas.length; i++) {
-				String currentText = editorPaneConsideracoesTecnicas.getText();
-				editorPaneConsideracoesTecnicas
-						.setText(currentText + "    • 0" + Principal.qtd.get(linhasSelecionadas[i]) + " "
-								+ Principal.item.get(linhasSelecionadas[i]) + "\n");
-			}
-			
+			// Transcrevendo os itens para o campo de consideracoes tecnicas e mesclando...
+			/*
+			 * for (int i = 0; i < linhasSelecionadas.length; i++) { String currentText =
+			 * editorPaneConsideracoesTecnicas.getText(); editorPaneConsideracoesTecnicas
+			 * .setText(currentText + "    • 0" + Principal.qtd.get(linhasSelecionadas[i]) +
+			 * " " + Principal.item.get(linhasSelecionadas[i]) + "\n"); }
+			 */
+
 			// Pegando dados de outras classes
 			String laudo = Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]);
 			String analise = GerarLaudoPDF.editorPaneAnalise.getText();
@@ -240,8 +249,11 @@ public class GerarLaudoPDF extends JFrame {
 
 	private static void replaceFormFieldText(XWPFDocument document, String keyword, String text) {
 		boolean foundformfield = false;
+		boolean quebraLinha = false;
+
 		for (XWPFParagraph paragraph : document.getParagraphs()) {
 			for (XWPFRun run : paragraph.getRuns()) {
+				// JOptionPane.showMessageDialog(null, run.getParagraph().getText());
 				XmlCursor cursor = run.getCTR().newCursor();
 				cursor.selectPath(
 						"declare namespace w='http://schemas.openxmlformats.org/wordprocessingml/2006/main' .//w:fldChar/@w:fldCharType");
@@ -253,8 +265,6 @@ public class GerarLaudoPDF extends JFrame {
 						obj = cursor.getObject();
 						obj = obj.selectPath(
 								"declare namespace w='http://schemas.openxmlformats.org/wordprocessingml/2006/main' .//w:ffData/w:name/@w:val")[0];
-						JOptionPane.showMessageDialog(null,
-								"ffname -> " + keyword + "\nobj -> " + ((SimpleValue) obj).getStringValue());
 						if (keyword.equals(((SimpleValue) obj).getStringValue())) {
 							foundformfield = true;
 						} else {
@@ -267,9 +277,40 @@ public class GerarLaudoPDF extends JFrame {
 					}
 				}
 				if (foundformfield && run.getCTR().getTList().size() > 0) {
-					run.getCTR().getTList().get(0).setStringValue(text);
+					run.getCTR().getTList().get(0).setStringValue("");
+
+					// run.getCTR().getTList().get(0).setStringValue(text);
 					foundformfield = false;
+					quebraLinha = true;
+					break;
 					// System.out.println(run.getCTR());
+				}
+			}
+			if (quebraLinha && keyword.equals("Texto3")) {
+				// paragraph.removeRun(0);
+
+				paragraph.insertNewRun(0).setText(text);
+				for (int i = 0; i < linhasSelecionadas.length; i++) {
+					XWPFParagraph paragraphNew = document.createParagraph();
+					XWPFRun run = paragraphNew.createRun();
+
+					// Bullet list
+					CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
+					cTAbstractNum.setAbstractNumId(BigInteger.valueOf(0));
+					CTLvl cTLvl = cTAbstractNum.addNewLvl();
+					cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
+					cTLvl.addNewLvlText().setVal("•");
+
+					XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+					XWPFNumbering numbering = document.createNumbering();
+					BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+					BigInteger numID = numbering.addNum(abstractNumID);
+
+					paragraphNew.setNumID(numID);
+					// font size for bullet point in half pt
+					//paragraph.getCTP().getPPr().addNewRPr().addNewSz().setVal(BigInteger.valueOf(48));
+					run.setText(Principal.item.get(linhasSelecionadas[i]));
+					run.setFontSize(11);
 				}
 			}
 		}
