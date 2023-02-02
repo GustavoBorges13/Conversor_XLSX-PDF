@@ -12,9 +12,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -140,7 +137,7 @@ public class SplashAnimation extends JFrame {
 						}
 					} catch (Exception e) {
 						flagError=false;
-						Logger.getLogger(SplashAnimation.class.getName()).log(Level.SEVERE, null, e);
+						System.out.println("Erro critico: "+e);
 					}
 				}
 			}

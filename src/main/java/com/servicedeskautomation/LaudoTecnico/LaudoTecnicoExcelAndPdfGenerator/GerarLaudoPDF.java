@@ -11,9 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,7 +28,6 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
@@ -42,9 +38,7 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.STLevelSuffix;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
 public class GerarLaudoPDF extends JFrame {
@@ -71,7 +65,7 @@ public class GerarLaudoPDF extends JFrame {
 		});
 	}
 
-	@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	public GerarLaudoPDF() {
 		linhasSelecionadas = Principal.table.getSelectedRows();
 
@@ -289,10 +283,9 @@ public class GerarLaudoPDF extends JFrame {
 			if (quebraLinha && keyword.equals("Texto3")) {
 				// paragraph.removeRun(0);
 
-				paragraph.insertNewRun(0).setText(text);
+				paragraph.createRun().setText(text);
 				for (int i = 0; i < linhasSelecionadas.length; i++) {
-					XWPFParagraph paragraphNew = document.createParagraph();
-					XWPFRun run = paragraphNew.createRun();
+					XWPFRun run = paragraph.createRun();
 
 					// Bullet list
 					CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
@@ -306,7 +299,7 @@ public class GerarLaudoPDF extends JFrame {
 					BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
 					BigInteger numID = numbering.addNum(abstractNumID);
 
-					paragraphNew.setNumID(numID);
+					paragraph.setNumID(numID);
 					// font size for bullet point in half pt
 					//paragraph.getCTP().getPPr().addNewRPr().addNewSz().setVal(BigInteger.valueOf(48));
 					run.setText(Principal.item.get(linhasSelecionadas[i]));
