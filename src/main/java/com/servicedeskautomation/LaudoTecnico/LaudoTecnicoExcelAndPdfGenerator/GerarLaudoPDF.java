@@ -332,12 +332,24 @@ public class GerarLaudoPDF extends JFrame {
 			FileInputStream fis = new FileInputStream(file.getAbsolutePath()); // Local pra preparar o arquivo
 			XWPFDocument document = new XWPFDocument(fis); // Prepara o arquivo
 
+			// Preparando campos de textos
+			// Pegando dados de outras classes
+			String laudo = Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]);
+			String analise = GerarLaudoPDF.textAreaAnalise.getText();
+			String consideracoes = consideracoesTecnicasTEMP;
+			JOptionPane.showMessageDialog(null, analise);
+
+			// Subistituindo as palavras do bookmarks...
+			substituirFormularioDoCampoDeTexto(document, "Texto1", laudo);
+			substituirFormularioDoCampoDeTexto(document, "Texto2", analise);
+			substituirFormularioDoCampoDeTexto(document, "Texto3", consideracoes);
+
 			// Instacias pra leitura da tabela do documento word
 			XWPFTable table;
 			XWPFTableRow row;
 			XWPFTableCell cell;
-			XWPFRun run2;
-			
+			XWPFRun run;
+
 			// --------- TABELA 1 - TECNICO RESPONSAVEL
 			table = document.getTables().get(0); // Obtém a PRIMEIRA tabela no documento -> Padrão
 			row = table.getRow(0); // Obtém a primeira linha da tabela
@@ -348,7 +360,6 @@ public class GerarLaudoPDF extends JFrame {
 			row = table.getRow(2);
 			cell.setText(txtCentroCusto.getText()); // Centro de custo
 
-			
 			// --------- TABELA 2 - USUARIO
 			table = document.getTables().get(1); // Obtém a SEGUNDA tabela no documento -> Padrão
 			row = table.getRow(0); // Obtém a primeira linha da tabela
@@ -359,7 +370,6 @@ public class GerarLaudoPDF extends JFrame {
 			row = table.getRow(2);
 			cell.setText(Principal.centroCusto.get(linhasSelecionadas[0])); // Centro de custo
 
-			
 			// --------- TABELA 3 - EQUIPAMENTO
 			table = document.getTables().get(2); // Obtém a TERCEIRA tabela no documento -> Padrão
 			// Primeira linha da tabela
@@ -385,33 +395,23 @@ public class GerarLaudoPDF extends JFrame {
 			cell = row.getCell(1);
 			cell.setText(Principal.dataAquisicao.get(linhasSelecionadas[0])); // Data de Aquisição
 			cell = row.getCell(3);
-			run2 = cell.getParagraphs().get(0).createRun();
-			run2.setFontSize(10);
-			run2.setFontFamily("Calibri (Corpo)");
+			run = cell.getParagraphs().get(0).createRun();
+			run.setFontSize(10);
+			run.setFontFamily("Calibri (Corpo)");
 			cell.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
 			// Quinta linha da tabela
 			row = table.getRow(4);
 			cell = row.getCell(1);
+			run = cell.getParagraphs().get(0).createRun();
+			run.setFontSize(11);
+			run.setFontFamily("Calibri (Corpo)");
 			cell.setText(Principal.storage.get(linhasSelecionadas[0])); // Storage
 			cell = row.getCell(3);
 			cell.setText(Principal.memoria.get(linhasSelecionadas[0])); // Memoria
 
-			
-			// Preparando campos de textos
-			// Pegando dados de outras classes
-			String laudo = Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]);
-			String analise = GerarLaudoPDF.textAreaAnalise.getText();
-			String consideracoes = consideracoesTecnicasTEMP;
-			JOptionPane.showMessageDialog(null, analise);
-
-			// Subistituindo as palavras do bookmarks...
-			substituirFormularioDoCampoDeTexto(document, "Texto1", laudo);
-			substituirFormularioDoCampoDeTexto(document, "Texto2", analise);
-			substituirFormularioDoCampoDeTexto(document, "Texto3", consideracoes);
-
 			// Separando o number do ativo com o local HPE ou BW&P
-			String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");			
-			
+			String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");
+
 			// Local onde será baixado
 			File folder = new File(userHome + pathRestante + "backup");
 			folder.mkdirs();
