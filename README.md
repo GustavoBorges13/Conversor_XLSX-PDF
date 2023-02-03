@@ -10,7 +10,7 @@
 # Projeto no estagio
 ```
 # Sobre o projeto
- Esté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j. 
+ Esté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo Apache POI (ooxml e ooxml-schemas), commons-lang, Toedter (jcalendar), jgoodies (Forms), miglayout (miglayout-layout), formdev (flatlaf) e docx4j. 
  
  O projeto foi desenvolvido utilizando MAVEN para builds e importações práticas das APIs.
  
