@@ -336,7 +336,7 @@ public class GerarLaudoPDF extends JFrame {
 			XWPFTable table;
 			XWPFTableRow row;
 			XWPFTableCell cell;
-
+			XWPFRun run2;
 			
 			// --------- TABELA 1 - TECNICO RESPONSAVEL
 			table = document.getTables().get(0); // Obtém a PRIMEIRA tabela no documento -> Padrão
@@ -385,6 +385,9 @@ public class GerarLaudoPDF extends JFrame {
 			cell = row.getCell(1);
 			cell.setText(Principal.dataAquisicao.get(linhasSelecionadas[0])); // Data de Aquisição
 			cell = row.getCell(3);
+			run2 = cell.getParagraphs().get(0).createRun();
+			run2.setFontSize(10);
+			run2.setFontFamily("Calibri (Corpo)");
 			cell.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
 			// Quinta linha da tabela
 			row = table.getRow(4);
