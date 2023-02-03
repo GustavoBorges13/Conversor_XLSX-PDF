@@ -65,7 +65,7 @@ public class GerarLaudoPDF extends JFrame {
 		});
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public GerarLaudoPDF() {
 		linhasSelecionadas = Principal.table.getSelectedRows();
 
@@ -244,6 +244,7 @@ public class GerarLaudoPDF extends JFrame {
 	private static void replaceFormFieldText(XWPFDocument document, String keyword, String text) {
 		boolean foundformfield = false;
 		boolean quebraLinha = false;
+		boolean fazerBulletList = false;
 
 		for (XWPFParagraph paragraph : document.getParagraphs()) {
 			for (XWPFRun run : paragraph.getRuns()) {
@@ -280,32 +281,40 @@ public class GerarLaudoPDF extends JFrame {
 					// System.out.println(run.getCTR());
 				}
 			}
+
 			if (quebraLinha && keyword.equals("Texto3")) {
 				// paragraph.removeRun(0);
 
 				paragraph.createRun().setText(text);
-				for (int i = 0; i < linhasSelecionadas.length; i++) {
-					XWPFRun run = paragraph.createRun();
-
-					// Bullet list
-					CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
-					cTAbstractNum.setAbstractNumId(BigInteger.valueOf(0));
-					CTLvl cTLvl = cTAbstractNum.addNewLvl();
-					cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
-					cTLvl.addNewLvlText().setVal("•");
-
-					XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
-					XWPFNumbering numbering = document.createNumbering();
-					BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
-					BigInteger numID = numbering.addNum(abstractNumID);
-
-					paragraph.setNumID(numID);
-					// font size for bullet point in half pt
-					//paragraph.getCTP().getPPr().addNewRPr().addNewSz().setVal(BigInteger.valueOf(48));
-					run.setText(Principal.item.get(linhasSelecionadas[i]));
-					run.setFontSize(11);
-				}
+				quebraLinha = false;
+				fazerBulletList = true;
 			}
+		}
+
+		if (fazerBulletList) {
+			for (int i = 0; i < linhasSelecionadas.length; i++) {
+				XWPFParagraph paragraph = document.createParagraph();
+				XWPFRun run = paragraph.createRun();
+				//run.addTab();
+
+				CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
+				cTAbstractNum.setAbstractNumId(BigInteger.valueOf(0));
+				CTLvl cTLvl = cTAbstractNum.addNewLvl();
+				cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
+				cTLvl.addNewLvlText().setVal("•");				
+				
+				XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+				XWPFNumbering numbering = document.createNumbering();
+				BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+				BigInteger numID = numbering.addNum(abstractNumID);
+
+				run.setFontFamily(Font.DIALOG);
+				run.setFontSize(11);
+				run.setText(Principal.item.get(linhasSelecionadas[i]));
+				paragraph.setNumID(numID);
+				paragraph.setIndentationFirstLine(720); // 720 twips é aproximadamente 1 cm
+			}
+
 		}
 	}
 }
