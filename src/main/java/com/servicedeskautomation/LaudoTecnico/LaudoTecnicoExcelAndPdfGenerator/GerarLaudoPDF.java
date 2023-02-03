@@ -348,26 +348,30 @@ public class GerarLaudoPDF extends JFrame {
 			XWPFTable table;
 			XWPFTableRow row;
 			XWPFTableCell cell;
-			XWPFRun run;
-
+			
 			// --------- TABELA 1 - TECNICO RESPONSAVEL
 			table = document.getTables().get(0); // Obtém a PRIMEIRA tabela no documento -> Padrão
 			row = table.getRow(0); // Obtém a primeira linha da tabela
 			cell = row.getCell(1); // Obtém a segunda célula da linha -> Padrao
 			cell.setText(txtNomeTecnico.getText()); // Nome completo
 			row = table.getRow(1);
+			cell = row.getCell(1);
 			cell.setText(txtUsuarioRede.getText()); // Usuário de rede
 			row = table.getRow(2);
+			cell = row.getCell(1);
 			cell.setText(txtCentroCusto.getText()); // Centro de custo
 
+			
 			// --------- TABELA 2 - USUARIO
 			table = document.getTables().get(1); // Obtém a SEGUNDA tabela no documento -> Padrão
 			row = table.getRow(0); // Obtém a primeira linha da tabela
 			cell = row.getCell(1); // Obtém a segunda célula da linha -> Padrao
 			cell.setText(Principal.nomeSolicitante.get(linhasSelecionadas[0])); // Nome completo
 			row = table.getRow(1);
+			cell = row.getCell(1);
 			cell.setText(Principal.usuario.get(linhasSelecionadas[0])); // Usuário de rede
 			row = table.getRow(2);
+			cell = row.getCell(1);
 			cell.setText(Principal.centroCusto.get(linhasSelecionadas[0])); // Centro de custo
 
 			// --------- TABELA 3 - EQUIPAMENTO
@@ -395,16 +399,10 @@ public class GerarLaudoPDF extends JFrame {
 			cell = row.getCell(1);
 			cell.setText(Principal.dataAquisicao.get(linhasSelecionadas[0])); // Data de Aquisição
 			cell = row.getCell(3);
-			run = cell.getParagraphs().get(0).createRun();
-			run.setFontSize(10);
-			run.setFontFamily("Calibri (Corpo)");
 			cell.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
 			// Quinta linha da tabela
 			row = table.getRow(4);
 			cell = row.getCell(1);
-			run = cell.getParagraphs().get(0).createRun();
-			run.setFontSize(11);
-			run.setFontFamily("Calibri (Corpo)");
 			cell.setText(Principal.storage.get(linhasSelecionadas[0])); // Storage
 			cell = row.getCell(3);
 			cell.setText(Principal.memoria.get(linhasSelecionadas[0])); // Memoria
@@ -463,21 +461,19 @@ public class GerarLaudoPDF extends JFrame {
 				}
 				if (achouCampoDeFormulario && run.getCTR().getTList().size() > 0) {
 					run.getCTR().getTList().get(0).setStringValue("");
-					// run.getCTR().getTList().get(0).setStringValue(text);
 					achouCampoDeFormulario = false;
 					quebraLinha = true;
 					break;
-					// System.out.println(run.getCTR());
 				}
 			}
 
 			if (quebraLinha && keyword.equals("Texto2")) {
-				paragraph.createRun().setText("");
+				paragraph.createRun().setText(text);
 				quebraLinha = false;
 				fazerBulletList = true;
 			}
 			if (quebraLinha && keyword.equals("Texto3")) {
-				paragraph.createRun().setText("");
+				paragraph.createRun().setText(text);
 				quebraLinha = false;
 				fazerBulletList = true;
 			}
@@ -504,7 +500,7 @@ public class GerarLaudoPDF extends JFrame {
 				// Configurando font e realizando setText
 				run.setFontFamily("Calibri (Corpo)");
 				run.setFontSize(11);
-
+				
 				// Printando 1 por 1
 				if (i == linhasSelecionadas.length - 1)
 					run.setText(Principal.item.get(linhasSelecionadas[i]) + ".");
