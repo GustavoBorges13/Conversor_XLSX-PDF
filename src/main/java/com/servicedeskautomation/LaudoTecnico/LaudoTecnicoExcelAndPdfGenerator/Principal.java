@@ -249,7 +249,7 @@ public class Principal extends JFrame {
 		mnNewMenu.setMnemonic('A');
 		menuBar.add(mnNewMenu);
 
-		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre...");
+		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre E-ServiceDesk Application...");
 		mntmNewMenuItem.setMnemonic('S');
 		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		mntmNewMenuItem.addActionListener(new ActionListener() {
@@ -262,28 +262,31 @@ public class Principal extends JFrame {
 			}
 		});
 
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Creditos...");
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Visite o repositorio deste projeto...");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(null, new MessageWithLink(
+				JOptionPane.showMessageDialog(null, new MensagemComLink(
 						"Conversor XLSX-PDF<br/>Versão XXX <br/><br/>Gustavo Borges<br/><a href=\"https://github.com/GustavoBorges13\">https://github.com/GustavoBorges13</a>"),
 						"Informações adicionais", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		mntmNewMenuItem_1.setMnemonic('C');
-		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK));
+		mntmNewMenuItem_1.setMnemonic('V');
+		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
-
-		JMenu mnNewMenu_1 = new JMenu("Tema (Beta)");
-		mnNewMenu_1.setMnemonic('T');
-		menuBar.add(mnNewMenu_1);
-
-		JCheckBoxMenuItem CheckTema1 = new JCheckBoxMenuItem("Tema 1");
-		mnNewMenu_1.add(CheckTema1);
-
-		JCheckBoxMenuItem CheckTema2 = new JCheckBoxMenuItem("Tema 2");
-		mnNewMenu_1.add(CheckTema2);
+		
+		JMenu mnNewMenu_2 = new JMenu("Ferramentas");
+		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Opções");
+		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Opcoes opcoesDialog = new Opcoes();
+				opcoesDialog.setVisible(true);
+				
+			}
+		});
+		mnNewMenu_2.add(mntmNewMenuItem_2);
 
 		contentPane = new JPanel();
 		contentPane.setOpaque(false);
@@ -332,7 +335,7 @@ public class Principal extends JFrame {
 		internalFrame.setClosable(true);
 		internalFrame.setVisible(false);
 
-		JLabel lblNewLabel = new JLabel("E-ServiceDesk Applications - About");
+		JLabel lblNewLabel = new JLabel("E-ServiceDesk Applications - Sobre");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(10, 11, 628, 19);

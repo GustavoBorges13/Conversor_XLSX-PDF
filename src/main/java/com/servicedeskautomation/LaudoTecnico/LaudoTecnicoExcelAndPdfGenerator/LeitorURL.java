@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 import javax.swing.JOptionPane;
 
-public class URLReader {
+public class LeitorURL {
 	public void copyURLToFile(URL url, File file) {
 		try {
 			InputStream input = url.openStream();

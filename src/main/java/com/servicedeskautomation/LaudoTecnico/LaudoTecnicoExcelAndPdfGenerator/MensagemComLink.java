@@ -9,10 +9,10 @@ import javax.swing.JLabel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-public class MessageWithLink extends JEditorPane {
+public class MensagemComLink extends JEditorPane {
     private static final long serialVersionUID = 1L;
 
-    public MessageWithLink(String htmlBody) {
+    public MensagemComLink(String htmlBody) {
         super("text/html", "<html><body style=\"" + getStyle() + "\">" + htmlBody + "</body></html>");
         addHyperlinkListener(new HyperlinkListener() {
             @Override

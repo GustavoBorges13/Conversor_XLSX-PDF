@@ -335,7 +335,6 @@ public class GerarLaudoPDF extends JDialog {
 			String laudo = Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]);
 			String analise = GerarLaudoPDF.textAreaAnalise.getText();
 			String consideracoes = consideracoesTecnicasTEMP;
-			JOptionPane.showMessageDialog(null, analise);
 
 			// Subistituindo as palavras do bookmarks...
 			substituirFormularioDoCampoDeTexto(document, "Texto1", laudo);
@@ -477,7 +476,7 @@ public class GerarLaudoPDF extends JDialog {
 			run = cell.getParagraphArray(0).createRun();
 			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
 			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
-			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			sz.setVal(BigInteger.valueOf((long) (10*2)));
 			run.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
 
 			// Quinta linha da tabela
@@ -507,6 +506,8 @@ public class GerarLaudoPDF extends JDialog {
 				document.write(out);
 				out.close();
 				document.close();
+				JOptionPane.showMessageDialog(null, "Arquivo gerado com sucesso!");
+
 			}
 		} catch (FileNotFoundException e) {
 			JOptionPane.showMessageDialog(null, "Erro com arquivo: " + e);
@@ -554,11 +555,14 @@ public class GerarLaudoPDF extends JDialog {
 					break;
 				}
 			}
-
+			
+			if (quebraLinha && keyword.equals("Texto1")) {
+				paragraph.createRun().setText(text);
+				quebraLinha = false;
+			}
 			if (quebraLinha && keyword.equals("Texto2")) {
 				paragraph.createRun().setText(text);
 				quebraLinha = false;
-				fazerBulletList = true;
 			}
 			if (quebraLinha && keyword.equals("Texto3")) {
 				paragraph.createRun().setText(text);

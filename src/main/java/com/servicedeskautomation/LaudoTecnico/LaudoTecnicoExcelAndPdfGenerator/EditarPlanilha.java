@@ -7,6 +7,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+
 import java.awt.Font;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
@@ -25,6 +27,9 @@ import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
+
+import com.formdev.flatlaf.FlatIntelliJLaf;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
 import java.awt.event.KeyAdapter;
@@ -67,6 +72,7 @@ public class EditarPlanilha extends JDialog  {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel(new FlatIntelliJLaf());
 					EditarPlanilha frame = new EditarPlanilha();
 					frame.setVisible(true);
 				} catch (Exception e) {
