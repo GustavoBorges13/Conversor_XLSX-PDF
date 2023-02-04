@@ -437,9 +437,9 @@ public class Principal extends JFrame {
 
 		// Button fill/preencher
 		btnPreencher.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				btnSalvarAlteracoes.setEnabled(false);
-				XSSFWorkbook work;
+				XSSFWorkbook work = null;
 				XSSFSheet sheet;
 				XSSFRow row;
 
@@ -462,19 +462,19 @@ public class Principal extends JFrame {
 
 					// Varredura dos cabeçalhos/colunas
 					while (row != null) {
-						if (row.getCell(pos).getStringCellValue() != null) {
-							colunas.add(row.getCell(pos).toString());
-							pos++;
-						} else {
-							work.close();
-							break;
+						if (!row.getCell(pos).getStringCellValue().isEmpty()) {
+							if (row.getCell(pos).getStringCellValue().equals("STATUS")) {
+								colunas.add(row.getCell(pos).toString());
+								break;
+							} else {
+								colunas.add(row.getCell(pos).toString());
+								pos++;
+							}
 						}
 					}
 					// Chegou na ultima linha que possui conteudo da planilha..
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
-				} catch (NullPointerException e2) {
-					System.out.println("Debug error: " + e2 + " Não há mais colunas no excel...");
 				} catch (IOException e3) {
 					JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e3);
 				} finally {
@@ -599,9 +599,6 @@ public class Principal extends JFrame {
 						} else {
 							throw new java.lang.ArrayIndexOutOfBoundsException();
 						}
-
-					} catch (NullPointerException e1) {
-						System.out.println("Debug error: " + e1 + " Não há mais linhas com conteúdo no excel...");
 					} catch (IOException e2) {
 						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e2);
 					} catch (java.lang.ArrayIndexOutOfBoundsException e3) {
@@ -673,6 +670,7 @@ public class Principal extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
+					JOptionPane.showMessageDialog(null, "Linha selecionada: "+linhaSelecionada);
 					// int[] selectedRows = table.getSelectedRows();
 					EditarPlanilha frame = new EditarPlanilha();
 					int toleranciaHD_SSD = 0;
@@ -681,51 +679,41 @@ public class Principal extends JFrame {
 					// Foco total para a nova janela aberta
 					frame.setVisible(true);
 					frame.requestFocus();
-
+					frame.setResizable(false);
+					
 					// Deixa a janela principal desativada
 					Principal.this.setEnabled(false);
 
 					// Evento pra verificar se a janela de edicao foi fechada
 					frame.addWindowListener(new WindowAdapter() {
 						@Override
-						public void windowClosing(WindowEvent e) {
-							int selectedRow = table.getSelectedRow();
-							if (selectedRow != -1 && table.getValueAt(selectedRow, 0) == "") {
-								btnRemover.doClick();
-							}
-
-							Principal.this.setEnabled(true);
-
-							// Habilita/desabilita botoes
-							btnEditar.setEnabled(false);
-							btnRemover.setEnabled(false);
-							table.clearSelection();
-							contentPane.requestFocus();
-							btnGerarArquivoPdf.setEnabled(false);
-
-							// frame.setVisible(false);
-						}
-
-						@Override
 						public void windowClosed(WindowEvent e) {
-							int selectedRow = table.getSelectedRow();
-							if (selectedRow != -1 && table.getValueAt(selectedRow, 0) == "") {
-								btnRemover.doClick();
+							if (!EditarPlanilha.finalizado) {
+								int result = JOptionPane.showConfirmDialog(frame,
+										"Você deseja realmente cancelar as operações e fechar a janela?", "Confirmação",
+										JOptionPane.YES_NO_OPTION);
+								if (result == JOptionPane.YES_OPTION) {
+									frame.setVisible(false);
+									int selectedRow = table.getSelectedRow();
+									if (selectedRow != -1 && table.getValueAt(selectedRow, 0) == "") {
+										btnRemover.doClick();
+									}
+
+									Principal.this.setEnabled(true);
+
+									// Habilita/desabilita botoes
+									btnEditar.setEnabled(false);
+									btnRemover.setEnabled(false);
+									table.clearSelection();
+									contentPane.requestFocus();
+									btnGerarArquivoPdf.setEnabled(false);
+
+									// frame.setVisible(false);
+								} else {
+									frame.setVisible(true);
+								}
 							}
-
-							Principal.this.setEnabled(true);
-
-							// Habilita/desabilita botoes
-							btnEditar.setEnabled(false);
-							btnRemover.setEnabled(false);
-							table.clearSelection();
-							contentPane.requestFocus();
-							btnGerarArquivoPdf.setEnabled(false);
-
-							// frame.setVisible(false);
-
 						}
-
 					});
 
 					// Design - Deixar os textos em preto e Transpor dados da tabela para a janela
@@ -1025,14 +1013,16 @@ public class Principal extends JFrame {
 
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
-
 				adicionarArrayList();
+				
+				
 				// Atualiza a planilha
 				table.updateUI();
 				table.requestFocus();
 				table.setRowSelectionInterval(table.getRowCount() - 1, table.getRowCount() - 1);
 				int selectedRow = table.getSelectedRow();
-
+				//JOptionPane.showMessageDialog(null,selectedRow);
+				
 				if (selectedRow != -1) {
 					// Point p = table.getMousePosition();
 					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0,
@@ -1108,7 +1098,7 @@ public class Principal extends JFrame {
 						textStyle.setBorderRight(BorderStyle.THIN);
 
 						// Remove todo o conteudo da planilha para fazer o reset
-						if (laudo.size() <= qtdTemporaria)
+						if (laudo.size() < qtdTemporaria)
 							sheet.copyRows(sheet.getLastRowNum() - qtdTemporaria, sheet.getLastRowNum(), 1,
 									new CellCopyPolicy());
 						else
@@ -1116,8 +1106,26 @@ public class Principal extends JFrame {
 									new CellCopyPolicy());
 
 						// Calcula g
-						while (((row = sheet.getRow(g)) != null && row.getCell(3).getCellType() == CellType.BLANK)) {
-							g++;
+						while (((row = sheet.getRow(g)) != null)) {
+							if( row.getCell(0).getCellType() == CellType.BLANK
+								|| row.getCell(1).getCellType() == CellType.BLANK
+								|| row.getCell(2).getCellType() == CellType.BLANK
+								|| row.getCell(3).getCellType() == CellType.BLANK
+								|| row.getCell(4).getCellType() == CellType.BLANK
+								|| row.getCell(5).getCellType() == CellType.BLANK
+								|| row.getCell(6).getCellType() == CellType.BLANK
+								|| row.getCell(7).getCellType() == CellType.BLANK
+								|| row.getCell(8).getCellType() == CellType.BLANK
+								|| row.getCell(9).getCellType() == CellType.BLANK
+								|| row.getCell(10).getCellType() == CellType.BLANK
+								|| row.getCell(11).getCellType() == CellType.BLANK
+								|| row.getCell(12).getCellType() == CellType.BLANK
+								|| row.getCell(13).getCellType() == CellType.BLANK
+								|| row.getCell(14).getCellType() == CellType.BLANK
+								|| row.getCell(15).getCellType() == CellType.BLANK
+								|| row.getCell(16).getCellType() == CellType.BLANK) {
+								g++;
+							}
 						}
 
 						// SALVANDO NEW DADOS NA PLANILHA!
@@ -1133,10 +1141,11 @@ public class Principal extends JFrame {
 								addRow(work, sheet, 1, laudo.size() + 1, textStyle);
 							}
 						}
+						work.write(new FileOutputStream(pathfileExcel));
 
 						try {
 							// Salvar alterações na planilha!
-							work.write(new FileOutputStream(pathfileExcel));
+
 							work.close(); // Fecha a planilha
 							JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
 
@@ -1149,7 +1158,8 @@ public class Principal extends JFrame {
 							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
 						}
 					} catch (IOException e) {
-						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
+								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.");
 					}
 				} else {
 					requestFocus();
@@ -1169,7 +1179,7 @@ public class Principal extends JFrame {
 				int[] linhasSelecionadas = Principal.table.getSelectedRows();
 
 				if (linhasSelecionadas.length > 1) {
-					for (int i = 0; i < linhasSelecionadas.length-1; i++) {
+					for (int i = 0; i < linhasSelecionadas.length - 1; i++) {
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
 							if (Principal.table.getValueAt(linhasSelecionadas[i], 6)
 									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 6))) {
@@ -1183,9 +1193,9 @@ public class Principal extends JFrame {
 				}
 
 				if (flagContinuacao) {
-					
+
 					GerarLaudoPDF frame = new GerarLaudoPDF();
-					
+
 					// Foco total para a nova janela aberta
 					frame.setVisible(true);
 					frame.requestFocus();
@@ -1196,33 +1206,28 @@ public class Principal extends JFrame {
 					// Evento pra verificar se a janela de edicao foi fechada
 					frame.addWindowListener(new WindowAdapter() {
 						@Override
-						public void windowClosing(WindowEvent e) {
-							Principal.this.setEnabled(true);
-
-							// Habilita/desabilita botoes
-							btnEditar.setEnabled(false);
-							btnRemover.setEnabled(false);
-							table.clearSelection();
-							contentPane.requestFocus();
-							btnGerarArquivoPdf.setEnabled(false);
-
-							// frame.setVisible(false);
-						}
-
-						@Override
 						public void windowClosed(WindowEvent e) {
-							Principal.this.setEnabled(true);
+							if (!EditarPlanilha.finalizado) {
+								int result = JOptionPane.showConfirmDialog(frame,
+										"Você deseja realmente cancelar as operações e fechar a janela?", "Confirmação",
+										JOptionPane.YES_NO_OPTION);
+								if (result == JOptionPane.YES_OPTION) {
+									frame.setVisible(false);
+									Principal.this.setEnabled(true);
 
-							// Habilita/desabilita botoes
-							btnEditar.setEnabled(false);
-							btnRemover.setEnabled(false);
-							table.clearSelection();
-							contentPane.requestFocus();
-							btnGerarArquivoPdf.setEnabled(false);
-							// frame.setVisible(false);
+									// Habilita/desabilita botoes
+									btnEditar.setEnabled(false);
+									btnRemover.setEnabled(false);
+									table.clearSelection();
+									contentPane.requestFocus();
+									btnGerarArquivoPdf.setEnabled(false);
+								} else {
+									frame.setVisible(true);
+								}
+							}
 						}
 					});
-				} else {					
+				} else {
 					JOptionPane.showMessageDialog(null,
 							"Por favor, verifique as linhas que você selecionou, se possuem os mesmos ativos.\nPois não é permitido fazer 1 laudo para computadores diferentes.");
 				}

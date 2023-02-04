@@ -1,10 +1,8 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -13,10 +11,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,7 +35,6 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
@@ -50,12 +47,13 @@ import org.apache.xmlbeans.SimpleValue;
 import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHpsMeasure;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
-public class GerarLaudoPDF extends JFrame {
+public class GerarLaudoPDF extends JDialog {
 	private static final long serialVersionUID = 4893492449132639712L;
 	private JPanel contentPane;
 	private static JTextField txtNomeTecnico;
@@ -68,6 +66,7 @@ public class GerarLaudoPDF extends JFrame {
 	private DefaultStyledDocument doc;
 	private JLabel remaningLabel = new JLabel("");;
 	private int textAreaCaracteresLimit = 440;
+	static boolean finalizado;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -85,28 +84,35 @@ public class GerarLaudoPDF extends JFrame {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public GerarLaudoPDF() {
+		finalizado = false;
 		linhasSelecionadas = Principal.table.getSelectedRows();
-
+		setTitle("Gerar arquivo em PDF");
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 770, 632);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 770, 598);
+
+		/*
+		 * // Definindo a posicao da janela Dimension screenSize =
+		 * Toolkit.getDefaultToolkit().getScreenSize();
+		 * 
+		 * int tolerancia = -20; int x = (int) ((screenSize.getWidth() - getWidth()));
+		 * int y = (int) (((screenSize.getHeight() - getHeight()) / 3) - tolerancia);
+		 * setLocation(x, y);
+		 */
+		setLocationRelativeTo(null);
+		setVisible(true);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JLabel lblTitulo = new JLabel("Gerar arquivo em PDF");
-		lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitulo.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		lblTitulo.setBounds(10, 11, 734, 21);
-		contentPane.add(lblTitulo);
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Visualiza\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(414, 43, 330, 506);
+		panel.setBounds(414, 11, 330, 507);
 		contentPane.add(panel);
 
 		JPanel panel_1 = new JPanel();
@@ -114,7 +120,7 @@ public class GerarLaudoPDF extends JFrame {
 		panel_1.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Prepara\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(10, 43, 399, 506);
+		panel_1.setBounds(10, 11, 399, 507);
 		contentPane.add(panel_1);
 
 		JLabel lblNomeDoTcnico = new JLabel("Nome do técnico *");
@@ -224,7 +230,7 @@ public class GerarLaudoPDF extends JFrame {
 					textAreaAnalise.setText("");
 					textAreaAnalise
 							.setText("Foi realizado uma análise na máquina do colaborador(a), cujo o mesmo apresentou"
-									+ " severos problemas com a fonte, impossibilitando na inicialização da máquina, portanto,"
+									+ " problemas significativos na fonte, impossibilitando na inicialização da máquina, portanto,"
 									+ " este componente é indispensável para o funcionamento da máquina para que o colaborador(a) possa"
 									+ " estar realizando suas atividades na empresa HPE.");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
@@ -279,6 +285,7 @@ public class GerarLaudoPDF extends JFrame {
 
 		// BOTAO INSERIR LINK
 		JButton btnInsirirLink = new JButton("Inserir link");
+		btnInsirirLink.setEnabled(false);
 		btnInsirirLink.setBounds(10, 472, 89, 23);
 		panel_1.add(btnInsirirLink);
 
@@ -297,27 +304,18 @@ public class GerarLaudoPDF extends JFrame {
 				processamentoWord();
 			}
 		});
-		btnGerarArquivoPDF.setBounds(86, 560, 245, 23);
+		btnGerarArquivoPDF.setBounds(83, 523, 245, 23);
 		contentPane.add(btnGerarArquivoPDF);
 
 		// BOTAO VISUALIZAR
 		JButton btnVisualizar = new JButton("Visualizar");
-		btnVisualizar.setBounds(446, 560, 123, 23);
+		btnVisualizar.setBounds(443, 523, 123, 23);
 		contentPane.add(btnVisualizar);
 
 		// BOTAO ABRIR LOCAL
 		JButton btnAbrirLocal = new JButton("Abrir local");
-		btnAbrirLocal.setBounds(589, 559, 123, 23);
+		btnAbrirLocal.setBounds(586, 522, 123, 23);
 		contentPane.add(btnAbrirLocal);
-
-		// Definindo a posicao da janela
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-		int tolerancia = -20;
-		int x = (int) ((screenSize.getWidth() - getWidth()));
-		int y = (int) (((screenSize.getHeight() - getHeight()) / 3) - tolerancia);
-		setLocation(x, y);
-		setVisible(true);
 	}
 
 	private static void processamentoWord() {
@@ -348,64 +346,154 @@ public class GerarLaudoPDF extends JFrame {
 			XWPFTable table;
 			XWPFTableRow row;
 			XWPFTableCell cell;
-			
+
 			// --------- TABELA 1 - TECNICO RESPONSAVEL
 			table = document.getTables().get(0); // Obtém a PRIMEIRA tabela no documento -> Padrão
+			// Primeira linha da tabela
 			row = table.getRow(0); // Obtém a primeira linha da tabela
 			cell = row.getCell(1); // Obtém a segunda célula da linha -> Padrao
-			cell.setText(txtNomeTecnico.getText()); // Nome completo
+			XWPFRun run = cell.getParagraphArray(0).createRun(); // Obtem a Run da cell
+			run.setFontFamily("Calibri (Corpo)"); // Altera a fonte
+			// Obtém o objeto CTRPr para a run usando o método getCTR() e isSetRPr(), ou
+			// adiciona um novo objeto CTRPr caso ele não exista. Armazena a referência no
+			// objeto rpr.
+			CTRPr rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			// Obtém o objeto CTHpsMeasure para o objeto CTRPr usando o método isSetSz() e
+			// getSz(), ou adiciona um novo objeto CTHpsMeasure caso ele não exista.
+			// Armazena a referência no objeto sz.
+			CTHpsMeasure sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			// Altera o valor do tamanho da fonte para 10.5 * 2 = 21, usando o método
+			// setVal() e passando o resultado como argumento.
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(txtNomeTecnico.getText()); // Nome completo
+
+			// Segunda linha da tabela
 			row = table.getRow(1);
 			cell = row.getCell(1);
-			cell.setText(txtUsuarioRede.getText()); // Usuário de rede
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(txtUsuarioRede.getText()); // Usuário de rede
+
+			// Terceira linha da tabela
 			row = table.getRow(2);
 			cell = row.getCell(1);
-			cell.setText(txtCentroCusto.getText()); // Centro de custo
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(txtCentroCusto.getText()); // Centro de custo
 
-			
+			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 			// --------- TABELA 2 - USUARIO
 			table = document.getTables().get(1); // Obtém a SEGUNDA tabela no documento -> Padrão
+			// Primeira linha da tabela
 			row = table.getRow(0); // Obtém a primeira linha da tabela
 			cell = row.getCell(1); // Obtém a segunda célula da linha -> Padrao
-			cell.setText(Principal.nomeSolicitante.get(linhasSelecionadas[0])); // Nome completo
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.nomeSolicitante.get(linhasSelecionadas[0])); // Nome completo
+
+			// Segunda linha da tabela
 			row = table.getRow(1);
 			cell = row.getCell(1);
-			cell.setText(Principal.usuario.get(linhasSelecionadas[0])); // Usuário de rede
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.usuario.get(linhasSelecionadas[0])); // Usuário de rede
+
+			// Terceira linha da tabela
 			row = table.getRow(2);
 			cell = row.getCell(1);
-			cell.setText(Principal.centroCusto.get(linhasSelecionadas[0])); // Centro de custo
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.centroCusto.get(linhasSelecionadas[0])); // Centro de custo
+
+			// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 			// --------- TABELA 3 - EQUIPAMENTO
 			table = document.getTables().get(2); // Obtém a TERCEIRA tabela no documento -> Padrão
 			// Primeira linha da tabela
 			row = table.getRow(0); // Obtém a primeira linha da tabela
 			cell = row.getCell(1); // Obtém a segunda célula da linha
-			cell.setText(Principal.dispositivo.get(linhasSelecionadas[0])); // Dispositivo
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.dispositivo.get(linhasSelecionadas[0])); // Dispositivo
 			cell = row.getCell(3); // Obtém a quarta célula da linha
-			cell.setText(Principal.hostname.get(linhasSelecionadas[0])); // Hostname
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.hostname.get(linhasSelecionadas[0])); // Hostname
+
 			// Segunda linha da tabela
 			row = table.getRow(1);
 			cell = row.getCell(1);
-			cell.setText(Principal.fabricante.get(linhasSelecionadas[0])); // Fabricante
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.fabricante.get(linhasSelecionadas[0])); // Fabricante
 			cell = row.getCell(3);
-			cell.setText(Principal.modelo.get(linhasSelecionadas[0])); // Modelo
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.modelo.get(linhasSelecionadas[0])); // Modelo
+
 			// Terceira linha da tabela
 			row = table.getRow(2);
 			cell = row.getCell(1);
-			cell.setText(Principal.serviceTag.get(linhasSelecionadas[0])); // Service TAG
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.serviceTag.get(linhasSelecionadas[0])); // Service TAG
 			cell = row.getCell(3);
-			cell.setText(Principal.ativo.get(linhasSelecionadas[0])); // ID Ativo
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.ativo.get(linhasSelecionadas[0])); // ID Ativo
+
 			// Quarta linha da tabela
 			row = table.getRow(3);
 			cell = row.getCell(1);
-			cell.setText(Principal.dataAquisicao.get(linhasSelecionadas[0])); // Data de Aquisição
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.dataAquisicao.get(linhasSelecionadas[0])); // Data de Aquisição
 			cell = row.getCell(3);
-			cell.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
+
 			// Quinta linha da tabela
 			row = table.getRow(4);
 			cell = row.getCell(1);
-			cell.setText(Principal.storage.get(linhasSelecionadas[0])); // Storage
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.storage.get(linhasSelecionadas[0])); // Storage
 			cell = row.getCell(3);
-			cell.setText(Principal.memoria.get(linhasSelecionadas[0])); // Memoria
+			run = cell.getParagraphArray(0).createRun();
+			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
+			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
+			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
+			run.setText(Principal.memoria.get(linhasSelecionadas[0])); // Memoria
 
 			// Separando o number do ativo com o local HPE ou BW&P
 			String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");
@@ -500,7 +588,7 @@ public class GerarLaudoPDF extends JFrame {
 				// Configurando font e realizando setText
 				run.setFontFamily("Calibri (Corpo)");
 				run.setFontSize(11);
-				
+
 				// Printando 1 por 1
 				if (i == linhasSelecionadas.length - 1)
 					run.setText(Principal.item.get(linhasSelecionadas[i]) + ".");

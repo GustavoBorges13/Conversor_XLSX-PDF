@@ -1,9 +1,6 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
 import java.awt.EventQueue;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -17,6 +14,7 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
 import javax.swing.JButton;
@@ -32,7 +30,7 @@ import javax.swing.SpinnerNumberModel;
 import java.awt.event.KeyAdapter;
 
 @SuppressWarnings("rawtypes")
-public class EditarPlanilha extends JFrame {
+public class EditarPlanilha extends JDialog  {
 
 	private static final long serialVersionUID = -7565309808695712383L;
 	private JPanel contentPane;
@@ -63,7 +61,8 @@ public class EditarPlanilha extends JFrame {
 	static JComboBox comboBoxDispositivo;
 	private int linhaSelecionada;
 	private JButton btnSave;
-
+	static boolean finalizado;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -79,12 +78,18 @@ public class EditarPlanilha extends JFrame {
 
 	@SuppressWarnings({ "unchecked" })
 	public EditarPlanilha() {
+		finalizado=false;
+		setTitle("Editar informações da planilha");
+		
 		setResizable(false);
-		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setBounds(100, 100, 465, 632);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 465, 600);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
+		// Definindo uma posicao para a janela aparecer...
+		/*
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
 		@SuppressWarnings("unused")
@@ -94,23 +99,18 @@ public class EditarPlanilha extends JFrame {
 		int tolerancia = -150;
 		int x = 0;
 		int y = ((getWidth()) / 2) + tolerancia;
-		setLocation(x, y);
+		setLocation(x, y);*/
+		setLocationRelativeTo(null);
 		setVisible(true);
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Editar informações da planilha");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(10, 11, 429, 21);
-		contentPane.add(lblNewLabel);
-
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Modo edi\u00E7\u00E3o : :", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 36, 429, 546);
+		panel.setBounds(10, 11, 429, 539);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -531,9 +531,10 @@ public class EditarPlanilha extends JFrame {
 		lblStatus.setBounds(220, 442, 83, 29);
 		panel.add(lblStatus);
 
+
+		//Botao salvar
 		btnSave = new JButton("Salvar");
 		btnSave.addActionListener(new ActionListener() {
-			@SuppressWarnings("deprecation")
 			public void actionPerformed(ActionEvent arg0) {
 				linhaSelecionada = Principal.table.getSelectedRow();
 				boolean flag = false;
@@ -564,7 +565,7 @@ public class EditarPlanilha extends JFrame {
 					return;
 				} else if (!sLaudo.matches("[0-9]{6}")) { // Verificar se tem 6 digitos
 					JOptionPane.showMessageDialog(EditarPlanilha.this,
-							"O campo de numero do laudo contem menos de 6 digitos, por favor digite 6 digitos!",
+							"O campo de numero do laudo contem menos ou mais de 6 digitos, por favor digite 6 digitos!",
 							"Erro length", JOptionPane.INFORMATION_MESSAGE);
 					return;
 				} else if (Memoria.matches("[a-zA-Z]+")) { // Verificar se é uma string
@@ -582,7 +583,7 @@ public class EditarPlanilha extends JFrame {
 							
 					Principal.btnSalvarAlteracoes.setEnabled(true);
 					flag = true;
-					for (int coluna = 0; coluna <= Principal.laudo.size(); coluna++) {
+					for (int coluna = 0; coluna < Principal.colunas.size(); coluna++) {
 
 						// Manipulando os arraylist (dadabase)
 						Principal.laudo.set(linhaSelecionada, txtLaudo.getText());
@@ -634,9 +635,6 @@ public class EditarPlanilha extends JFrame {
 				}
 
 				if (flag) {
-					// Fechamento da janela
-					hide();
-
 					// volta a janela principal para o estado anterior
 					Principal.frame.setEnabled(true);
 					Principal.btnEditar.setEnabled(false);
@@ -649,10 +647,14 @@ public class EditarPlanilha extends JFrame {
 					Principal.table.updateUI();
 					Principal.table.requestFocus();
 					Principal.table.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
+					
+					// Fechamento da janela
+					finalizado = true;
+					dispose();
 				}
 			}
 		});
-		btnSave.setBounds(150, 512, 129, 23);
+		btnSave.setBounds(149, 505, 129, 23);
 		panel.add(btnSave);
 
 		JLabel lblChamado = new JLabel("Chamado *");
