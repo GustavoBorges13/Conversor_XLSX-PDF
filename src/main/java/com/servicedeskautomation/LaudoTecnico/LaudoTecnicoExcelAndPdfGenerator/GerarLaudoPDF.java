@@ -53,6 +53,9 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
+import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
+import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
+
 public class GerarLaudoPDF extends JDialog {
 	private static final long serialVersionUID = 4893492449132639712L;
 	private JPanel contentPane;
@@ -75,6 +78,7 @@ public class GerarLaudoPDF extends JDialog {
 					UIManager.setLookAndFeel(new FlatIntelliJLaf());
 					GerarLaudoPDF frame = new GerarLaudoPDF();
 					frame.setVisible(true);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -90,7 +94,7 @@ public class GerarLaudoPDF extends JDialog {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 770, 598);
-
+		// setAlwaysOnTop(true);
 		/*
 		 * // Definindo a posicao da janela Dimension screenSize =
 		 * Toolkit.getDefaultToolkit().getScreenSize();
@@ -316,6 +320,7 @@ public class GerarLaudoPDF extends JDialog {
 		JButton btnAbrirLocal = new JButton("Abrir local");
 		btnAbrirLocal.setBounds(586, 522, 123, 23);
 		contentPane.add(btnAbrirLocal);
+
 	}
 
 	private static void processamentoWord() {
@@ -476,7 +481,7 @@ public class GerarLaudoPDF extends JDialog {
 			run = cell.getParagraphArray(0).createRun();
 			rpr = run.getCTR().isSetRPr() ? run.getCTR().getRPr() : run.getCTR().addNewRPr();
 			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
-			sz.setVal(BigInteger.valueOf((long) (10*2)));
+			sz.setVal(BigInteger.valueOf((long) (10 * 2)));
 			run.setText(Principal.cpu.get(linhasSelecionadas[0])); // CPU
 
 			// Quinta linha da tabela
@@ -497,22 +502,58 @@ public class GerarLaudoPDF extends JDialog {
 			// Separando o number do ativo com o local HPE ou BW&P
 			String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");
 
-			// Local onde será baixado
-			File folder = new File(userHome + pathRestante + "backup");
-			folder.mkdirs();
-			try (FileOutputStream out = new FileOutputStream(folder.getPath() + "\\"
+			// ------- SALVAMENTO E CONVERSAO --------
+			// Salvando o BACKUP (Word)...
+			// Criando a pasta backup
+			File pathBackup = new File(userHome + pathRestante + "backup");
+			pathBackup.mkdirs();
+			try (FileOutputStream out = new FileOutputStream(pathBackup.getPath() + "\\"
 					+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
 					+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".docx")) {
+				// Saida do arquivo Word
 				document.write(out);
 				out.close();
 				document.close();
-				JOptionPane.showMessageDialog(null, "Arquivo gerado com sucesso!");
-
 			}
+
+			// Conversao do documento word para pdf..
+			File pathPdfGerados = new File(userHome + pathRestante + "Pdf generated");
+			pathPdfGerados.mkdirs();
+
+			// Abrindo o arquivo word a ser convertido
+			try (FileInputStream is = new FileInputStream(pathBackup.getPath() + "\\"
+					+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+					+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".docx");
+					FileOutputStream out = new FileOutputStream(pathPdfGerados.getPath() + "\\"
+							+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+							+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf");) {
+
+				long start = System.currentTimeMillis();
+
+				// 1) Carregando o DOCX para XWPFDocument
+				XWPFDocument document2 = new XWPFDocument(is);
+
+				// 2) Preparando Pdf options
+				PdfOptions options = PdfOptions.create();
+
+				// 3) Convertendo XWPFDocument para Pdf
+				PdfConverter.getInstance().convert(document2, out, options);
+				
+				JOptionPane.showMessageDialog(null,
+						Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+								+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf"
+								+ " foi convertido para PDF com sucesso! :: " + (System.currentTimeMillis() - start)
+								+ " milli seconds");
+
+				// Fecha o arquivo
+				out.close();
+				document2.close();
+			}
+			JOptionPane.showMessageDialog(null, "Arquivo gerado com sucesso!");
 		} catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Erro com arquivo: " + e);
+			JOptionPane.showMessageDialog(null, "Erro com arquivo: " + e.getStackTrace());
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e);
+			JOptionPane.showMessageDialog(null, "Erro: " + e.getStackTrace());
 		}
 	}
 
@@ -555,7 +596,7 @@ public class GerarLaudoPDF extends JDialog {
 					break;
 				}
 			}
-			
+
 			if (quebraLinha && keyword.equals("Texto1")) {
 				paragraph.createRun().setText(text);
 				quebraLinha = false;
@@ -594,11 +635,19 @@ public class GerarLaudoPDF extends JDialog {
 				run.setFontSize(11);
 
 				// Printando 1 por 1
-				if (i == linhasSelecionadas.length - 1)
+				if (i == linhasSelecionadas.length - 1) {
+					run.setBold(false);
+					run.setText("0" + Principal.qtd.get(linhasSelecionadas[i]) + " ");
+					run = paragraph.createRun();
+					run.setBold(true);
 					run.setText(Principal.item.get(linhasSelecionadas[i]) + ".");
-				else
+				} else {
+					run.setBold(false);
+					run.setText("0" + Principal.qtd.get(linhasSelecionadas[i]) + " ");
+					run = paragraph.createRun();
+					run.setBold(true);
 					run.setText(Principal.item.get(linhasSelecionadas[i]) + ";");
-
+				}
 				// Margens
 				paragraph.setNumID(numID);
 				paragraph.setIndentationFirstLine(720); // 720 twips é aproximadamente 1 cm

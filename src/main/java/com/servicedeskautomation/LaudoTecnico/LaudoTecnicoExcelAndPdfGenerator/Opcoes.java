@@ -99,6 +99,7 @@ public class Opcoes extends JDialog {
 				}
 				{
 					textField_3 = new JTextField();
+					textField_3.setEditable(false);
 					textField_3.setFont(new Font("Tahoma", Font.PLAIN, 10));
 					textField_3.setBounds(146, 70, 273, 20);
 					panel.add(textField_3);
@@ -106,6 +107,7 @@ public class Opcoes extends JDialog {
 				}
 				{
 					textField_2 = new JTextField();
+					textField_2.setEditable(false);
 					textField_2.setFont(new Font("Tahoma", Font.PLAIN, 10));
 					textField_2.setColumns(10);
 					textField_2.setBounds(146, 45, 273, 20);
@@ -113,6 +115,7 @@ public class Opcoes extends JDialog {
 				}
 				{
 					textField_1 = new JTextField();
+					textField_1.setEditable(false);
 					textField_1.setFont(new Font("Tahoma", Font.PLAIN, 10));
 					textField_1.setColumns(10);
 					textField_1.setBounds(146, 21, 273, 20);

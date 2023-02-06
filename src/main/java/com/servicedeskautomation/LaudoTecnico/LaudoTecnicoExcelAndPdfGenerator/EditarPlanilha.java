@@ -6,9 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-
 import java.awt.Font;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
@@ -27,15 +25,13 @@ import java.awt.event.KeyListener;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.event.ChangeListener;
-
 import com.formdev.flatlaf.FlatIntelliJLaf;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
 import java.awt.event.KeyAdapter;
 
 @SuppressWarnings("rawtypes")
-public class EditarPlanilha extends JDialog  {
+public class EditarPlanilha extends JDialog {
 
 	private static final long serialVersionUID = -7565309808695712383L;
 	private JPanel contentPane;
@@ -67,7 +63,7 @@ public class EditarPlanilha extends JDialog  {
 	private int linhaSelecionada;
 	private JButton btnSave;
 	static boolean finalizado;
-	
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -84,28 +80,28 @@ public class EditarPlanilha extends JDialog  {
 
 	@SuppressWarnings({ "unchecked" })
 	public EditarPlanilha() {
-		finalizado=false;
+		setModalExclusionType(ModalExclusionType.APPLICATION_EXCLUDE);
+		finalizado = false;
 		setTitle("Editar informações da planilha");
-		
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 465, 600);
-		
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		// Definindo uma posicao para a janela aparecer...
 		/*
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
-		@SuppressWarnings("unused")
-		Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
-		// rect.getMaxX() - getWidth();
-
-		int tolerancia = -150;
-		int x = 0;
-		int y = ((getWidth()) / 2) + tolerancia;
-		setLocation(x, y);*/
+		 * GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		 * GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+		 * 
+		 * @SuppressWarnings("unused") Rectangle rect =
+		 * defaultScreen.getDefaultConfiguration().getBounds(); // rect.getMaxX() -
+		 * getWidth();
+		 * 
+		 * int tolerancia = -150; int x = 0; int y = ((getWidth()) / 2) + tolerancia;
+		 * setLocation(x, y);
+		 */
 		setLocationRelativeTo(null);
 		setVisible(true);
 
@@ -124,12 +120,12 @@ public class EditarPlanilha extends JDialog  {
 		txtLaudo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtLaudo.setForeground(Color.BLACK);
@@ -141,12 +137,12 @@ public class EditarPlanilha extends JDialog  {
 		txtNomeSolicitante.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtNomeSolicitante.setForeground(Color.BLACK);
@@ -158,12 +154,12 @@ public class EditarPlanilha extends JDialog  {
 		txtUsuario.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtUsuario.setForeground(Color.BLACK);
@@ -175,12 +171,12 @@ public class EditarPlanilha extends JDialog  {
 		txtCentroDeCusto.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtCentroDeCusto.setForeground(Color.BLACK);
@@ -192,12 +188,12 @@ public class EditarPlanilha extends JDialog  {
 		txtItem.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtItem.setForeground(Color.BLACK);
@@ -244,12 +240,12 @@ public class EditarPlanilha extends JDialog  {
 		txtAtivo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtAtivo.setForeground(Color.BLACK);
@@ -261,12 +257,12 @@ public class EditarPlanilha extends JDialog  {
 		txtHostname.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtHostname.setForeground(Color.BLACK);
@@ -312,12 +308,12 @@ public class EditarPlanilha extends JDialog  {
 		txtModelo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtModelo.setForeground(Color.BLACK);
@@ -329,12 +325,12 @@ public class EditarPlanilha extends JDialog  {
 		txtServiceTag.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtServiceTag.setForeground(Color.BLACK);
@@ -346,12 +342,12 @@ public class EditarPlanilha extends JDialog  {
 		txtDdmmyyyy.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtDdmmyyyy.setForeground(new Color(255, 114, 118));
@@ -389,12 +385,12 @@ public class EditarPlanilha extends JDialog  {
 		txtCpu.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtCpu.setForeground(Color.BLACK);
@@ -416,12 +412,12 @@ public class EditarPlanilha extends JDialog  {
 		spinner_memoria.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		spinner_memoria
@@ -478,12 +474,12 @@ public class EditarPlanilha extends JDialog  {
 		txtNomeDoTecnico.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtNomeDoTecnico.setForeground(Color.BLACK);
@@ -495,12 +491,12 @@ public class EditarPlanilha extends JDialog  {
 		txtObservao.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtObservao.setForeground(Color.BLACK);
@@ -512,12 +508,12 @@ public class EditarPlanilha extends JDialog  {
 		txtStatus.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
-				}	
-				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnSave.doClick();
-				}	
+				}
 			}
 		});
 		txtStatus.setForeground(Color.BLACK);
@@ -537,8 +533,7 @@ public class EditarPlanilha extends JDialog  {
 		lblStatus.setBounds(220, 442, 83, 29);
 		panel.add(lblStatus);
 
-
-		//Botao salvar
+		// Botao salvar
 		btnSave = new JButton("Salvar");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -548,7 +543,7 @@ public class EditarPlanilha extends JDialog  {
 				// String sQtd = comboBoxQuantidade.getSelectedIndex()+"";
 				String Memoria = spinner_memoria.getValue().toString();
 				String dateString = txtDdmmyyyy.getText();
-				
+
 				// Manipulando os arraylist (dadabase)
 				if (txtLaudo.getText().equals("") || txtNomeSolicitante.getText().equals("")
 						|| txtUsuario.getText().equals("") || txtCentroDeCusto.getText().equals("")
@@ -579,14 +574,14 @@ public class EditarPlanilha extends JDialog  {
 							"O campo de memoria contem letras, por favor digite apenas numeros.",
 							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
 					return;
-				}else if (!dateString.matches("\\d{2}/\\d{2}/\\d{4}")) { // -> dd/MM/yyyy
+				} else if (!dateString.matches("\\d{2}/\\d{2}/\\d{4}")) { // -> dd/MM/yyyy
 					JOptionPane.showMessageDialog(EditarPlanilha.this,
 							"O campo de data não está no formato solicitado (dd/MM/yyyy), por favor reescreva.",
 							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
 					return;
-					
+
 				} else {
-							
+
 					Principal.btnSalvarAlteracoes.setEnabled(true);
 					flag = true;
 					for (int coluna = 0; coluna < Principal.colunas.size(); coluna++) {
@@ -641,21 +636,10 @@ public class EditarPlanilha extends JDialog  {
 				}
 
 				if (flag) {
-					// volta a janela principal para o estado anterior
-					Principal.frame.setEnabled(true);
-					Principal.btnEditar.setEnabled(false);
-					Principal.table.clearSelection();
-					Principal.frame.requestFocus();
-
-					// Atualiza a tabela
-					// Principal.limpaListas();
-					Principal.preencherTabelaProprietario();
-					Principal.table.updateUI();
-					Principal.table.requestFocus();
-					Principal.table.setRowSelectionInterval(linhaSelecionada, linhaSelecionada);
-					
 					// Fechamento da janela
 					finalizado = true;
+					
+					// volta a janela principal para o estado anterior
 					dispose();
 				}
 			}
@@ -754,16 +738,16 @@ public class EditarPlanilha extends JDialog  {
 		comboBoxDispositivo.setBounds(121, 198, 94, 29);
 		panel.add(comboBoxDispositivo);
 		requestFocus();
-		
+
 		addKeyListener(new KeyHandler() {
-			  public void keyPressed(KeyEvent e) {
-					if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-						dispose();
-					}	
-					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-						btnSave.doClick();
-					}	
-			    }
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}
+			}
 		});
 	}
 

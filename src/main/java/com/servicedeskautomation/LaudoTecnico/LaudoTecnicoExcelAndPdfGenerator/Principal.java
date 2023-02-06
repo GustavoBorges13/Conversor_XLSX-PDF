@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -90,6 +89,10 @@ public class Principal extends JFrame {
 	static JButton btnEditar;
 	private JTextPane txtpnAplicaoDesenvolvidaPara;;
 	public int KEYCODE_ESC = 27;
+	static Principal frame;
+	private JButton btnRemover;
+	private int qtdTemporaria;
+	private XSSFWorkbook work;
 
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
@@ -116,9 +119,6 @@ public class Principal extends JFrame {
 	static ArrayList<String> storageType = new ArrayList<String>();
 	static ArrayList<String> storageValue = new ArrayList<String>();
 	static String[] storageSpliter;
-	static Principal frame;
-	private JButton btnRemover;
-	private int qtdTemporaria;
 
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
@@ -274,16 +274,16 @@ public class Principal extends JFrame {
 		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
-		
+
 		JMenu mnNewMenu_2 = new JMenu("Ferramentas");
 		menuBar.add(mnNewMenu_2);
-		
+
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Opções");
 		mntmNewMenuItem_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Opcoes opcoesDialog = new Opcoes();
 				opcoesDialog.setVisible(true);
-				
+
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_2);
@@ -442,7 +442,7 @@ public class Principal extends JFrame {
 		btnPreencher.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				btnSalvarAlteracoes.setEnabled(false);
-				XSSFWorkbook work = null;
+				work = null;
 				XSSFSheet sheet;
 				XSSFRow row;
 
@@ -475,6 +475,7 @@ public class Principal extends JFrame {
 							}
 						}
 					}
+					work.close();
 					// Chegou na ultima linha que possui conteudo da planilha..
 				} catch (FileNotFoundException e1) {
 					JOptionPane.showMessageDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
@@ -482,6 +483,7 @@ public class Principal extends JFrame {
 					JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e3);
 				} finally {
 					try {
+						work.close();
 						int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
 						int pos = 0; // valor default
 
@@ -500,7 +502,9 @@ public class Principal extends JFrame {
 									|| ((row = sheet.getRow(i)) != null
 											&& row.getCell(1).getCellType() != CellType.BLANK)
 									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(2).getCellType() != CellType.BLANK)) {
+											&& row.getCell(2).getCellType() != CellType.BLANK)
+									|| ((row = sheet.getRow(i)) != null
+											&& row.getCell(17).getCellType() != CellType.BLANK)) {
 								storageSpliter = null; // limpa o vetor auxiliar
 
 								// Criando o DataBase Local (Armazenando os valores em Arraylists)
@@ -600,6 +604,7 @@ public class Principal extends JFrame {
 							work.close();
 
 						} else {
+							work.close();
 							throw new java.lang.ArrayIndexOutOfBoundsException();
 						}
 					} catch (IOException e2) {
@@ -673,7 +678,6 @@ public class Principal extends JFrame {
 			public void mouseClicked(MouseEvent arg0) {
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
-					JOptionPane.showMessageDialog(null, "Linha selecionada: "+linhaSelecionada);
 					// int[] selectedRows = table.getSelectedRows();
 					EditarPlanilha frame = new EditarPlanilha();
 					int toleranciaHD_SSD = 0;
@@ -683,7 +687,7 @@ public class Principal extends JFrame {
 					frame.setVisible(true);
 					frame.requestFocus();
 					frame.setResizable(false);
-					
+
 					// Deixa a janela principal desativada
 					Principal.this.setEnabled(false);
 
@@ -715,7 +719,32 @@ public class Principal extends JFrame {
 								} else {
 									frame.setVisible(true);
 								}
+							} else {
+								Principal.this.setEnabled(true);
+								JOptionPane.showMessageDialog(null, "AQUIIIIIIII");
+
+								// Habilita/desabilita botoes
+								btnEditar.setEnabled(false);
+								btnRemover.setEnabled(false);
+								table.clearSelection();
+								contentPane.requestFocus();
+								btnGerarArquivoPdf.setEnabled(false);
+
+								// Atualiza a tabela
+								// Principal.limpaListas();
+								preencherTabelaProprietario();
+								table.updateUI();
+								table.clearSelection();
+								table.requestFocus();
+								// table.setRowSelectionInterval(table.getRowCount()-1,table.getRowCount()-1);
 							}
+						}
+
+						@Override
+						public void windowDeactivated(WindowEvent e) {
+							// Focando a janela de gerar laudo se o usuario minimizou tudo clicando na area
+							// de trabalho
+							frame.requestFocus();
 						}
 					});
 
@@ -988,6 +1017,7 @@ public class Principal extends JFrame {
 						}
 					}, 300);
 				}
+
 			}
 
 			@Override
@@ -1017,15 +1047,14 @@ public class Principal extends JFrame {
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
 				adicionarArrayList();
-				
-				
+
 				// Atualiza a planilha
 				table.updateUI();
 				table.requestFocus();
 				table.setRowSelectionInterval(table.getRowCount() - 1, table.getRowCount() - 1);
 				int selectedRow = table.getSelectedRow();
-				//JOptionPane.showMessageDialog(null,selectedRow);
-				
+				// JOptionPane.showMessageDialog(null,selectedRow);
+
 				if (selectedRow != -1) {
 					// Point p = table.getMousePosition();
 					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0,
@@ -1075,7 +1104,7 @@ public class Principal extends JFrame {
 		btnSalvarAlteracoes = new JButton("Salvar alterações");
 		btnSalvarAlteracoes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				XSSFWorkbook work = null;
+				work = null;
 				int reply = JOptionPane.showConfirmDialog(null, "Você realmente deseja salvar (S/N)?", "Salvamento",
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
@@ -1110,23 +1139,23 @@ public class Principal extends JFrame {
 
 						// Calcula g
 						while (((row = sheet.getRow(g)) != null)) {
-							if( row.getCell(0).getCellType() == CellType.BLANK
-								|| row.getCell(1).getCellType() == CellType.BLANK
-								|| row.getCell(2).getCellType() == CellType.BLANK
-								|| row.getCell(3).getCellType() == CellType.BLANK
-								|| row.getCell(4).getCellType() == CellType.BLANK
-								|| row.getCell(5).getCellType() == CellType.BLANK
-								|| row.getCell(6).getCellType() == CellType.BLANK
-								|| row.getCell(7).getCellType() == CellType.BLANK
-								|| row.getCell(8).getCellType() == CellType.BLANK
-								|| row.getCell(9).getCellType() == CellType.BLANK
-								|| row.getCell(10).getCellType() == CellType.BLANK
-								|| row.getCell(11).getCellType() == CellType.BLANK
-								|| row.getCell(12).getCellType() == CellType.BLANK
-								|| row.getCell(13).getCellType() == CellType.BLANK
-								|| row.getCell(14).getCellType() == CellType.BLANK
-								|| row.getCell(15).getCellType() == CellType.BLANK
-								|| row.getCell(16).getCellType() == CellType.BLANK) {
+							if (row.getCell(0).getCellType() == CellType.BLANK
+									|| row.getCell(1).getCellType() == CellType.BLANK
+									|| row.getCell(2).getCellType() == CellType.BLANK
+									|| row.getCell(3).getCellType() == CellType.BLANK
+									|| row.getCell(4).getCellType() == CellType.BLANK
+									|| row.getCell(5).getCellType() == CellType.BLANK
+									|| row.getCell(6).getCellType() == CellType.BLANK
+									|| row.getCell(7).getCellType() == CellType.BLANK
+									|| row.getCell(8).getCellType() == CellType.BLANK
+									|| row.getCell(9).getCellType() == CellType.BLANK
+									|| row.getCell(10).getCellType() == CellType.BLANK
+									|| row.getCell(11).getCellType() == CellType.BLANK
+									|| row.getCell(12).getCellType() == CellType.BLANK
+									|| row.getCell(13).getCellType() == CellType.BLANK
+									|| row.getCell(14).getCellType() == CellType.BLANK
+									|| row.getCell(15).getCellType() == CellType.BLANK
+									|| row.getCell(16).getCellType() == CellType.BLANK) {
 								g++;
 							}
 						}
@@ -1156,7 +1185,6 @@ public class Principal extends JFrame {
 							btnSalvarAlteracoes.setEnabled(false);
 							btnEditar.setEnabled(false);
 							btnGerarArquivoPdf.setEnabled(false);
-
 						} catch (FileNotFoundException e) {
 							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
 						}
@@ -1210,7 +1238,7 @@ public class Principal extends JFrame {
 					frame.addWindowListener(new WindowAdapter() {
 						@Override
 						public void windowClosed(WindowEvent e) {
-							if (!EditarPlanilha.finalizado) {
+							if (!GerarLaudoPDF.finalizado) {
 								int result = JOptionPane.showConfirmDialog(frame,
 										"Você deseja realmente cancelar as operações e fechar a janela?", "Confirmação",
 										JOptionPane.YES_NO_OPTION);
@@ -1227,8 +1255,21 @@ public class Principal extends JFrame {
 								} else {
 									frame.setVisible(true);
 								}
+							} else {
+								JOptionPane.showMessageDialog(null, "AQUI");
+								Principal.this.setEnabled(true);
+								btnEditar.setEnabled(false);
+								table.requestFocus();
 							}
 						}
+
+						@Override
+						public void windowDeactivated(WindowEvent e) {
+							// Focando a janela de gerar laudo se o usuario minimizou tudo clicando na area
+							// de trabalho
+							frame.requestFocus();
+						}
+
 					});
 				} else {
 					JOptionPane.showMessageDialog(null,
