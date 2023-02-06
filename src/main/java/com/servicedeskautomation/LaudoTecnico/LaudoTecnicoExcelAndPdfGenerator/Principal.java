@@ -1138,26 +1138,11 @@ public class Principal extends JFrame {
 									new CellCopyPolicy());
 
 						// Calcula g
-						while (((row = sheet.getRow(g)) != null)) {
-							if (row.getCell(0).getCellType() == CellType.BLANK
-									|| row.getCell(1).getCellType() == CellType.BLANK
-									|| row.getCell(2).getCellType() == CellType.BLANK
-									|| row.getCell(3).getCellType() == CellType.BLANK
-									|| row.getCell(4).getCellType() == CellType.BLANK
-									|| row.getCell(5).getCellType() == CellType.BLANK
-									|| row.getCell(6).getCellType() == CellType.BLANK
-									|| row.getCell(7).getCellType() == CellType.BLANK
-									|| row.getCell(8).getCellType() == CellType.BLANK
-									|| row.getCell(9).getCellType() == CellType.BLANK
-									|| row.getCell(10).getCellType() == CellType.BLANK
-									|| row.getCell(11).getCellType() == CellType.BLANK
-									|| row.getCell(12).getCellType() == CellType.BLANK
-									|| row.getCell(13).getCellType() == CellType.BLANK
-									|| row.getCell(14).getCellType() == CellType.BLANK
-									|| row.getCell(15).getCellType() == CellType.BLANK
-									|| row.getCell(16).getCellType() == CellType.BLANK) {
-								g++;
-							}
+						while ((row = sheet.getRow(g)) != null && row.getCell(0).getCellType() == CellType.BLANK
+								&& row.getCell(1).getCellType() == CellType.BLANK
+								&& row.getCell(2).getCellType() == CellType.BLANK
+								&& row.getCell(3).getCellType() != CellType.BLANK) {
+							g++;
 						}
 
 						// SALVANDO NEW DADOS NA PLANILHA!
