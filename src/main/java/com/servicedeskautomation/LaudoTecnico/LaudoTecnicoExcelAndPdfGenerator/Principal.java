@@ -747,7 +747,8 @@ public class Principal extends JFrame {
 							frame.requestFocus();
 						}
 					});
-
+					linhaSelecionada = table.getSelectedRow();
+					
 					// Design - Deixar os textos em preto e Transpor dados da tabela para a janela
 					// nova
 					EditarPlanilha.txtLaudo.setForeground(Color.BLACK);
