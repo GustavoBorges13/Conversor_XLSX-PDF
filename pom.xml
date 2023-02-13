@@ -11,6 +11,13 @@
 		<maven.compiler.source>1.8.0</maven.compiler.source>
 		<maven.compiler.target>1.8.0</maven.compiler.target>
 	</properties>
+	<!-- REPOSITORIO para utilizar os servicos da cloudmersive native java library -->
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
@@ -24,18 +31,39 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>4.1.2</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/fr.opensagres.xdocreport/org.apache.poi.xwpf.converter.pdf -->
-		<!-- https://mvnrepository.com/artifact/fr.opensagres.xdocreport/fr.opensagres.poi.xwpf.converter.pdf -->
-		<dependency>
-			<groupId>fr.opensagres.xdocreport</groupId>
-			<artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
-			<version>2.0.2</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/ooxml-schemas -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>ooxml-schemas</artifactId>
 			<version>1.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.pdfbox/pdfbox -->
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.swinglabs/pdf-renderer -->
+		<dependency>
+			<groupId>org.swinglabs</groupId>
+			<artifactId>pdf-renderer</artifactId>
+			<version>1.0.5</version>
+		</dependency>
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-local</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-transformer-msoffice-word</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/uk.gov.gchq.gaffer/bitmap-library -->
+		<dependency>
+			<groupId>uk.gov.gchq.gaffer</groupId>
+			<artifactId>bitmap-library</artifactId>
+			<version>0.6.2</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
 		<dependency>

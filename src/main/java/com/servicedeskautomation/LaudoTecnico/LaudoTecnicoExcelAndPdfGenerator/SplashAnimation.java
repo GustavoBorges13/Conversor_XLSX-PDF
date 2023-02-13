@@ -29,14 +29,14 @@ public class SplashAnimation extends JFrame {
 	private JPanel contentPane;
 	private JProgressBar jProgressBarTelaSplash;
 	private JLabel jLabelMostraProgresso;
-	private Image img_logo = new ImageIcon(SplashAnimation.class.getResource("/resources/Logo_HPE_menor.png")).getImage()
-			.getScaledInstance(292, 73, Image.SCALE_SMOOTH);
-	
+	private Image img_logo = new ImageIcon(SplashAnimation.class.getResource("/resources/Logo_HPE_menor.png"))
+			.getImage().getScaledInstance(292, 73, Image.SCALE_SMOOTH);
+
 	private boolean flagNecessarioAtualizar = false;
 	private boolean flagDownloading = false;
 	private boolean flagLoading = false;
 	private boolean flagError = false;
-	
+
 	public SplashAnimation() {
 		setUndecorated(true);
 		TelaSplashCondominio();
@@ -81,7 +81,7 @@ public class SplashAnimation extends JFrame {
 					SplashAnimation frame = new SplashAnimation();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Erro ao abrir a janela: "+e);
 				}
 			}
 		});
@@ -93,7 +93,7 @@ public class SplashAnimation extends JFrame {
 				String userHome = System.getProperty("user.home");
 				String fileName = "modelo laudo.docx";
 				String pathRestante = "/Documents/ConversorXLSX-PDF/data";
-				
+
 				for (int i = 0; i < 101; i++) {
 					try {
 						sleep(30);
@@ -102,17 +102,16 @@ public class SplashAnimation extends JFrame {
 						// 40%
 						if (jProgressBarTelaSplash.getValue() <= 20) {
 							jLabelMostraProgresso.setText("Verificando arquivos de integridade...");
-							File pathExists = new File(userHome+pathRestante+"/"+fileName);
-							
-							if(pathExists.exists()) {
-								flagLoading=true;
-							}else {
-								flagDownloading=true;
+							File pathExists = new File(userHome + pathRestante + "/" + fileName);
+
+							if (pathExists.exists()) {
+								flagLoading = true;
+							} else {
+								flagDownloading = true;
 							}
-							
+
 						} else if (jProgressBarTelaSplash.getValue() <= 50 && flagLoading == true) {
-							
-							
+
 							jLabelMostraProgresso.setText("Carregando o modelo de laudo técnico...");
 							flagNecessarioAtualizar = true;
 							// }else if(!pathExists.exists() && flagDownloading==false){
@@ -128,16 +127,17 @@ public class SplashAnimation extends JFrame {
 						} else if (jProgressBarTelaSplash.getValue() <= 80) {
 							jLabelMostraProgresso.setText("Carregando banco de dados...");
 							// 100%
-						} else if (jProgressBarTelaSplash.getValue() == 100 && flagError==false) {
+						} else if (jProgressBarTelaSplash.getValue() == 100 && flagError == false) {
 							jLabelMostraProgresso.setText("Conectando com o sistema...");
 							Principal tela = new Principal();
 							tela.setVisible(true);
 							tela.requestFocus();
 							SplashAnimation.this.dispose();
 						}
+
 					} catch (Exception e) {
-						flagError=false;
-						System.out.println("Erro critico: "+e);
+						flagError = false;
+						JOptionPane.showMessageDialog(null, "Erro critico (1): "+e);
 					}
 				}
 			}
@@ -158,9 +158,9 @@ public class SplashAnimation extends JFrame {
 			url = new URL(sUrl);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
-			flagError=false;
-			JOptionPane.showMessageDialog(null, "Não foi possível encontrar os arquivos necessários para o download."
-					+e);
+			flagError = false;
+			JOptionPane.showMessageDialog(null,
+					"Não foi possível encontrar os arquivos necessários para o download." + e);
 			dispose();
 		}
 
@@ -170,7 +170,7 @@ public class SplashAnimation extends JFrame {
 		File file = new File(folder, fileName);
 		baixarArquivo.copyURLToFile(url, file);
 	}
-	
+
 	public void atualizarFile() {
 		String userHome = System.getProperty("user.home");
 		String fileName = "modelo laudo.docx";
@@ -183,9 +183,9 @@ public class SplashAnimation extends JFrame {
 		try {
 			url = new URL(sUrl);
 		} catch (MalformedURLException e) {
-			flagError=true;
-			JOptionPane.showMessageDialog(null, "Não foi possível encontrar os arquivos necessários para a atualização."
-					+e);
+			flagError = true;
+			JOptionPane.showMessageDialog(null,
+					"Não foi possível encontrar os arquivos necessários para a atualização." + e);
 			dispose();
 		}
 
@@ -194,11 +194,12 @@ public class SplashAnimation extends JFrame {
 		folder.mkdirs();
 
 		try {
-		    InputStream inputStream = url.openStream();
-		    Files.copy(inputStream, Paths.get(folder.getPath()+"\\"+fileName), StandardCopyOption.REPLACE_EXISTING);
+			InputStream inputStream = url.openStream();
+			Files.copy(inputStream, Paths.get(folder.getPath() + "\\" + fileName), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			flagError=true;
-		    e.printStackTrace();
+			flagError = true;
+			JOptionPane.showMessageDialog(null, "Erro critico (2): "+e+"\nPossivel erro de proxy ou offline (sem acesso a internet).");
+			System.exit(0);
 		}
 	}
 }

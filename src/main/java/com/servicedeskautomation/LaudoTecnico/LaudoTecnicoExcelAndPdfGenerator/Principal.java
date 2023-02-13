@@ -2,6 +2,7 @@ package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -283,7 +284,6 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				Opcoes opcoesDialog = new Opcoes();
 				opcoesDialog.setVisible(true);
-
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_2);
@@ -381,9 +381,20 @@ public class Principal extends JFrame {
 		jlocal.setColumns(10);
 		jlocal.setOpaque(true);
 		btnXLS = new JButton("XLSX");
+		btnXLS.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 
 		// BUTTON CHOOSER FILE
 		btnXLS.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				fc.setPreferredSize(new Dimension(700, 400));
@@ -435,6 +446,16 @@ public class Principal extends JFrame {
 
 		// BUTTON FILL
 		btnPreencher = new JButton("Preencher");
+		btnPreencher.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnPreencher.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnPreencher.setFocusable(false);
 		btnPreencher.setEnabled(false);
 
@@ -675,6 +696,16 @@ public class Principal extends JFrame {
 			boolean isAlreadyOneClick = false;
 
 			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (table.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+
+			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
@@ -748,7 +779,7 @@ public class Principal extends JFrame {
 						}
 					});
 					linhaSelecionada = table.getSelectedRow();
-					
+
 					// Design - Deixar os textos em preto e Transpor dados da tabela para a janela
 					// nova
 					EditarPlanilha.txtLaudo.setForeground(Color.BLACK);
@@ -1036,6 +1067,16 @@ public class Principal extends JFrame {
 
 		// BUTTO ADD ROW
 		btnAddLinha = new JButton("Adicionar");
+		btnAddLinha.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnAddLinha.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnAddLinha.setEnabled(false);
 		btnAddLinha.addActionListener(new ActionListener() {
 
@@ -1077,6 +1118,16 @@ public class Principal extends JFrame {
 
 		// BUTTON EDIT
 		btnEditar = new JButton("Editar");
+		btnEditar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnEditar.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnEditar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1103,6 +1154,16 @@ public class Principal extends JFrame {
 
 		// BUTTON SAVE
 		btnSalvarAlteracoes = new JButton("Salvar alterações");
+		btnSalvarAlteracoes.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnSalvarAlteracoes.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnSalvarAlteracoes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				work = null;
@@ -1189,6 +1250,16 @@ public class Principal extends JFrame {
 
 		// BUTTON GENERATE PDF FILE
 		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
+		btnGerarArquivoPdf.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnGerarArquivoPdf.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnGerarArquivoPdf.addActionListener(new ActionListener() {
 			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent arg0) {
@@ -1269,6 +1340,16 @@ public class Principal extends JFrame {
 
 		// BUTTON REMOVE
 		btnRemover = new JButton("Remover");
+		btnRemover.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnRemover.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int selectedRow = table.getSelectedRow();

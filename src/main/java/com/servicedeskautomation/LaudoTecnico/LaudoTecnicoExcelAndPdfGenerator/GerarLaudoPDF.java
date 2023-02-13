@@ -1,17 +1,24 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -35,6 +42,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.rendering.ImageType;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
@@ -51,9 +60,12 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHpsMeasure;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
+import com.documents4j.api.DocumentType;
+import com.documents4j.api.IConverter;
+import com.documents4j.job.LocalConverter;
 import com.formdev.flatlaf.FlatIntelliJLaf;
-import fr.opensagres.poi.xwpf.converter.pdf.PdfConverter;
-import fr.opensagres.poi.xwpf.converter.pdf.PdfOptions;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class GerarLaudoPDF extends JDialog {
 	private static final long serialVersionUID = 4893492449132639712L;
@@ -69,6 +81,10 @@ public class GerarLaudoPDF extends JDialog {
 	private JLabel remaningLabel = new JLabel("");;
 	private int textAreaCaracteresLimit = 440;
 	static boolean finalizado;
+	private static JLabel lblNewLabel;
+	private static JButton btnVisualizar;
+	private static JButton btnAbrirLocal;
+	static String pdfPATH;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -117,6 +133,10 @@ public class GerarLaudoPDF extends JDialog {
 				": : Visualiza\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
 		panel.setBounds(414, 11, 330, 507);
 		contentPane.add(panel);
+
+		lblNewLabel = new JLabel("");
+		lblNewLabel.setBounds(10, 19, 310, 477);
+		panel.add(lblNewLabel);
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
@@ -216,6 +236,16 @@ public class GerarLaudoPDF extends JDialog {
 		updateCount();
 
 		JComboBox comboBoxTemplate = new JComboBox();
+		comboBoxTemplate.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(comboBoxTemplate.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		comboBoxTemplate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// Computador Lento (Destkop/notebook)
@@ -227,6 +257,7 @@ public class GerarLaudoPDF extends JDialog {
 									+ " para realizar atividades na empresa HPE prejudicando no desempenho profissional do colaborador(a).");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
+					comboBoxTemplate.setForeground(Color.BLACK);
 				}
 				// Fonte (Desktop)
 				else if (comboBoxTemplate.getSelectedIndex() == 2) {
@@ -238,6 +269,7 @@ public class GerarLaudoPDF extends JDialog {
 									+ " estar realizando suas atividades na empresa HPE.");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
+					comboBoxTemplate.setForeground(Color.BLACK);
 				}
 				// Bateria não segura carga (Notebook)
 				else if (comboBoxTemplate.getSelectedIndex() == 3) {
@@ -249,6 +281,11 @@ public class GerarLaudoPDF extends JDialog {
 									+ " estar locomovendo-se e realizando suas atividades na empresa HPE sem precisar estar com o notebook carregando na tomada.");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
+					comboBoxTemplate.setForeground(Color.BLACK);
+				}
+				else {
+					comboBoxTemplate.setForeground(Color.LIGHT_GRAY);
+					textAreaAnalise.setText("");
 				}
 			}
 		});
@@ -288,6 +325,16 @@ public class GerarLaudoPDF extends JDialog {
 
 		// BOTAO INSERIR LINK
 		JButton btnInsirirLink = new JButton("Inserir link");
+		btnInsirirLink.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(btnInsirirLink.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnInsirirLink.setEnabled(false);
 		btnInsirirLink.setBounds(10, 472, 89, 23);
 		panel_1.add(btnInsirirLink);
@@ -299,6 +346,16 @@ public class GerarLaudoPDF extends JDialog {
 
 		// BOTAO GERAR ARQUIVO PDF
 		JButton btnGerarArquivoPDF = new JButton("Gerar arquivo em PDF");
+		btnGerarArquivoPDF.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnGerarArquivoPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
@@ -310,13 +367,52 @@ public class GerarLaudoPDF extends JDialog {
 		btnGerarArquivoPDF.setBounds(83, 523, 245, 23);
 		contentPane.add(btnGerarArquivoPDF);
 
-		// BOTAO VISUALIZAR
-		JButton btnVisualizar = new JButton("Visualizar");
+		btnVisualizar = new JButton("Visualizar");
+		btnVisualizar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(btnVisualizar.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+		btnVisualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					Desktop.getDesktop().open(new File(pdfPATH));
+				} catch (IOException ex) {
+					JOptionPane.showMessageDialog(null, ex);
+				}
+			}
+		});
+		btnVisualizar.setEnabled(false);
 		btnVisualizar.setBounds(443, 523, 123, 23);
 		contentPane.add(btnVisualizar);
 
-		// BOTAO ABRIR LOCAL
-		JButton btnAbrirLocal = new JButton("Abrir local");
+		btnAbrirLocal = new JButton("Abrir local");
+		btnAbrirLocal.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(btnAbrirLocal.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+		btnAbrirLocal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().open(new File(pdfPATH).getParentFile());
+					
+				} catch (IOException e1) {
+					JOptionPane.showMessageDialog(null, e1);
+				}
+			}
+		});
+		btnAbrirLocal.setEnabled(false);
 		btnAbrirLocal.setBounds(586, 522, 123, 23);
 		contentPane.add(btnAbrirLocal);
 
@@ -520,39 +616,58 @@ public class GerarLaudoPDF extends JDialog {
 			pathPdfGerados.mkdirs();
 
 			// Abrindo o arquivo word a ser convertido
-			try (FileInputStream is = new FileInputStream(pathBackup.getPath() + "\\"
-					+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
-					+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".docx");
-					FileOutputStream out = new FileOutputStream(pathPdfGerados.getPath() + "\\"
-							+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
-							+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf");) {
-
+			try {
 				long start = System.currentTimeMillis();
 
-				// 1) Carregando o DOCX para XWPFDocument
-				XWPFDocument document2 = new XWPFDocument(is);
+				// 1 - Carregando arquivo WORD (DOCX)
+				InputStream docxInputStream = new FileInputStream(pathBackup.getPath() + "\\"
+						+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+						+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".docx");
+				// 2 - Definindo posicao saida para o arquivo PDF
+				OutputStream outputStream = new FileOutputStream(pathPdfGerados.getPath() + "\\"
+						+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+						+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf");
 
-				// 2) Preparando Pdf options
-				PdfOptions options = PdfOptions.create();
+				// 3 - Convertendo para PDF
+				IConverter converter = LocalConverter.builder().build();
+				converter.convert(docxInputStream).as(DocumentType.DOCX).to(outputStream).as(DocumentType.PDF)
+						.execute();
+				outputStream.close();
 
-				// 3) Convertendo XWPFDocument para Pdf
-				PdfConverter.getInstance().convert(document2, out, options);
-				
+				pdfPATH = pathPdfGerados.getPath() + "\\" + Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0])
+						+ " - " + ativo[0] + " - " + Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0])
+						+ ".pdf";
+				File arquivo = new File(pdfPATH);
+
+				// 4 - Gerando a preview da primeira pagina PDF para a Label...
+				PDDocument doc = PDDocument.load(arquivo);
+				org.apache.pdfbox.rendering.PDFRenderer pdfRenderer = new org.apache.pdfbox.rendering.PDFRenderer(doc);
+				BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
+				ImageIcon img = new ImageIcon(bim);
+				ImageIcon imageIcon = new ImageIcon(img.getImage().getScaledInstance(310, 477, Image.SCALE_SMOOTH));
+				lblNewLabel.setIcon(imageIcon);
+
+				// Habilita botoes
+				btnVisualizar.setEnabled(true);
+				btnAbrirLocal.setEnabled(true);
+
 				JOptionPane.showMessageDialog(null,
-						Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+						"A conversão do arquivo MS Word para PDF ocorreu com sucesso!\n"
+								+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
 								+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf"
-								+ " foi convertido para PDF com sucesso! :: " + (System.currentTimeMillis() - start)
-								+ " milli seconds");
-
-				// Fecha o arquivo
-				out.close();
-				document2.close();
+								+ "\nDuração: " + ((System.currentTimeMillis() - start) / 1000) + " segundos.");
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, "Erro Exception IN: " + e);
 			}
-			JOptionPane.showMessageDialog(null, "Arquivo gerado com sucesso!");
-		} catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Erro com arquivo: " + e.getStackTrace());
+
+		} catch (
+
+		FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, "Erro com arquivo: " + e);
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro: " + e.getStackTrace());
+			JOptionPane.showMessageDialog(null, "Erro IO: " + e);
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, "Erro Exception: " + e);
 		}
 	}
 

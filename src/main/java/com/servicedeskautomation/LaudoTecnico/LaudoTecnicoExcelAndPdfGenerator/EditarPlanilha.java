@@ -12,6 +12,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
+
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -29,6 +31,8 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.event.ChangeEvent;
 import javax.swing.SpinnerNumberModel;
 import java.awt.event.KeyAdapter;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 @SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JDialog {
@@ -202,6 +206,16 @@ public class EditarPlanilha extends JDialog {
 		panel.add(txtItem);
 
 		comboBoxQuantidade = new JComboBox();
+		comboBoxQuantidade.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(comboBoxQuantidade.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		comboBoxQuantidade.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				requestFocus();
@@ -271,6 +285,16 @@ public class EditarPlanilha extends JDialog {
 		panel.add(txtHostname);
 
 		comboBoxFabricante = new JComboBox();
+		comboBoxFabricante.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(comboBoxFabricante.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		comboBoxFabricante.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				requestFocus();
@@ -438,6 +462,16 @@ public class EditarPlanilha extends JDialog {
 		});
 
 		comboBoxStorage = new JComboBox();
+		comboBoxStorage.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(comboBoxStorage.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		comboBoxStorage.setMaximumRowCount(9);
 		comboBoxStorage.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -535,6 +569,16 @@ public class EditarPlanilha extends JDialog {
 
 		// Botao salvar
 		btnSave = new JButton("Salvar");
+		btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(btnSave.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				linhaSelecionada = Principal.table.getSelectedRow();
@@ -708,6 +752,16 @@ public class EditarPlanilha extends JDialog {
 		panel.add(lblNomeDoTcnico);
 
 		comboBoxDispositivo = new JComboBox();
+		comboBoxDispositivo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if(comboBoxDispositivo.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
 		comboBoxDispositivo.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
