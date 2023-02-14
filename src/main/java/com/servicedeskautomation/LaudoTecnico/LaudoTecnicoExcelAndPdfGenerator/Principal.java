@@ -366,7 +366,7 @@ public class Principal extends JFrame {
 		txtpnAplicaoDesenvolvidaPara.setParagraphAttributes(attr, true);
 		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
 		txtpnAplicaoDesenvolvidaPara.setText(
-				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\nO projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo gitbash do github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio em Ajuda-Sobre (Ctrl+S).\r\n\r\nSobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\nAo selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. \r\nCaso o usuario esteja satisfeito, poderá selecionar a linha em especifico e utilizar a ferramenta de EXPORTAR, onde fará será realizado uma automação, transcrevendo os dados da linha selecionada para um documento WORD formatado no padrão da empresa e logo seguinte salva-lo em PDF na pasta alvo que posteriormente será aberto automaticamente para revisão do mesmo para ser enviado ao cliente sucessivamente.\r\n\r\nAtt. Gustavo Borges.");
+				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\nO projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo gitbash do github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio em Ajuda-Visite... (Ctrl+V).\r\n\r\nSobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\nAo selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. \r\nCaso o usuario esteja satisfeito, poderá selecionar a linha em especifico e utilizar a ferramenta de EXPORTAR, onde fará será realizado uma automação, transcrevendo os dados da linha selecionada para um documento WORD formatado no padrão da empresa e logo seguinte salva-lo em PDF na pasta alvo que posteriormente será aberto automaticamente para revisão do mesmo para ser enviado ao cliente sucessivamente.\r\n\r\nAtt. Gustavo Borges.");
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(105, 105, 105));
 		separator.setBounds(11, 33, 627, 2);
@@ -681,7 +681,7 @@ public class Principal extends JFrame {
 		jtitulo.setBounds(39, 131, 521, 39);
 		contentPane.add(jtitulo);
 
-		JLabel lblTituloPlanilha = new JLabel("Titulo da planilha");
+		JLabel lblTituloPlanilha = new JLabel("Nome da planilha");
 		lblTituloPlanilha.setBounds(39, 106, 105, 14);
 		contentPane.add(lblTituloPlanilha);
 
@@ -752,8 +752,7 @@ public class Principal extends JFrame {
 								}
 							} else {
 								Principal.this.setEnabled(true);
-								JOptionPane.showMessageDialog(null, "AQUIIIIIIII");
-
+				
 								// Habilita/desabilita botoes
 								btnEditar.setEnabled(false);
 								btnRemover.setEnabled(false);
@@ -1267,11 +1266,14 @@ public class Principal extends JFrame {
 				int[] linhasSelecionadas = Principal.table.getSelectedRows();
 
 				if (linhasSelecionadas.length > 1) {
-					for (int i = 0; i < linhasSelecionadas.length - 1; i++) {
+					for (int i = 0; i < linhasSelecionadas.length; i++) {
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
 							if (Principal.table.getValueAt(linhasSelecionadas[i], 6)
 									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 6))) {
 								flagContinuacao = true;
+								break;
+							}else {
+								flagContinuacao = false;
 								break;
 							}
 						}

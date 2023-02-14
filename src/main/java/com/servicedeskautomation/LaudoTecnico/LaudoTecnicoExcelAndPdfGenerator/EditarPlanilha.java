@@ -378,7 +378,7 @@ public class EditarPlanilha extends JDialog {
 		txtDdmmyyyy.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent arg0) {
-				if (txtDdmmyyyy.getText().equals("dd-mm-yyyy")) {
+				if (txtDdmmyyyy.getText().equals("dd/MM/yyyy")) {
 					txtDdmmyyyy.setText("");
 					txtDdmmyyyy.setForeground(Color.BLACK);
 				} else {
@@ -390,12 +390,12 @@ public class EditarPlanilha extends JDialog {
 			public void focusLost(FocusEvent e) {
 				if (txtDdmmyyyy.getText().equals("")) {
 					txtDdmmyyyy.setForeground(new Color(255, 114, 118));
-					txtDdmmyyyy.setText("dd-mm-yyyy");
+					txtDdmmyyyy.setText("dd/MM/yyyy");
 				}
 
 			}
 		});
-		txtDdmmyyyy.setText("dd-mm-yyyy");
+		txtDdmmyyyy.setText("dd/MM/yyyy");
 		txtDdmmyyyy.setColumns(10);
 		txtDdmmyyyy.setBounds(314, 258, 98, 29);
 		panel.add(txtDdmmyyyy);

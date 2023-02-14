@@ -254,6 +254,11 @@ public class Opcoes extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("OK");
+				okButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
@@ -263,7 +268,7 @@ public class Opcoes extends JDialog {
 				cancelButton.addActionListener(new ActionListener() {
 
 					public void actionPerformed(ActionEvent arg0) {
-						System.exit(0);
+						dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

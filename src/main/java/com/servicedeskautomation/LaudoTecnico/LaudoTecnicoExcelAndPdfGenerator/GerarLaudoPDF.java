@@ -66,6 +66,7 @@ import com.documents4j.job.LocalConverter;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.border.LineBorder;
 
 public class GerarLaudoPDF extends JDialog {
 	private static final long serialVersionUID = 4893492449132639712L;
@@ -85,6 +86,7 @@ public class GerarLaudoPDF extends JDialog {
 	private static JButton btnVisualizar;
 	private static JButton btnAbrirLocal;
 	static String pdfPATH;
+	boolean flagProcessar = false;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -135,6 +137,7 @@ public class GerarLaudoPDF extends JDialog {
 		contentPane.add(panel);
 
 		lblNewLabel = new JLabel("");
+		lblNewLabel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblNewLabel.setBounds(10, 19, 310, 477);
 		panel.add(lblNewLabel);
 
@@ -239,8 +242,10 @@ public class GerarLaudoPDF extends JDialog {
 		comboBoxTemplate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(comboBoxTemplate.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (comboBoxTemplate.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -282,8 +287,7 @@ public class GerarLaudoPDF extends JDialog {
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
 					comboBoxTemplate.setForeground(Color.BLACK);
-				}
-				else {
+				} else {
 					comboBoxTemplate.setForeground(Color.LIGHT_GRAY);
 					textAreaAnalise.setText("");
 				}
@@ -310,11 +314,11 @@ public class GerarLaudoPDF extends JDialog {
 		for (int i = 0; i < linhasSelecionadas.length; i++) {
 			String textoAntigo = editorPaneConsideracoesTecnicas.getText();
 			if (i == linhasSelecionadas.length - 1)
-				editorPaneConsideracoesTecnicas
-						.setText(textoAntigo + "\n\t•  " + Principal.item.get(linhasSelecionadas[i]) + ".");
+				editorPaneConsideracoesTecnicas.setText(textoAntigo + "\n\t•  " + "0"
+						+ Principal.qtd.get(linhasSelecionadas[i]) +" "+ Principal.item.get(linhasSelecionadas[i]) + ".");
 			else
-				editorPaneConsideracoesTecnicas
-						.setText(textoAntigo + "\n\t•  " + Principal.item.get(linhasSelecionadas[i]) + ";");
+				editorPaneConsideracoesTecnicas.setText(textoAntigo + "\n\t•  " + "0"
+						+ Principal.qtd.get(linhasSelecionadas[i]) +" "+ Principal.item.get(linhasSelecionadas[i]) + ";");
 		}
 		scrollPane_1.setViewportView(editorPaneConsideracoesTecnicas);
 
@@ -328,8 +332,10 @@ public class GerarLaudoPDF extends JDialog {
 		btnInsirirLink.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(btnInsirirLink.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnInsirirLink.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -351,6 +357,7 @@ public class GerarLaudoPDF extends JDialog {
 			public void mouseEntered(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -358,10 +365,16 @@ public class GerarLaudoPDF extends JDialog {
 		});
 		btnGerarArquivoPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-
-				// Executa o metodo de substituicao de valores no documento word...
-				// Abrindo o arquivo...
-				processamentoWord();
+				if (txtNomeTecnico.getText().equals("") || txtUsuarioRede.getText().equals("")
+						|| txtCentroCusto.getText().equals("") || textAreaAnalise.getText().equals("")) {
+					JOptionPane.showMessageDialog(null,
+							"Existem campos obrigatórios em brancos ou vazios, por favor preencha-os.");
+				} else if (textAreaAnalise.getText().length() <= 30) {
+					JOptionPane.showMessageDialog(null,
+							"O campo da analise não pode passar de 440 caracteres e nem ser inferior a 30 caracteres.");
+				} else {
+					processamentoWord();
+				}
 			}
 		});
 		btnGerarArquivoPDF.setBounds(83, 523, 245, 23);
@@ -369,10 +382,13 @@ public class GerarLaudoPDF extends JDialog {
 
 		btnVisualizar = new JButton("Visualizar");
 		btnVisualizar.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(btnVisualizar.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnVisualizar.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -395,8 +411,10 @@ public class GerarLaudoPDF extends JDialog {
 		btnAbrirLocal.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(btnAbrirLocal.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnAbrirLocal.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -406,7 +424,7 @@ public class GerarLaudoPDF extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Desktop.getDesktop().open(new File(pdfPATH).getParentFile());
-					
+
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(null, e1);
 				}
@@ -418,7 +436,7 @@ public class GerarLaudoPDF extends JDialog {
 
 	}
 
-	private static void processamentoWord() {
+	private void processamentoWord() {
 		try {
 			// Shortcuts
 			String fileName = "modelo laudo.docx";
@@ -618,6 +636,7 @@ public class GerarLaudoPDF extends JDialog {
 			// Abrindo o arquivo word a ser convertido
 			try {
 				long start = System.currentTimeMillis();
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
 				// 1 - Carregando arquivo WORD (DOCX)
 				InputStream docxInputStream = new FileInputStream(pathBackup.getPath() + "\\"
@@ -656,6 +675,7 @@ public class GerarLaudoPDF extends JDialog {
 								+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
 								+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf"
 								+ "\nDuração: " + ((System.currentTimeMillis() - start) / 1000) + " segundos.");
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "Erro Exception IN: " + e);
 			}
