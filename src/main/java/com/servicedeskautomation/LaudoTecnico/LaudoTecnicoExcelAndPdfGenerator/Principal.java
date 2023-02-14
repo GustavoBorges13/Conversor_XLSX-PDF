@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -94,7 +95,8 @@ public class Principal extends JFrame {
 	private JButton btnRemover;
 	private int qtdTemporaria;
 	private XSSFWorkbook work;
-
+	private int row = 0;
+	
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
 	static ArrayList<String> nomeSolicitante = new ArrayList<String>();
@@ -121,6 +123,7 @@ public class Principal extends JFrame {
 	static ArrayList<String> storageValue = new ArrayList<String>();
 	static String[] storageSpliter;
 
+	
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -263,7 +266,7 @@ public class Principal extends JFrame {
 			}
 		});
 
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Visite o repositorio deste projeto...");
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Repositorio deste projeto...");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, new MensagemComLink(
@@ -271,15 +274,17 @@ public class Principal extends JFrame {
 						"Informações adicionais", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		mntmNewMenuItem_1.setMnemonic('V');
-		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK));
+		mntmNewMenuItem_1.setMnemonic('R');
+		mntmNewMenuItem_1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_DOWN_MASK));
 		mnNewMenu.add(mntmNewMenuItem_1);
 		mnNewMenu.add(mntmNewMenuItem);
 
 		JMenu mnNewMenu_2 = new JMenu("Ferramentas");
 		menuBar.add(mnNewMenu_2);
 
-		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Opções");
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Opções...");
+		mntmNewMenuItem_2.setMnemonic('O');
+		mntmNewMenuItem_2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		mntmNewMenuItem_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Opcoes opcoesDialog = new Opcoes();
@@ -386,6 +391,7 @@ public class Principal extends JFrame {
 			public void mouseEntered(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -394,7 +400,7 @@ public class Principal extends JFrame {
 
 		// BUTTON CHOOSER FILE
 		btnXLS.addActionListener(new ActionListener() {
-			
+
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser fc = new JFileChooser();
 				fc.setPreferredSize(new Dimension(700, 400));
@@ -427,7 +433,7 @@ public class Principal extends JFrame {
 					requestFocus();
 
 					// Limpa tabela se estiver aberta antes
-					limpaListas();
+					limparArrayList();
 					table.createDefaultColumnsFromModel();
 				}
 
@@ -449,8 +455,10 @@ public class Principal extends JFrame {
 		btnPreencher.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (btnPreencher.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnPreencher.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -468,7 +476,7 @@ public class Principal extends JFrame {
 				XSSFRow row;
 
 				// Limpeza dos dados salvos nas listas é como se fosse um F5
-				limpaListas();
+				limparArrayList();
 
 				try {
 					int i = 0; // primeira linha
@@ -633,7 +641,7 @@ public class Principal extends JFrame {
 					} catch (java.lang.ArrayIndexOutOfBoundsException e3) {
 						JOptionPane.showMessageDialog(null,
 								"Esta não é a planilha que utilizamos em 2022-2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
-										+ " este codigo foi feito especificamente para \nser utilizado com esse tipo de planilha devido as formatações"
+										+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
 										+ " e quantidade de colunas.\nErro: " + e3);
 					}
 				}
@@ -697,7 +705,8 @@ public class Principal extends JFrame {
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (table.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (table.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 
 			@Override
@@ -752,7 +761,7 @@ public class Principal extends JFrame {
 								}
 							} else {
 								Principal.this.setEnabled(true);
-				
+
 								// Habilita/desabilita botoes
 								btnEditar.setEnabled(false);
 								btnRemover.setEnabled(false);
@@ -1049,9 +1058,9 @@ public class Principal extends JFrame {
 					}, 300);
 				}
 
-			}
+	}
 
-			@Override
+	@Override
 			public void mousePressed(MouseEvent e) {
 				int linhaSelecionada = table.getSelectedRow();
 				if (table.isRowSelected(linhaSelecionada)) {
@@ -1069,8 +1078,10 @@ public class Principal extends JFrame {
 		btnAddLinha.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (btnAddLinha.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnAddLinha.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -1120,8 +1131,10 @@ public class Principal extends JFrame {
 		btnEditar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (btnEditar.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnEditar.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -1156,8 +1169,10 @@ public class Principal extends JFrame {
 		btnSalvarAlteracoes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (btnSalvarAlteracoes.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnSalvarAlteracoes.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -1227,6 +1242,10 @@ public class Principal extends JFrame {
 							work.close(); // Fecha a planilha
 							JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
 
+							// Atualiza a tabela...
+							preencherTabelaProprietario();
+							table.updateUI();
+
 							// Desabilita botoes
 							btnSalvarAlteracoes.setEnabled(false);
 							btnEditar.setEnabled(false);
@@ -1252,8 +1271,10 @@ public class Principal extends JFrame {
 		btnGerarArquivoPdf.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (btnGerarArquivoPdf.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnGerarArquivoPdf.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -1272,7 +1293,7 @@ public class Principal extends JFrame {
 									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 6))) {
 								flagContinuacao = true;
 								break;
-							}else {
+							} else {
 								flagContinuacao = false;
 								break;
 							}
@@ -1345,8 +1366,10 @@ public class Principal extends JFrame {
 		btnRemover.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if (btnRemover.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnRemover.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -1381,6 +1404,48 @@ public class Principal extends JFrame {
 		btnRemover.setBounds(269, 485, 105, 23);
 		contentPane.add(btnRemover);
 
+		// Copy dados da tabela (atalhos)
+	
+		table.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_C) {
+					row = table.getSelectedRow();
+				}
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_V) {
+					if (row != -1) {
+						// Atualiza o banco de dados
+						copiarArrayList(row);
+
+						// Atualiza a tabela com os novos dados
+						((ModeloTabela) table.getModel()).fireTableDataChanged();
+						table.updateUI();
+						//preencherTabelaProprietario();
+
+						// Habilita ou desabilita botoes
+						btnEditar.setEnabled(false);
+						btnRemover.setEnabled(false);
+						btnSalvarAlteracoes.setEnabled(true);
+						btnGerarArquivoPdf.setEnabled(false);
+					}
+				}
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
+					btnRemover.doClick();
+				}
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_B) {
+					btnSalvarAlteracoes.doClick();
+				}
+				if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_N) {
+					btnAddLinha.doClick();
+				}
+				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_G) {
+					btnGerarArquivoPdf.doClick();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_F5 || (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_Z)) {
+					btnPreencher.doClick();
+				}
+			}
+		});
 	}
 
 	public ArrayList<String> removeEspacos(ArrayList<String> lista) {
@@ -1403,7 +1468,32 @@ public class Principal extends JFrame {
 
 	}
 
-	public static void limpaListas() {
+	public static void copiarArrayList(int linha) {
+		dados.add(dados.get(linha));
+		laudo.add(laudo.get(linha));
+		nomeSolicitante.add(nomeSolicitante.get(linha));
+		usuario.add(usuario.get(linha));
+		centroCusto.add(centroCusto.get(linha));
+		item.add(item.get(linha));
+		qtd.add(qtd.get(linha));
+		ativo.add(ativo.get(linha));
+		dispositivo.add(dispositivo.get(linha));
+		hostname.add(hostname.get(linha));
+		fabricante.add(fabricante.get(linha));
+		modelo.add(modelo.get(linha));
+		serviceTag.add(serviceTag.get(linha));
+		dataAquisicao.add(dataAquisicao.get(linha));
+		cpu.add(cpu.get(linha));
+		storage.add(storage.get(linha));
+		storageType.add(storageType.get(linha));
+		storageValue.add(storageValue.get(linha));
+		memoria.add(memoria.get(linha));
+		tecnico.add(tecnico.get(linha));
+		observacao.add(observacao.get(linha));
+		status.add(status.get(linha));
+	}
+
+	public static void limparArrayList() {
 		laudo.clear();
 		nomeSolicitante.clear();
 		usuario.clear();

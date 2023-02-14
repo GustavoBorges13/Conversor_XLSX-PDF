@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class Opcoes extends JDialog {
@@ -49,19 +51,21 @@ public class Opcoes extends JDialog {
 			Opcoes dialog = new Opcoes();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public Opcoes() {
+		
 		// Shortcuts
 		String userHome = System.getProperty("user.home");
 		String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
 		String pathData = userHome + pathRestante;
 		String pathBackup = userHome + pathRestante + "Backup/";
 		String pathPdfGenerated = userHome + pathRestante + "Pdf generated/";
-		
+
 		setTitle("Ferrramentas - Opções");
 		setBounds(100, 100, 500, 300);
 		setLocationRelativeTo(null);
@@ -71,6 +75,7 @@ public class Opcoes extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
+
 			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 			tabbedPane.setBackground(new Color(240, 240, 240));
 			tabbedPane.setBounds(10, 11, 464, 217);
@@ -155,7 +160,7 @@ public class Opcoes extends JDialog {
 								Desktop.getDesktop().open(new File(pathData));
 							} catch (IOException e1) {
 								e1.printStackTrace();
-							}finally{
+							} finally {
 								new File(pathData).mkdirs();
 								try {
 									Desktop.getDesktop().open(new File(pathData));
@@ -165,10 +170,12 @@ public class Opcoes extends JDialog {
 								}
 							}
 						}
+
 						@Override
 						public void mouseEntered(MouseEvent e) {
 							setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 						}
+
 						@Override
 						public void mouseExited(MouseEvent e) {
 							setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -189,7 +196,7 @@ public class Opcoes extends JDialog {
 							} catch (IOException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
-							}finally {
+							} finally {
 								new File(pathBackup).mkdirs();
 								try {
 									Desktop.getDesktop().open(new File(pathBackup));
@@ -199,10 +206,12 @@ public class Opcoes extends JDialog {
 								}
 							}
 						}
+
 						@Override
 						public void mouseEntered(MouseEvent e) {
 							setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 						}
+
 						@Override
 						public void mouseExited(MouseEvent e) {
 							setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -213,6 +222,7 @@ public class Opcoes extends JDialog {
 					lblNewLabel_2.setBounds(429, 49, 20, 14);
 					panel.add(lblNewLabel_2);
 				}
+
 				{
 					JLabel lblNewLabel_3 = new JLabel("");
 					lblNewLabel_3.addMouseListener(new MouseAdapter() {
@@ -222,7 +232,7 @@ public class Opcoes extends JDialog {
 								Desktop.getDesktop().open(new File(pathPdfGenerated));
 							} catch (IOException e) {
 								e.printStackTrace();
-							}finally {
+							} finally {
 								new File(pathPdfGenerated).mkdirs();
 								try {
 									Desktop.getDesktop().open(new File(pathPdfGenerated));
@@ -232,10 +242,12 @@ public class Opcoes extends JDialog {
 								}
 							}
 						}
+
 						@Override
 						public void mouseEntered(MouseEvent e) {
 							setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 						}
+
 						@Override
 						public void mouseExited(MouseEvent e) {
 							setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -276,4 +288,5 @@ public class Opcoes extends JDialog {
 			}
 		}
 	}
+
 }
