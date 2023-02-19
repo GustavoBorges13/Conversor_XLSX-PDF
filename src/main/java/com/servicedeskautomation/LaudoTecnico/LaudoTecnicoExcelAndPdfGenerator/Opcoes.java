@@ -64,6 +64,7 @@ public class Opcoes extends JDialog {
 		String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
 		String pathData = userHome + pathRestante;
 		String pathBackup = userHome + pathRestante + "Backup/";
+		//File diretorioInicial = new File("\\\\fscatorg01\\..."); //Substituir o local do pdf
 		String pathPdfGenerated = userHome + pathRestante + "Pdf generated/";
 
 		setTitle("Ferrramentas - Opções");

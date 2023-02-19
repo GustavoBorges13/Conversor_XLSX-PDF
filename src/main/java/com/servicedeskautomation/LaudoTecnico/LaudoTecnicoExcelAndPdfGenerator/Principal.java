@@ -96,6 +96,8 @@ public class Principal extends JFrame {
 	private int qtdTemporaria;
 	private XSSFWorkbook work;
 	private int row = 0;
+	private int ultimaLinhaOld = 0;
+	private boolean flagAdd = false;
 	
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
@@ -123,7 +125,6 @@ public class Principal extends JFrame {
 	static ArrayList<String> storageValue = new ArrayList<String>();
 	static String[] storageSpliter;
 
-	
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -270,7 +271,7 @@ public class Principal extends JFrame {
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, new MensagemComLink(
-						"Conversor XLSX-PDF<br/>Versão XXX <br/><br/>Gustavo Borges<br/><a href=\"https://github.com/GustavoBorges13\">https://github.com/GustavoBorges13</a>"),
+						"Conversor XLSX-PDF<br/>Versão XXX <br/><br/>Autor: Gustavo Borges Peres da Silva<br/><a href=\"https://github.com/GustavoBorges13/Conversor_XLSX-PDF\">https://github.com/GustavoBorges13/Conversor_XLSX-PDF</a>"),
 						"Informações adicionais", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -402,7 +403,10 @@ public class Principal extends JFrame {
 		btnXLS.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				JFileChooser fc = new JFileChooser();
+				//File diretorioInicial = new File("\\\\fscatorg01\\...");
+				String userHome = System.getProperty("user.home");
+		        String diretorioInicial = userHome + File.separator + "Downloads";
+				JFileChooser fc = new JFileChooser(diretorioInicial);
 				fc.setPreferredSize(new Dimension(700, 400));
 
 				// Restringir o usuário para selecionar arquivos de todos os tipos
@@ -415,7 +419,7 @@ public class Principal extends JFrame {
 				FileNameExtensionFilter restrict = new FileNameExtensionFilter("Somente arquivos .xlsx", "xlsx");
 				fc.addChoosableFileFilter(restrict);
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
+			
 				int resultado = fc.showOpenDialog(null);
 
 				if (resultado == JFileChooser.CANCEL_OPTION) {
@@ -624,14 +628,16 @@ public class Principal extends JFrame {
 								else
 									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
 								tecnico.add(row.getCell(16).getStringCellValue());
+								//JOptionPane.showMessageDialog(null, nomeSolicitante.get(i-1));
 								observacao.add(row.getCell(17).getStringCellValue());
+								
 								status.add(row.getCell(18).getStringCellValue());
 
 								i++;
 							}
 							qtdTemporaria = laudo.size();
 							work.close();
-
+							
 						} else {
 							work.close();
 							throw new java.lang.ArrayIndexOutOfBoundsException();
@@ -671,7 +677,10 @@ public class Principal extends JFrame {
 
 				// Preenche a tabela
 				preencherTabelaProprietario();
-
+				
+				// Anota quantas linhas de dados tem
+				ultimaLinhaOld=table.getRowCount();
+				
 				// Habilita os botoes auxiliares para controlar a planilha
 				btnAddLinha.setEnabled(true);
 				btnEditar.setEnabled(false);
@@ -754,7 +763,7 @@ public class Principal extends JFrame {
 									table.clearSelection();
 									contentPane.requestFocus();
 									btnGerarArquivoPdf.setEnabled(false);
-
+									flagAdd = false;
 									// frame.setVisible(false);
 								} else {
 									frame.setVisible(true);
@@ -768,7 +777,7 @@ public class Principal extends JFrame {
 								table.clearSelection();
 								contentPane.requestFocus();
 								btnGerarArquivoPdf.setEnabled(false);
-
+								
 								// Atualiza a tabela
 								// Principal.limpaListas();
 								preencherTabelaProprietario();
@@ -786,6 +795,7 @@ public class Principal extends JFrame {
 							frame.requestFocus();
 						}
 					});
+
 					linhaSelecionada = table.getSelectedRow();
 
 					// Design - Deixar os textos em preto e Transpor dados da tabela para a janela
@@ -862,6 +872,12 @@ public class Principal extends JFrame {
 					// System.out.println("Type: "+storageType.get(linhaSelecionada)+" Value:
 					// "+Integer.parseInt(storageValue.get(linhaSelecionada)));
 					// --- HD ---
+					if(flagAdd == true && (ultimaLinhaOld <= table.getRowCount())) {
+						storageSpliter = storage.get(linhaSelecionada).split(" ");
+						storageValue.set(linhaSelecionada, storageSpliter[pos]);
+						storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
+					}
+		
 					if (storageType.get(linhaSelecionada).equals("HD")) {
 						toleranciaHD_SSD = 20;
 						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
@@ -1058,9 +1074,9 @@ public class Principal extends JFrame {
 					}, 300);
 				}
 
-	}
+			}
 
-	@Override
+			@Override
 			public void mousePressed(MouseEvent e) {
 				int linhaSelecionada = table.getSelectedRow();
 				if (table.isRowSelected(linhaSelecionada)) {
@@ -1095,7 +1111,8 @@ public class Principal extends JFrame {
 				btnEditar.setEnabled(true);
 				btnRemover.setEnabled(true);
 				btnSalvarAlteracoes.setEnabled(true);
-
+				flagAdd = true;
+				
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
 				adicionarArrayList();
@@ -1243,13 +1260,15 @@ public class Principal extends JFrame {
 							JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
 
 							// Atualiza a tabela...
-							preencherTabelaProprietario();
-							table.updateUI();
-
+							btnPreencher.doClick();
+							
 							// Desabilita botoes
 							btnSalvarAlteracoes.setEnabled(false);
 							btnEditar.setEnabled(false);
 							btnGerarArquivoPdf.setEnabled(false);
+							
+							// Alterar flags
+							flagAdd = false;
 						} catch (FileNotFoundException e) {
 							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
 						}
@@ -1405,22 +1424,24 @@ public class Principal extends JFrame {
 		contentPane.add(btnRemover);
 
 		// Copy dados da tabela (atalhos)
-	
 		table.addKeyListener(new KeyAdapter() {
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_C) {
 					row = table.getSelectedRow();
 				}
 				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_V) {
-					if (row != -1) {
+					if (row != -1 && table.getValueAt(row, 0) != null) {
 						// Atualiza o banco de dados
 						copiarArrayList(row);
 
 						// Atualiza a tabela com os novos dados
+						preencherTabelaProprietario();
 						((ModeloTabela) table.getModel()).fireTableDataChanged();
 						table.updateUI();
-						//preencherTabelaProprietario();
+						
+						// preencherTabelaProprietario();
 
 						// Habilita ou desabilita botoes
 						btnEditar.setEnabled(false);

@@ -36,7 +36,10 @@ public class SplashAnimation extends JFrame {
 	private boolean flagDownloading = false;
 	private boolean flagLoading = false;
 	private boolean flagError = false;
-
+	private String userHome;
+	private String fileName;
+	private String pathRestante;
+	
 	public SplashAnimation() {
 		setUndecorated(true);
 		TelaSplashCondominio();
@@ -90,10 +93,15 @@ public class SplashAnimation extends JFrame {
 	public void TelaSplashCondominio() {
 		new Thread() {
 			public void run() {
-				String userHome = System.getProperty("user.home");
-				String fileName = "modelo laudo.docx";
-				String pathRestante = "/Documents/ConversorXLSX-PDF/data";
-
+				userHome = System.getProperty("user.home");
+				fileName = "modelo laudo.docx";
+				pathRestante = "/Documents/ConversorXLSX-PDF/data";
+				File pathVerify = new File(userHome+"/Documents");
+				if(pathVerify.exists() == false) {
+					JOptionPane.showMessageDialog(null, "Nao existe");
+					pathRestante =  "/Documentos/ConversorXLSX-PDF/data";
+				}
+				
 				for (int i = 0; i < 101; i++) {
 					try {
 						sleep(30);
@@ -146,9 +154,6 @@ public class SplashAnimation extends JFrame {
 
 	public void downloadFile() {
 		LeitorURL baixarArquivo = new LeitorURL();
-		String userHome = System.getProperty("user.home");
-		String fileName = "modelo laudo.docx";
-		String pathRestante = "/Documents/ConversorXLSX-PDF/data";
 
 		// URL que aponta para o arquivo a ser baixado
 		String sUrl = "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx";
@@ -172,9 +177,9 @@ public class SplashAnimation extends JFrame {
 	}
 
 	public void atualizarFile() {
-		String userHome = System.getProperty("user.home");
-		String fileName = "modelo laudo.docx";
-		String pathRestante = "/Documents/ConversorXLSX-PDF/data";
+		userHome = System.getProperty("user.home");
+		fileName = "modelo laudo.docx";
+		pathRestante = "/Documents/ConversorXLSX-PDF/data";
 
 		// URL que aponta para o arquivo a ser baixado
 		String sUrl = "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx";

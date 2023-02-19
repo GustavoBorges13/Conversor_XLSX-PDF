@@ -719,6 +719,7 @@ public class GerarLaudoPDF extends JDialog {
 			}
 
 			// Conversao do documento word para pdf..
+			//File diretorioInicial = new File("\\\\fscatorg01\\..."); //Substituir o local do path do pdf
 			File pathPdfGerados = new File(userHome + pathRestante + "Pdf generated");
 			pathPdfGerados.mkdirs();
 
