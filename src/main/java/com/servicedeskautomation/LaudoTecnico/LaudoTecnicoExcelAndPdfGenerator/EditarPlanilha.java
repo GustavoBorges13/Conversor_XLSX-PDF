@@ -1,38 +1,41 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.UIManager;
-import java.awt.Font;
-import javax.swing.border.TitledBorder;
-import javax.swing.border.EtchedBorder;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
-
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JSpinner;
-import javax.swing.JButton;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.event.ChangeListener;
-import com.formdev.flatlaf.FlatIntelliJLaf;
-import javax.swing.event.ChangeEvent;
-import javax.swing.SpinnerNumberModel;
-import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.Document;
+import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 
 @SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JDialog {
@@ -67,6 +70,7 @@ public class EditarPlanilha extends JDialog {
 	private int linhaSelecionada;
 	private JButton btnSave;
 	static boolean finalizado;
+	private static int tempIndex;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -209,8 +213,10 @@ public class EditarPlanilha extends JDialog {
 		comboBoxQuantidade.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(comboBoxQuantidade.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (comboBoxQuantidade.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -288,8 +294,10 @@ public class EditarPlanilha extends JDialog {
 		comboBoxFabricante.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(comboBoxFabricante.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (comboBoxFabricante.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -465,8 +473,10 @@ public class EditarPlanilha extends JDialog {
 		comboBoxStorage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(comboBoxStorage.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (comboBoxStorage.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -572,8 +582,10 @@ public class EditarPlanilha extends JDialog {
 		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(btnSave.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnSave.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -682,7 +694,7 @@ public class EditarPlanilha extends JDialog {
 				if (flag) {
 					// Fechamento da janela
 					finalizado = true;
-					
+
 					// volta a janela principal para o estado anterior
 					dispose();
 				}
@@ -755,8 +767,10 @@ public class EditarPlanilha extends JDialog {
 		comboBoxDispositivo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				if(comboBoxDispositivo.isEnabled()) setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (comboBoxDispositivo.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
+
 			@Override
 			public void mouseExited(MouseEvent e) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -803,6 +817,9 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
+
+		// Adiciona a funcionalidade de desfazer/refazer em todos os componentes
+		addUndoRedoFunctionality(getContentPane());
 	}
 
 	private class KeyHandler implements KeyListener {
@@ -816,6 +833,74 @@ public class EditarPlanilha extends JDialog {
 
 		public void keyTyped(KeyEvent e) {
 			// código para executar quando uma tecla é digitada
+		}
+	}
+
+	public static void addUndoRedoFunctionality(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof JTextField) {
+				JTextField textField = (JTextField) component;
+				UndoManager undoManager = new UndoManager();
+				Document docTemp = textField.getDocument();
+				docTemp.addUndoableEditListener(undoManager);
+
+				textField.addKeyListener(new KeyAdapter() {
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+							if (undoManager.canUndo()) {
+								undoManager.undo();
+							}
+						} else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+							if (undoManager.canRedo()) {
+								undoManager.redo();
+							}
+						}
+					}
+				});
+			} else if (component instanceof JComboBox) {
+				JComboBox comboBox = (JComboBox) component;
+				UndoManager undoManager = new UndoManager();
+				Document docTemp = ((JTextComponent) comboBox.getEditor().getEditorComponent()).getDocument();
+
+				docTemp.addUndoableEditListener(undoManager);
+
+				comboBox.addKeyListener(new KeyAdapter() {
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+							tempIndex = comboBox.getSelectedIndex();
+							comboBox.setSelectedIndex(0);
+						} else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+							comboBox.setSelectedIndex(tempIndex);
+						}
+					}
+				});
+			} else if (component instanceof JSpinner) {
+				JSpinner spinner = (JSpinner) component;
+				UndoManager undoManager = new UndoManager();
+				 // Obtém a interface gráfica do editor do JSpinner
+				JTextComponent editorComponent = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+				Document docTemp = editorComponent.getDocument();
+				docTemp.addUndoableEditListener(undoManager);
+
+				editorComponent.addKeyListener(new KeyAdapter() {
+		            public void keyPressed(KeyEvent e) {
+		                if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+		                    if (undoManager.canUndo()) {
+		                        undoManager.undo();
+		                        undoManager.undo();
+		                    }
+		                } else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+		                    if (undoManager.canRedo()) {
+		                        undoManager.redo();
+		                        undoManager.redo();
+		                    }
+		                }
+		            }
+		        });
+
+			} else if (component instanceof Container) {
+				addUndoRedoFunctionality((Container) component);
+			}
 		}
 	}
 }

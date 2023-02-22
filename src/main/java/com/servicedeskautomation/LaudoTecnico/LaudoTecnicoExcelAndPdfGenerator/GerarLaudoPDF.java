@@ -1,6 +1,8 @@
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.EventQueue;
@@ -8,6 +10,8 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -18,12 +22,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,9 +50,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-
+import javax.swing.undo.UndoManager;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
@@ -70,7 +72,6 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHpsMeasure;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
-
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
 import com.documents4j.job.LocalConverter;
@@ -101,6 +102,8 @@ public class GerarLaudoPDF extends JDialog {
 	private int num = 0;
 	private List<String> linkExibicao = new ArrayList<String>();
 	private List<String> linkEndereco = new ArrayList<String>();
+	@SuppressWarnings("rawtypes")
+	private static JComboBox comboBoxTemplate;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -228,6 +231,7 @@ public class GerarLaudoPDF extends JDialog {
 		textAreaAnalise.setLineWrap(true);// Faz com que o texto quebre para a próxima linha
 		textAreaAnalise.setWrapStyleWord(true);
 		textAreaAnalise.setAutoscrolls(false);
+
 		doc = new DefaultStyledDocument();
 		doc.setDocumentFilter(new DocumentSizeFilter(textAreaCaracteresLimit)); // Define o limite de qtd. caracteres
 		;// Limite de 315 caracteres no JTextArea
@@ -253,7 +257,7 @@ public class GerarLaudoPDF extends JDialog {
 		textAreaAnalise.setDocument(doc);
 		updateCount();
 
-		JComboBox comboBoxTemplate = new JComboBox();
+		comboBoxTemplate = new JComboBox();
 		comboBoxTemplate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -395,10 +399,10 @@ public class GerarLaudoPDF extends JDialog {
 						} else {
 							linkExibicao.add(txtExibicao.getText());
 							linkEndereco.add(txtEndereco.getText());
-							flag=!flag;
+							flag = !flag;
 						}
-					}else {
-						flag=!flag;
+					} else {
+						flag = !flag;
 					}
 				}
 
@@ -433,7 +437,7 @@ public class GerarLaudoPDF extends JDialog {
 		});
 		chckbxNewCheckBox.setBounds(10, 472, 131, 23);
 		panel_1.add(chckbxNewCheckBox);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("Em construção!");
 		lblNewLabel_1.setForeground(Color.GRAY);
 		lblNewLabel_1.setBounds(257, 476, 132, 14);
@@ -523,6 +527,8 @@ public class GerarLaudoPDF extends JDialog {
 		btnAbrirLocal.setBounds(586, 522, 123, 23);
 		contentPane.add(btnAbrirLocal);
 
+		// Adiciona a funcionalidade de desfazer/refazer em todos os componentes
+		addUndoRedoFunctionality(getContentPane());
 	}
 
 	private void processamentoWord() {
@@ -719,7 +725,8 @@ public class GerarLaudoPDF extends JDialog {
 			}
 
 			// Conversao do documento word para pdf..
-			//File diretorioInicial = new File("\\\\fscatorg01\\..."); //Substituir o local do path do pdf
+			// File diretorioInicial = new File("\\\\fscatorg01\\..."); //Substituir o local
+			// do path do pdf
 			File pathPdfGerados = new File(userHome + pathRestante + "Pdf generated");
 			pathPdfGerados.mkdirs();
 
@@ -882,5 +889,55 @@ public class GerarLaudoPDF extends JDialog {
 
 	private void updateCount() {
 		remaningLabel.setText((textAreaCaracteresLimit - doc.getLength()) + " caracteres restantes");
+	}
+
+	public static void addUndoRedoFunctionality(Container container) {
+		for (Component component : container.getComponents()) {
+			if (component instanceof JTextField) {
+				JTextField textField = (JTextField) component;
+				UndoManager undoManager = new UndoManager();
+				Document docTemp = textField.getDocument();
+				docTemp.addUndoableEditListener(undoManager);
+
+				textField.addKeyListener(new KeyAdapter() {
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+							if (undoManager.canUndo()) {
+								undoManager.undo();
+							}
+						} else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+							if (undoManager.canRedo()) {
+								undoManager.redo();
+							}
+						}
+					}
+				});
+			} else if (component instanceof JTextArea) {
+				JTextArea textArea = (JTextArea) component;
+				UndoManager undoManager = new UndoManager();
+				Document docTemp = textArea.getDocument();
+				docTemp.addUndoableEditListener(undoManager);
+
+				textArea.addKeyListener(new KeyAdapter() {
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+							if (undoManager.canUndo()) {
+								undoManager.undo();
+							}
+							if (textAreaAnalise.getText().equals("")) {
+								comboBoxTemplate.setSelectedIndex(0);
+								undoManager.die();
+							}
+						} else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+							if (undoManager.canRedo()) {
+								undoManager.redo();
+							}
+						}
+					}
+				});
+			} else if (component instanceof Container) {
+				addUndoRedoFunctionality((Container) component);
+			}
+		}
 	}
 }

@@ -98,6 +98,7 @@ public class Principal extends JFrame {
 	private int row = 0;
 	private int ultimaLinhaOld = 0;
 	private boolean flagAdd = false;
+
 	
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
@@ -294,6 +295,9 @@ public class Principal extends JFrame {
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_2);
 
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Atalhos teclado");
+		mnNewMenu_2.add(mntmNewMenuItem_3);
+
 		contentPane = new JPanel();
 		contentPane.setOpaque(false);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -341,7 +345,7 @@ public class Principal extends JFrame {
 		internalFrame.setClosable(true);
 		internalFrame.setVisible(false);
 
-		JLabel lblNewLabel = new JLabel("E-ServiceDesk Applications - Sobre");
+		JLabel lblNewLabel = new JLabel("E-ServiceDesk Application - Sobre");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setBounds(10, 11, 628, 19);
@@ -403,9 +407,9 @@ public class Principal extends JFrame {
 		btnXLS.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				//File diretorioInicial = new File("\\\\fscatorg01\\...");
+				// File diretorioInicial = new File("\\\\fscatorg01\\...");
 				String userHome = System.getProperty("user.home");
-		        String diretorioInicial = userHome + File.separator + "Downloads";
+				String diretorioInicial = userHome + File.separator + "Downloads";
 				JFileChooser fc = new JFileChooser(diretorioInicial);
 				fc.setPreferredSize(new Dimension(700, 400));
 
@@ -419,7 +423,7 @@ public class Principal extends JFrame {
 				FileNameExtensionFilter restrict = new FileNameExtensionFilter("Somente arquivos .xlsx", "xlsx");
 				fc.addChoosableFileFilter(restrict);
 				fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			
+
 				int resultado = fc.showOpenDialog(null);
 
 				if (resultado == JFileChooser.CANCEL_OPTION) {
@@ -529,15 +533,14 @@ public class Principal extends JFrame {
 
 						// Linha de referencia (selecionar a partir de uma determinada linha...)
 						row = sheet.getRow(i);
+
 						if (colunas.size() == 19) {
 							// Copia as informações das linhas da planilhas para arrayslists.
 							while (((row = sheet.getRow(i)) != null && row.getCell(0).getCellType() != CellType.BLANK)
 									|| ((row = sheet.getRow(i)) != null
 											&& row.getCell(1).getCellType() != CellType.BLANK)
 									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(2).getCellType() != CellType.BLANK)
-									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(17).getCellType() != CellType.BLANK)) {
+											&& row.getCell(2).getCellType() != CellType.BLANK)) {
 								storageSpliter = null; // limpa o vetor auxiliar
 
 								// Criando o DataBase Local (Armazenando os valores em Arraylists)
@@ -569,6 +572,8 @@ public class Principal extends JFrame {
 									if (DateUtil.isCellDateFormatted(row.getCell(12))) {
 										Date date = row.getCell(12).getDateCellValue();
 										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+
+										JOptionPane.showMessageDialog(null, row.getCell(1).getRichStringCellValue());
 										String formattedDate = sdf2.format(date);
 										dataAquisicao.add(formattedDate);
 										// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
@@ -591,25 +596,32 @@ public class Principal extends JFrame {
 									}
 
 									// Erro em caso de nâo ser reconhecido o tipo numerico
+								} catch (NullPointerException e1) {
+									String dateString = row.getCell(12).getStringCellValue();
+									dataAquisicao.add(dateString);
 								} catch (IllegalStateException e2) {
 									System.out.println("Debug Date Type -> " + e2);
 								} finally {
 									// Verifica se o tipo é string
 									if (row.getCell(12).getCellType() == CellType.STRING) {
 										String dateString = row.getCell(12).getStringCellValue();
-										try {
-											SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+										if (dateString.equals("N/A") || dateString.equals("N/D")) {
+											dataAquisicao.add(dateString);
+										} else {
+											try {
+												SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-											Date date = sdf.parse(dateString);
-											SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-											String formattedDate = sdf2.format(date);
-											dataAquisicao.add(formattedDate);
-											// JOptionPane.showMessageDialog(null, "DateString -> " + dateString +
-											// "\nDate
-											// -> "
-											// + date + "\nFormatted Date -> " + formattedDate);
-										} catch (ParseException e2) {
-											System.out.println("Debug date -> " + e2);
+												Date date = sdf.parse(dateString);
+												SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
+												String formattedDate = sdf2.format(date);
+												dataAquisicao.add(formattedDate);
+												// JOptionPane.showMessageDialog(null, "DateString -> " + dateString +
+												// "\nDate
+												// -> "
+												// + date + "\nFormatted Date -> " + formattedDate);
+											} catch (ParseException e2) {
+												System.out.println("Debug date -> " + e2);
+											}
 										}
 									}
 								}
@@ -628,16 +640,26 @@ public class Principal extends JFrame {
 								else
 									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
 								tecnico.add(row.getCell(16).getStringCellValue());
-								//JOptionPane.showMessageDialog(null, nomeSolicitante.get(i-1));
-								observacao.add(row.getCell(17).getStringCellValue());
-								
-								status.add(row.getCell(18).getStringCellValue());
-
+								// JOptionPane.showMessageDialog(null, nomeSolicitante.get(i-1));
+								/*
+								 * try { JOptionPane.showMessageDialog(null, "Observacao Antes(" + i + ") -> " +
+								 * observacao.size()); observacao.add(row.getCell(17).getStringCellValue()); }
+								 * catch (NullPointerException e1) { System.out.println("Debug observacao -> " +
+								 * e1); } finally { JOptionPane.showMessageDialog(null, "Observacao Depois(" + i
+								 * + ") -> " + observacao.size()); }
+								 * 
+								 * try { JOptionPane.showMessageDialog(null, "Status Antes(" + i + ") -> " +
+								 * status.size()); status.add(row.getCell(18).getStringCellValue()); } catch
+								 * (NullPointerException e1) { System.out.println("Debug status -> " + e1); }
+								 * finally { // status.add(" "); JOptionPane.showMessageDialog(null,
+								 * "Status Depois(" + i + ") -> " + status.size()); }
+								 */ observacao.add("");
+								status.add("");
 								i++;
 							}
 							qtdTemporaria = laudo.size();
 							work.close();
-							
+
 						} else {
 							work.close();
 							throw new java.lang.ArrayIndexOutOfBoundsException();
@@ -646,7 +668,7 @@ public class Principal extends JFrame {
 						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e2);
 					} catch (java.lang.ArrayIndexOutOfBoundsException e3) {
 						JOptionPane.showMessageDialog(null,
-								"Esta não é a planilha que utilizamos em 2022-2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
+								"Esta não é a planilha que utilizamos em 2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
 										+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
 										+ " e quantidade de colunas.\nErro: " + e3);
 					}
@@ -677,10 +699,10 @@ public class Principal extends JFrame {
 
 				// Preenche a tabela
 				preencherTabelaProprietario();
-				
+
 				// Anota quantas linhas de dados tem
-				ultimaLinhaOld=table.getRowCount();
-				
+				ultimaLinhaOld = table.getRowCount();
+
 				// Habilita os botoes auxiliares para controlar a planilha
 				btnAddLinha.setEnabled(true);
 				btnEditar.setEnabled(false);
@@ -777,7 +799,7 @@ public class Principal extends JFrame {
 								table.clearSelection();
 								contentPane.requestFocus();
 								btnGerarArquivoPdf.setEnabled(false);
-								
+
 								// Atualiza a tabela
 								// Principal.limpaListas();
 								preencherTabelaProprietario();
@@ -872,12 +894,12 @@ public class Principal extends JFrame {
 					// System.out.println("Type: "+storageType.get(linhaSelecionada)+" Value:
 					// "+Integer.parseInt(storageValue.get(linhaSelecionada)));
 					// --- HD ---
-					if(flagAdd == true && (ultimaLinhaOld <= table.getRowCount())) {
+					if (flagAdd == true && (ultimaLinhaOld <= table.getRowCount())) {
 						storageSpliter = storage.get(linhaSelecionada).split(" ");
 						storageValue.set(linhaSelecionada, storageSpliter[pos]);
 						storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
 					}
-		
+
 					if (storageType.get(linhaSelecionada).equals("HD")) {
 						toleranciaHD_SSD = 20;
 						if (Integer.parseInt(storageValue.get(linhaSelecionada)) >= 0
@@ -1112,7 +1134,7 @@ public class Principal extends JFrame {
 				btnRemover.setEnabled(true);
 				btnSalvarAlteracoes.setEnabled(true);
 				flagAdd = true;
-				
+
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
 				adicionarArrayList();
@@ -1261,12 +1283,12 @@ public class Principal extends JFrame {
 
 							// Atualiza a tabela...
 							btnPreencher.doClick();
-							
+
 							// Desabilita botoes
 							btnSalvarAlteracoes.setEnabled(false);
 							btnEditar.setEnabled(false);
 							btnGerarArquivoPdf.setEnabled(false);
-							
+
 							// Alterar flags
 							flagAdd = false;
 						} catch (FileNotFoundException e) {
@@ -1304,18 +1326,27 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean flagContinuacao = false;
 				int[] linhasSelecionadas = Principal.table.getSelectedRows();
+				String aux = null;
 
+				// Verifica se os vetores têm elementos em comum
+				boolean temElementosEmComum = false;
 				if (linhasSelecionadas.length > 1) {
 					for (int i = 0; i < linhasSelecionadas.length; i++) {
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
-							if (Principal.table.getValueAt(linhasSelecionadas[i], 6)
-									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 6))) {
-								flagContinuacao = true;
-								break;
+							if (Principal.table.getValueAt(linhasSelecionadas[i], 8)
+									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8))
+									|| Principal.table.getValueAt(linhasSelecionadas[i], 8-2)
+											.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8-2))) {
+								temElementosEmComum = true;
 							} else {
 								flagContinuacao = false;
+								temElementosEmComum = false;
 								break;
 							}
+						}
+						if (temElementosEmComum) {
+							flagContinuacao = true;
+							break;
 						}
 					}
 				} else {
@@ -1440,7 +1471,7 @@ public class Principal extends JFrame {
 						preencherTabelaProprietario();
 						((ModeloTabela) table.getModel()).fireTableDataChanged();
 						table.updateUI();
-						
+
 						// preencherTabelaProprietario();
 
 						// Habilita ou desabilita botoes
