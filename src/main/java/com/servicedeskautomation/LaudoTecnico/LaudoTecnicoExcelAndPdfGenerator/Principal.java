@@ -99,7 +99,6 @@ public class Principal extends JFrame {
 	private int ultimaLinhaOld = 0;
 	private boolean flagAdd = false;
 
-	
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
 	static ArrayList<String> nomeSolicitante = new ArrayList<String>();
@@ -640,21 +639,29 @@ public class Principal extends JFrame {
 								else
 									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
 								tecnico.add(row.getCell(16).getStringCellValue());
-								// JOptionPane.showMessageDialog(null, nomeSolicitante.get(i-1));
-								/*
-								 * try { JOptionPane.showMessageDialog(null, "Observacao Antes(" + i + ") -> " +
-								 * observacao.size()); observacao.add(row.getCell(17).getStringCellValue()); }
-								 * catch (NullPointerException e1) { System.out.println("Debug observacao -> " +
-								 * e1); } finally { JOptionPane.showMessageDialog(null, "Observacao Depois(" + i
-								 * + ") -> " + observacao.size()); }
-								 * 
-								 * try { JOptionPane.showMessageDialog(null, "Status Antes(" + i + ") -> " +
-								 * status.size()); status.add(row.getCell(18).getStringCellValue()); } catch
-								 * (NullPointerException e1) { System.out.println("Debug status -> " + e1); }
-								 * finally { // status.add(" "); JOptionPane.showMessageDialog(null,
-								 * "Status Depois(" + i + ") -> " + status.size()); }
-								 */ observacao.add("");
-								status.add("");
+								//JOptionPane.showMessageDialog(null, nomeSolicitante.get(i - 1));
+
+								try {
+									//JOptionPane.showMessageDialog(null,"Observacao Antes(" + i + ") -> " + observacao.size());
+									observacao.add(row.getCell(17).getStringCellValue());
+								} catch (NullPointerException e1) {
+									System.out.println("Debug observacao -> " + e1);
+								} finally {
+									//JOptionPane.showMessageDialog(null,"Observacao Depois(" + i + ") -> " + observacao.size());
+									observacao.add("");
+								}
+
+								try {
+									//JOptionPane.showMessageDialog(null, "Status Antes(" + i + ") -> " + status.size());
+									status.add(row.getCell(18).getStringCellValue());
+								} catch (NullPointerException e1) {
+									System.out.println("Debug status -> " + e1);
+								} finally {
+									// status.add(" "); JOptionPane.showMessageDialog(null, "Status Depois(" + i +
+									// ") -> " + status.size()); }
+									status.add("");
+								}
+								
 								i++;
 							}
 							qtdTemporaria = laudo.size();
@@ -1335,8 +1342,8 @@ public class Principal extends JFrame {
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
 							if (Principal.table.getValueAt(linhasSelecionadas[i], 8)
 									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8))
-									|| Principal.table.getValueAt(linhasSelecionadas[i], 8-2)
-											.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8-2))) {
+									|| Principal.table.getValueAt(linhasSelecionadas[i], 8 - 2)
+											.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8 - 2))) {
 								temElementosEmComum = true;
 							} else {
 								flagContinuacao = false;
