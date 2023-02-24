@@ -571,8 +571,6 @@ public class Principal extends JFrame {
 									if (DateUtil.isCellDateFormatted(row.getCell(12))) {
 										Date date = row.getCell(12).getDateCellValue();
 										SimpleDateFormat sdf2 = new SimpleDateFormat("dd/MM/yyyy");
-
-										JOptionPane.showMessageDialog(null, row.getCell(1).getRichStringCellValue());
 										String formattedDate = sdf2.format(date);
 										dataAquisicao.add(formattedDate);
 										// JOptionPane.showMessageDialog(null, "DateString -> " + date + "\nFormatted
@@ -639,29 +637,12 @@ public class Principal extends JFrame {
 								else
 									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
 								tecnico.add(row.getCell(16).getStringCellValue());
-								//JOptionPane.showMessageDialog(null, nomeSolicitante.get(i - 1));
+								// JOptionPane.showMessageDialog(null, nomeSolicitante.get(i - 1));
 
-								try {
-									//JOptionPane.showMessageDialog(null,"Observacao Antes(" + i + ") -> " + observacao.size());
-									observacao.add(row.getCell(17).getStringCellValue());
-								} catch (NullPointerException e1) {
-									System.out.println("Debug observacao -> " + e1);
-								} finally {
-									//JOptionPane.showMessageDialog(null,"Observacao Depois(" + i + ") -> " + observacao.size());
-									observacao.add("");
-								}
+								observacao.add(row.getCell(17).getStringCellValue());
 
-								try {
-									//JOptionPane.showMessageDialog(null, "Status Antes(" + i + ") -> " + status.size());
-									status.add(row.getCell(18).getStringCellValue());
-								} catch (NullPointerException e1) {
-									System.out.println("Debug status -> " + e1);
-								} finally {
-									// status.add(" "); JOptionPane.showMessageDialog(null, "Status Depois(" + i +
-									// ") -> " + status.size()); }
-									status.add("");
-								}
-								
+								status.add(row.getCell(18).getStringCellValue());
+
 								i++;
 							}
 							qtdTemporaria = laudo.size();
