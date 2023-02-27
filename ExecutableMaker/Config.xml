@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\Users\gs809861\git\Conversor_XLSX-PDF\target\LaudoTecnicoExcelAndPdfGenerator-0.0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
+  <outfile>C:\Users\gs809861\Documents\SERVICE-DESK APPLICATION\TI SD LAUDOS.exe</outfile>
+  <errTitle>Você não tem java, por favor, baixe o java no site oficial do java.</errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>https://www.java.com/pt-BR/download/ie_manual.jsp?locale=pt_BR</downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\gs809861\Downloads\star.ico</icon>
+  <jre>
+    <path>%JAVA_HOME%;%PATH%</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>true</requires64Bit>
+    <minVersion>1.8.0</minVersion>
+    <maxVersion>1.9.0</maxVersion>
+  </jre>
+  <versionInfo>
+    <fileVersion>0.2.9.14</fileVersion>
+    <txtFileVersion>2.9.14</txtFileVersion>
+    <fileDescription>Uma ferramenta para nós auxiliar no estágio com objetivo de otimizar tempo e evitar desperdícios.</fileDescription>
+    <copyright>Copyrigth (C) 2022, 2023 Gustavo Borges Peres da Silva</copyright>
+    <productVersion>0.2.9.14</productVersion>
+    <txtProductVersion>2.9.14</txtProductVersion>
+    <productName>E-ServiceDesk Application</productName>
+    <companyName>HPE AUTOMOTORES LTDA</companyName>
+    <internalName> E-ServiceDesk Application</internalName>
+    <originalFilename>TI SD LAUDOS.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>PORTUGUESE_BRAZIL</language>
+  </versionInfo>
+  <messages>
+    <startupErr>Ocorreu um erro ao iniciar a aplicação.</startupErr>
+    <jreNotFoundErr>Esta aplicação requer um Java Runtime Environment.</jreNotFoundErr>
+    <jreVersionErr>Esta aplicação requer um Java Runtime Environment</jreVersionErr>
+    <launcherErr>O registo refere-se a uma instalação inexistente de Java Runtime Environment ou o tempo de execução é corrompido.</launcherErr>
+    <instanceAlreadyExistsMsg>Já está a decorrer uma instância de candidatura.</instanceAlreadyExistsMsg>
+  </messages>
+</launch4jConfig>

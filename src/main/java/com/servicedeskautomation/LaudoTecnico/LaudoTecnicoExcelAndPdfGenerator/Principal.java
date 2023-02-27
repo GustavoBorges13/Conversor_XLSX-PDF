@@ -450,7 +450,7 @@ public class Principal extends JFrame {
 				// File diretorioInicial = new File("\\\\fscatorg01\\...");
 				String userHome = System.getProperty("user.home");
 				String diretorioInicial = userHome + File.separator + "Downloads";
-				JFileChooser fc = new JFileChooser(diretorioInicial);
+				JFileChooser fc = new JFileChooser("\\\\fscatorg01\\Fileserver\\Financeiro\\Sistemas\\321 - Sistemas - CAT\\Service Desk\\Documentos\\Laudos Técnicos\\Planilha Laudos");
 				fc.setPreferredSize(new Dimension(700, 400));
 
 				// Restringir o usuário para selecionar arquivos de todos os tipos
