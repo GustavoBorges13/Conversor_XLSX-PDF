@@ -14,6 +14,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -56,10 +57,13 @@ import javax.swing.text.StyleConstants;
 import javax.swing.undo.UndoManager;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFHyperlinkRun;
 import org.apache.poi.xwpf.usermodel.XWPFNumbering;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRelation;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -69,6 +73,7 @@ import org.apache.xmlbeans.XmlCursor;
 import org.apache.xmlbeans.XmlObject;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTAbstractNum;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHpsMeasure;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTHyperlink;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTLvl;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTRPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
@@ -100,10 +105,13 @@ public class GerarLaudoPDF extends JDialog {
 	private JButton btnDel;
 	private String tempText;
 	private int num = 0;
-	private List<String> linkExibicao = new ArrayList<String>();
-	private List<String> linkEndereco = new ArrayList<String>();
+	public static List<String> linkExibicao = new ArrayList<String>();
+	public static List<String> linkEndereco = new ArrayList<String>();
 	@SuppressWarnings("rawtypes")
 	private static JComboBox comboBoxTemplate;
+	private static String textRef;
+	private JCheckBox chckbxNewCheckBox;
+	private JButton btnGerarArquivoPDF;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -122,7 +130,7 @@ public class GerarLaudoPDF extends JDialog {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public GerarLaudoPDF() {
-
+		textRef = null;
 		finalizado = false;
 		linhasSelecionadas = Principal.table.getSelectedRows();
 		setTitle("Gerar arquivo em PDF");
@@ -173,12 +181,32 @@ public class GerarLaudoPDF extends JDialog {
 		panel_1.add(lblNomeDoTcnico);
 
 		txtNomeTecnico = new JTextField();
+		txtNomeTecnico.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		txtNomeTecnico.setForeground(Color.BLACK);
 		txtNomeTecnico.setColumns(10);
 		txtNomeTecnico.setBounds(10, 48, 379, 29);
 		panel_1.add(txtNomeTecnico);
 
 		txtUsuarioRede = new JTextField();
+		txtUsuarioRede.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		txtUsuarioRede.setForeground(Color.BLACK);
 		txtUsuarioRede.setColumns(10);
 		txtUsuarioRede.setBounds(10, 96, 113, 29);
@@ -227,6 +255,16 @@ public class GerarLaudoPDF extends JDialog {
 		panel_1.add(scrollPane);
 
 		textAreaAnalise = new JTextArea();
+		textAreaAnalise.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		scrollPane.setViewportView(textAreaAnalise);
 		textAreaAnalise.setLineWrap(true);// Faz com que o texto quebre para a próxima linha
 		textAreaAnalise.setWrapStyleWord(true);
@@ -258,6 +296,16 @@ public class GerarLaudoPDF extends JDialog {
 		updateCount();
 
 		comboBoxTemplate = new JComboBox();
+		comboBoxTemplate.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		comboBoxTemplate.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -354,7 +402,18 @@ public class GerarLaudoPDF extends JDialog {
 		remaningLabel.setBounds(257, 284, 131, 14);
 		panel_1.add(remaningLabel);
 
+		// "Remover -"
 		btnDel = new JButton("-");
+		btnDel.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		btnDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -370,6 +429,9 @@ public class GerarLaudoPDF extends JDialog {
 				num--;
 				if (linkExibicao.size() == 0) {
 					btnDel.setEnabled(false);
+					chckbxNewCheckBox.doClick();
+					linkEndereco.clear();
+					linkExibicao.clear();
 				}
 			}
 		});
@@ -377,7 +439,18 @@ public class GerarLaudoPDF extends JDialog {
 		btnDel.setEnabled(false);
 		panel_1.add(btnDel);
 
+		// "Adicionar +"
 		btnAdd = new JButton("+");
+		btnAdd.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String temp = editorPaneConsideracoesTecnicas.getText().trim();
@@ -387,7 +460,7 @@ public class GerarLaudoPDF extends JDialog {
 				final JTextField txtEndereco = new JTextField();
 				boolean flag = true;
 
-				Object[] inputFields = { "Texto para exibição", txtExibicao, "Endereço", txtEndereco };
+				Object[] inputFields = { "Texto para exibição", txtExibicao, "Endereço (link)", txtEndereco };
 
 				while (flag) {
 					int option = JOptionPane.showConfirmDialog(null, inputFields, "Inserir Hyperlink",
@@ -403,6 +476,12 @@ public class GerarLaudoPDF extends JDialog {
 						}
 					} else {
 						flag = !flag;
+						if(num == 0) {
+							btnAdd.setEnabled(false);
+							chckbxNewCheckBox.doClick();
+							linkEndereco.clear();
+							linkExibicao.clear();
+						}
 					}
 				}
 
@@ -416,18 +495,32 @@ public class GerarLaudoPDF extends JDialog {
 		btnAdd.setEnabled(false);
 		panel_1.add(btnAdd);
 
-		JCheckBox chckbxNewCheckBox = new JCheckBox("Links de referência");
+		
+		// Inserir links
+		chckbxNewCheckBox = new JCheckBox("Links de referência");
+		chckbxNewCheckBox.setSelected(false);
+		chckbxNewCheckBox.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
 		chckbxNewCheckBox.addActionListener(new ActionListener() {
-			String textRef = "Link para referência do mesmo:";
-
 			public void actionPerformed(ActionEvent e) {
+				textRef = "Link para referência do mesmo:";
 				if (chckbxNewCheckBox.isSelected()) {
 					btnAdd.setEnabled(true);
 					btnDel.setEnabled(false);
 					tempText = editorPaneConsideracoesTecnicas.getText();
 					editorPaneConsideracoesTecnicas.setText(tempText + "\n\n" + textRef);
 					flagCheckBox = true;
+					btnAdd.doClick();
 				} else {
+					textRef = null;
 					btnAdd.setEnabled(false);
 					btnDel.setEnabled(false);
 					editorPaneConsideracoesTecnicas.setText(tempText);
@@ -438,13 +531,12 @@ public class GerarLaudoPDF extends JDialog {
 		chckbxNewCheckBox.setBounds(10, 472, 131, 23);
 		panel_1.add(chckbxNewCheckBox);
 
-		JLabel lblNewLabel_1 = new JLabel("Em construção!");
+		JLabel lblNewLabel_1 = new JLabel("Beta! Tem que testar");
 		lblNewLabel_1.setForeground(Color.GRAY);
 		lblNewLabel_1.setBounds(257, 476, 132, 14);
 		panel_1.add(lblNewLabel_1);
 
-		// BOTAO GERAR ARQUIVO PDF
-		JButton btnGerarArquivoPDF = new JButton("Gerar arquivo em PDF");
+		btnGerarArquivoPDF = new JButton("Gerar arquivo em PDF");
 		btnGerarArquivoPDF.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -458,7 +550,10 @@ public class GerarLaudoPDF extends JDialog {
 		});
 		btnGerarArquivoPDF.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if (txtNomeTecnico.getText().equals("") || txtUsuarioRede.getText().equals("")
+				if (textRef != null && num == 0) {
+					JOptionPane.showMessageDialog(null,
+							"Você marcou a caixa de seleção de inserir hyperlinks mas não inseriu nenhum link. Se não for usar, por favor desmarque.");
+				} else if (txtNomeTecnico.getText().equals("") || txtUsuarioRede.getText().equals("")
 						|| txtCentroCusto.getText().equals("") || textAreaAnalise.getText().equals("")) {
 					JOptionPane.showMessageDialog(null,
 							"Existem campos obrigatórios em brancos ou vazios, por favor preencha-os.");
@@ -527,8 +622,20 @@ public class GerarLaudoPDF extends JDialog {
 		btnAbrirLocal.setBounds(586, 522, 123, 23);
 		contentPane.add(btnAbrirLocal);
 
+		addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGerarArquivoPDF.doClick();
+				}
+			}
+		});
+
 		// Adiciona a funcionalidade de desfazer/refazer em todos os componentes
 		addUndoRedoFunctionality(getContentPane());
+
 	}
 
 	private void processamentoWord() {
@@ -706,6 +813,59 @@ public class GerarLaudoPDF extends JDialog {
 			sz = rpr.isSetSz() ? rpr.getSz() : rpr.addNewSz();
 			sz.setVal(BigInteger.valueOf((long) (10.5 * 2)));
 			run.setText(Principal.memoria.get(linhasSelecionadas[0])); // Memoria
+
+			// Criando hyperlink
+			if (textRef != null && num != 0) {
+				XWPFParagraph paragraph = document.createParagraph();
+				run = paragraph.createRun();
+				run.setText(textRef);
+
+				for (int i = 0; i < num; i++) {
+					paragraph = document.createParagraph();
+					run = paragraph.createRun();
+
+					// Atribuindo um ponto no inicio do paragrafo (final da run)
+					CTAbstractNum cTAbstractNum = CTAbstractNum.Factory.newInstance();
+					cTAbstractNum.setAbstractNumId(BigInteger.valueOf(0));
+					CTLvl cTLvl = cTAbstractNum.addNewLvl();
+					cTLvl.addNewNumFmt().setVal(STNumberFormat.BULLET);
+					cTLvl.addNewLvlText().setVal("•");
+
+					XWPFAbstractNum abstractNum = new XWPFAbstractNum(cTAbstractNum);
+					XWPFNumbering numbering = document.createNumbering();
+					BigInteger abstractNumID = numbering.addAbstractNum(abstractNum);
+					BigInteger numID = numbering.addNum(abstractNumID);
+
+					// Printando 1 por 1
+					if (i == num - 1) {
+						run = paragraph.createHyperlinkRun(linkEndereco.get(i));
+						run.setText(linkExibicao.get(i));
+						run.setUnderline(UnderlinePatterns.SINGLE);
+						run.setColor("0000FF");
+						run = paragraph.createRun();
+						run.setText(".");
+						// Configurando font e realizando setText
+						run.setBold(true);
+						run.setFontFamily("Calibri (Corpo)");
+						run.setFontSize(11);
+					} else {
+						run = paragraph.createHyperlinkRun(linkEndereco.get(i));
+						run.setText(linkExibicao.get(i));
+						run.setUnderline(UnderlinePatterns.SINGLE);
+						run.setColor("0000FF");
+						run = paragraph.createRun();
+						run.setText(";");
+						// Configurando font e realizando setText
+						run.setBold(true);
+						run.setFontFamily("Calibri (Corpo)");
+						run.setFontSize(11);
+					}
+
+					// Margens
+					paragraph.setNumID(numID);
+					paragraph.setIndentationFirstLine(720); // 720 twips é aproximadamente 1 cm
+				}
+			}
 
 			// Separando o number do ativo com o local HPE ou BW&P
 			String[] ativo = Principal.ativo.get(GerarLaudoPDF.linhasSelecionadas[0]).split(" ");
@@ -919,6 +1079,7 @@ public class GerarLaudoPDF extends JDialog {
 				docTemp.addUndoableEditListener(undoManager);
 
 				textArea.addKeyListener(new KeyAdapter() {
+
 					public void keyPressed(KeyEvent e) {
 						if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
 							if (undoManager.canUndo()) {
@@ -934,10 +1095,36 @@ public class GerarLaudoPDF extends JDialog {
 							}
 						}
 					}
+
 				});
 			} else if (component instanceof Container) {
 				addUndoRedoFunctionality((Container) component);
 			}
+		}
+	}
+
+	static XWPFHyperlinkRun createHyperlinkRun(XWPFParagraph paragraph, String uri) {
+		String rId = paragraph.getDocument().getPackagePart()
+				.addExternalRelationship(uri, XWPFRelation.HYPERLINK.getRelation()).getId();
+
+		CTHyperlink cthyperLink = paragraph.getCTP().addNewHyperlink();
+		cthyperLink.setId(rId);
+		cthyperLink.addNewR();
+
+		return new XWPFHyperlinkRun(cthyperLink, cthyperLink.getRArray(0), paragraph);
+	}
+
+	private class KeyHandler implements KeyListener {
+		public void keyPressed(KeyEvent e) {
+			// código para executar quando uma tecla é pressionada
+		}
+
+		public void keyReleased(KeyEvent e) {
+			// código para executar quando uma tecla é liberada
+		}
+
+		public void keyTyped(KeyEvent e) {
+			// código para executar quando uma tecla é digitada
 		}
 	}
 }

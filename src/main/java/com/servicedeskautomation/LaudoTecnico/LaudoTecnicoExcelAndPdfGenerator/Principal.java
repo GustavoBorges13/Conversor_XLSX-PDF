@@ -14,6 +14,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -59,6 +61,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -257,6 +260,13 @@ public class Principal extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre E-ServiceDesk Application...");
 		mntmNewMenuItem.setMnemonic('S');
 		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
+		mntmNewMenuItem.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+			}
+		});
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				internalFrame.setFocusable(true);
@@ -295,6 +305,8 @@ public class Principal extends JFrame {
 		mnNewMenu_2.add(mntmNewMenuItem_2);
 
 		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Atalhos teclado");
+		mntmNewMenuItem_2.setMnemonic('T');
+		mntmNewMenuItem_3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
 		mnNewMenu_2.add(mntmNewMenuItem_3);
 
 		contentPane = new JPanel();
@@ -305,9 +317,16 @@ public class Principal extends JFrame {
 		contentPane.setLayout(null);
 
 		internalFrame = new JInternalFrame("Sobre a aplicação");
-		internalFrame.setEnabled(false);
+		internalFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		internalFrame.setFocusable(false);
-
+		internalFrame.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					internalFrame.dispose();
+				}
+			}
+		});
+		
 		// Janela Ajuda-Sobre (Sobre a aplicacao)
 		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame
 				.getUI());
@@ -355,6 +374,13 @@ public class Principal extends JFrame {
 		panel.setBounds(10, 41, 628, 426);
 		internalFrame.getContentPane().add(panel);
 		panel.setLayout(null);
+		panel.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					internalFrame.dispose();
+				}
+			}
+		});
 		SimpleAttributeSet attr = new SimpleAttributeSet();
 		attr.copyAttributes();
 		StyleConstants.setAlignment(attr, StyleConstants.ALIGN_JUSTIFIED);
@@ -362,6 +388,13 @@ public class Principal extends JFrame {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane_1.setBounds(0, 0, 628, 426);
+		scrollPane_1.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					internalFrame.dispose();
+				}
+			}
+		});
 		panel.add(scrollPane_1);
 
 		txtpnAplicaoDesenvolvidaPara = new JTextPane();
@@ -375,7 +408,15 @@ public class Principal extends JFrame {
 		txtpnAplicaoDesenvolvidaPara.setParagraphAttributes(attr, true);
 		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
 		txtpnAplicaoDesenvolvidaPara.setText(
-				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\nO projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo gitbash do github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio em Ajuda-Visite... (Ctrl+V).\r\n\r\nSobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\nAo selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. \r\nCaso o usuario esteja satisfeito, poderá selecionar a linha em especifico e utilizar a ferramenta de EXPORTAR, onde fará será realizado uma automação, transcrevendo os dados da linha selecionada para um documento WORD formatado no padrão da empresa e logo seguinte salva-lo em PDF na pasta alvo que posteriormente será aberto automaticamente para revisão do mesmo para ser enviado ao cliente sucessivamente.\r\n\r\nAtt. Gustavo Borges.");
+				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\nO projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio deste projeto... (Ctrl+R).\r\n\r\nSobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\nAo selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Além disso, vale a pena conferir outras utilidades no menu em \"Ferramentas\" que provavelmente servirá de apoio para o entendimento do programa.\r\nCaso o usuario esteja satisfeito, poderá selecionar a linha ou linhas em conjuntos em especifico e utilizar o botão de gerar arquivo em PDF, onde será realizado uma automação, transcrevendo os dados das linhas selecionadas para um modelo de documento MS Word formatado com campos de textos no padrão da empresa para servir de backup caso queria editar algo que o programa não é capaz e logo após o responsável do laudo terminar de preencher o mesmo, após clicar em gerar, o programa irá salvar o arquivo Word em PDF (conversão) na pasta alvo que posteriormente irá habilitar dois botões: visualizar arquivo e abrir local do arquivo.\r\n\r\nAtt. Gustavo Borges.");
+		txtpnAplicaoDesenvolvidaPara.addKeyListener(new KeyHandler() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					internalFrame.dispose();
+				}
+			}
+		});
+		
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(105, 105, 105));
 		separator.setBounds(11, 33, 627, 2);
@@ -602,7 +643,8 @@ public class Principal extends JFrame {
 									// Verifica se o tipo é string
 									if (row.getCell(12).getCellType() == CellType.STRING) {
 										String dateString = row.getCell(12).getStringCellValue();
-										if (dateString.equals("N/A") || dateString.equals("N/D")) {
+										if (dateString.equals("N/A") || dateString.equals("N/D")
+												|| (dateString = dateString.trim()).equals("")) {
 											dataAquisicao.add(dateString);
 										} else {
 											try {
@@ -613,9 +655,8 @@ public class Principal extends JFrame {
 												String formattedDate = sdf2.format(date);
 												dataAquisicao.add(formattedDate);
 												// JOptionPane.showMessageDialog(null, "DateString -> " + dateString +
-												// "\nDate
-												// -> "
-												// + date + "\nFormatted Date -> " + formattedDate);
+												// "\nDate -> " + date + "\nFormatted Date -> " + formattedDate);
+
 											} catch (ParseException e2) {
 												System.out.println("Debug date -> " + e2);
 											}
@@ -637,11 +678,22 @@ public class Principal extends JFrame {
 								else
 									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
 								tecnico.add(row.getCell(16).getStringCellValue());
-								// JOptionPane.showMessageDialog(null, nomeSolicitante.get(i - 1));
 
-								observacao.add(row.getCell(17).getStringCellValue());
+								// Observacao
+								Cell cell = row.getCell(17);
+								if (cell == null || cell.getStringCellValue().isEmpty()) {
+									observacao.add("");
+								} else {
+									observacao.add(cell.getStringCellValue());
+								}
 
-								status.add(row.getCell(18).getStringCellValue());
+								// Status
+								cell = row.getCell(18);
+								if (cell == null || cell.getStringCellValue().isEmpty()) {
+									status.add("");
+								} else {
+									status.add(cell.getStringCellValue());
+								}
 
 								i++;
 							}
@@ -659,6 +711,8 @@ public class Principal extends JFrame {
 								"Esta não é a planilha que utilizamos em 2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
 										+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
 										+ " e quantidade de colunas.\nErro: " + e3);
+					} catch (java.lang.NullPointerException e4) {
+						JOptionPane.showMessageDialog(null, "Está é uma planilha nova! Possivelmente existem campos vazios, por favor, insira novos laudos.\n Exception: " + e4);
 					}
 				}
 
@@ -1370,6 +1424,8 @@ public class Principal extends JFrame {
 									table.clearSelection();
 									contentPane.requestFocus();
 									btnGerarArquivoPdf.setEnabled(false);
+									GerarLaudoPDF.linkExibicao.clear();
+									GerarLaudoPDF.linkEndereco.clear();
 								} else {
 									frame.setVisible(true);
 								}
@@ -1753,6 +1809,20 @@ public class Principal extends JFrame {
 		return (long) (cm * 567);
 	}
 
+	private class KeyHandler implements KeyListener {
+		public void keyPressed(KeyEvent e) {
+			// código para executar quando uma tecla é pressionada
+		}
+
+		public void keyReleased(KeyEvent e) {
+			// código para executar quando uma tecla é liberada
+		}
+
+		public void keyTyped(KeyEvent e) {
+			// código para executar quando uma tecla é digitada
+		}
+	}
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

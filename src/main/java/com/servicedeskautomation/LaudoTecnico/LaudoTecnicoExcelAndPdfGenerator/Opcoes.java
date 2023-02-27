@@ -27,10 +27,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 public class Opcoes extends JDialog {
@@ -57,6 +53,7 @@ public class Opcoes extends JDialog {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Opcoes() {
 		
 		// Shortcuts

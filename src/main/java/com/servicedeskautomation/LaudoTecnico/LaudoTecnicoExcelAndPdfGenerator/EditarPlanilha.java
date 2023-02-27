@@ -612,7 +612,7 @@ public class EditarPlanilha extends JDialog {
 						|| txtNomeDoTecnico.getText().equals("")) {
 
 					JOptionPane.showMessageDialog(EditarPlanilha.this,
-							"Existem alguns campos obrigatórios (*) em brancos ou você\nnão selecionou nem um item das caixas de seleções.\nPor favor preencha os campos.",
+							"Existem alguns campos obrigatórios (*) em brancos ou você\nnão selecionou nenhum item das caixas de seleções.\nPor favor preencha os campos.",
 							"Erro ao salvar...", JOptionPane.INFORMATION_MESSAGE);
 					return;
 				} else if (sLaudo.matches("[a-zA-Z]+")) { // Verificar se é uma string
