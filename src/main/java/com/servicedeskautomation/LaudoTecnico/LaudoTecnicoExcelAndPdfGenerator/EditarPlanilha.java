@@ -36,6 +36,8 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 @SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JDialog {
@@ -291,6 +293,17 @@ public class EditarPlanilha extends JDialog {
 		panel.add(txtHostname);
 
 		comboBoxFabricante = new JComboBox();
+		comboBoxFabricante.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (comboBoxFabricante.getSelectedIndex() == 0) {
+					comboBoxFabricante.setForeground(Color.RED);
+				} else {
+					comboBoxFabricante.setForeground(Color.BLACK);
+				}
+			}
+		});
+		comboBoxFabricante.setForeground(Color.RED);
+		comboBoxFabricante.setEditable(true);
 		comboBoxFabricante.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -306,24 +319,6 @@ public class EditarPlanilha extends JDialog {
 		comboBoxFabricante.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				requestFocus();
-			}
-		});
-		comboBoxFabricante.setForeground(Color.RED);
-		comboBoxFabricante.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				if (comboBoxFabricante.getSelectedIndex() == 0) {
-					comboBoxFabricante.setForeground(Color.BLACK);
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				if (comboBoxFabricante.getSelectedIndex() == 0) {
-					comboBoxFabricante.setForeground(Color.RED);
-				} else {
-					comboBoxFabricante.setForeground(Color.BLACK);
-				}
 			}
 		});
 		comboBoxFabricante.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "Dell Inc", "Lenovo" }));
@@ -354,6 +349,7 @@ public class EditarPlanilha extends JDialog {
 		panel.add(txtModelo);
 
 		txtServiceTag = new JTextField();
+		txtServiceTag.setToolTipText("Caso não tenha, coloque: N/A ou N/D");
 		txtServiceTag.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -371,6 +367,7 @@ public class EditarPlanilha extends JDialog {
 		panel.add(txtServiceTag);
 
 		txtDdmmyyyy = new JTextField();
+		txtDdmmyyyy.setToolTipText("Caso não tenha, coloque: N/A ou N/D");
 		txtDdmmyyyy.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -630,12 +627,12 @@ public class EditarPlanilha extends JDialog {
 							"O campo de memoria contem letras, por favor digite apenas numeros.",
 							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
 					return;
-				} else if (!dateString.matches("\\d{2}/\\d{2}/\\d{4}")) { // -> dd/MM/yyyy
+				} else if (!dateString.matches("\\d{2}/\\d{2}/\\d{4}") && !txtDdmmyyyy.getText().equals("N/D")
+						&& !txtDdmmyyyy.getText().equals("N/A")) { // -> dd/MM/yyyy
 					JOptionPane.showMessageDialog(EditarPlanilha.this,
-							"O campo de data não está no formato solicitado (dd/MM/yyyy), por favor reescreva.",
+							"O campo de data não está no formato solicitado (dd/MM/yyyy), por favor reescreva. Ou então insira N/A ou N/D caso não tenha.",
 							"Erro InputMismatchException", JOptionPane.INFORMATION_MESSAGE);
 					return;
-
 				} else {
 
 					Principal.btnSalvarAlteracoes.setEnabled(true);
@@ -877,26 +874,26 @@ public class EditarPlanilha extends JDialog {
 			} else if (component instanceof JSpinner) {
 				JSpinner spinner = (JSpinner) component;
 				UndoManager undoManager = new UndoManager();
-				 // Obtém a interface gráfica do editor do JSpinner
+				// Obtém a interface gráfica do editor do JSpinner
 				JTextComponent editorComponent = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
 				Document docTemp = editorComponent.getDocument();
 				docTemp.addUndoableEditListener(undoManager);
 
 				editorComponent.addKeyListener(new KeyAdapter() {
-		            public void keyPressed(KeyEvent e) {
-		                if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
-		                    if (undoManager.canUndo()) {
-		                        undoManager.undo();
-		                        undoManager.undo();
-		                    }
-		                } else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
-		                    if (undoManager.canRedo()) {
-		                        undoManager.redo();
-		                        undoManager.redo();
-		                    }
-		                }
-		            }
-		        });
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_Z && e.isControlDown()) {
+							if (undoManager.canUndo()) {
+								undoManager.undo();
+								undoManager.undo();
+							}
+						} else if (e.getKeyCode() == KeyEvent.VK_Y && e.isControlDown()) {
+							if (undoManager.canRedo()) {
+								undoManager.redo();
+								undoManager.redo();
+							}
+						}
+					}
+				});
 
 			} else if (component instanceof Container) {
 				addUndoRedoFunctionality((Container) component);
