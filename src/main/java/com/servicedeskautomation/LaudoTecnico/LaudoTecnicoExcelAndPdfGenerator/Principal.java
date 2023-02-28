@@ -159,7 +159,7 @@ public class Principal extends JFrame {
 						(" " + observacao.get(i)), (" " + status.get(i)) });
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
+			JOptionPane.showMessageDialog(null, "Erro fatal na JTable: "+e);
 		}
 
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
@@ -326,7 +326,7 @@ public class Principal extends JFrame {
 				}
 			}
 		});
-		
+
 		// Janela Ajuda-Sobre (Sobre a aplicacao)
 		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame
 				.getUI());
@@ -416,7 +416,7 @@ public class Principal extends JFrame {
 				}
 			}
 		});
-		
+
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(105, 105, 105));
 		separator.setBounds(11, 33, 627, 2);
@@ -450,7 +450,8 @@ public class Principal extends JFrame {
 				// File diretorioInicial = new File("\\\\fscatorg01\\...");
 				String userHome = System.getProperty("user.home");
 				String diretorioInicial = userHome + File.separator + "Downloads";
-				JFileChooser fc = new JFileChooser("\\\\fscatorg01\\Fileserver\\Financeiro\\Sistemas\\321 - Sistemas - CAT\\Service Desk\\Documentos\\Laudos Técnicos\\Planilha Laudos");
+				JFileChooser fc = new JFileChooser(
+						"\\\\fscatorg01\\Fileserver\\Financeiro\\Sistemas\\321 - Sistemas - CAT\\Service Desk\\Documentos\\Laudos Técnicos\\Planilha Laudos");
 				fc.setPreferredSize(new Dimension(700, 400));
 
 				// Restringir o usuário para selecionar arquivos de todos os tipos
@@ -517,6 +518,7 @@ public class Principal extends JFrame {
 
 		// Button fill/preencher
 		btnPreencher.addActionListener(new ActionListener() {
+			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				btnSalvarAlteracoes.setEnabled(false);
 				work = null;
@@ -572,15 +574,18 @@ public class Principal extends JFrame {
 						sheet = work.getSheetAt(0);
 
 						// Linha de referencia (selecionar a partir de uma determinada linha...)
-						row = sheet.getRow(i);
-
+						Cell cellSelected;
 						if (colunas.size() == 19) {
 							// Copia as informações das linhas da planilhas para arrayslists.
-							while (((row = sheet.getRow(i)) != null && row.getCell(0).getCellType() != CellType.BLANK)
+							while (((row = sheet.getRow(i)) != null && row.getCell(0).getCellType() != CellType.BLANK
+									&& !((int) row.getCell(0).getNumericCellValue() + "").isEmpty())
 									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(1).getCellType() != CellType.BLANK)
+											&& row.getCell(1).getCellType() != CellType.BLANK
+											&& !row.getCell(1).getStringCellValue().isEmpty())
 									|| ((row = sheet.getRow(i)) != null
-											&& row.getCell(2).getCellType() != CellType.BLANK)) {
+											&& row.getCell(2).getCellType() != CellType.BLANK
+											&& !row.getCell(2).getStringCellValue().isEmpty())) {
+
 								storageSpliter = null; // limpa o vetor auxiliar
 
 								// Criando o DataBase Local (Armazenando os valores em Arraylists)
@@ -590,7 +595,7 @@ public class Principal extends JFrame {
 									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
 								else
 									laudo.add("");
-
+								JOptionPane.showMessageDialog(null, row.getCell(1).getStringCellValue());
 								nomeSolicitante.add(row.getCell(1).getStringCellValue());
 								usuario.add(row.getCell(2).getStringCellValue());
 								centroCusto.add(row.getCell(3).getStringCellValue());
@@ -712,7 +717,9 @@ public class Principal extends JFrame {
 										+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
 										+ " e quantidade de colunas.\nErro: " + e3);
 					} catch (java.lang.NullPointerException e4) {
-						JOptionPane.showMessageDialog(null, "Está é uma planilha nova! Possivelmente existem campos vazios, por favor, insira novos laudos.\n Exception: " + e4);
+						JOptionPane.showMessageDialog(null,
+								"Está é uma planilha nova! Possivelmente existem campos vazios, por favor, insira novos laudos.\n Exception: "
+										+ e4);
 					}
 				}
 
@@ -739,6 +746,8 @@ public class Principal extends JFrame {
 				observacao = removeEspacos(observacao);
 				status = removeEspacos(status);
 
+				dados.clear();
+				
 				// Preenche a tabela
 				preencherTabelaProprietario();
 
@@ -1641,6 +1650,7 @@ public class Principal extends JFrame {
 	}
 
 	public void removerArrayList(int pos) {
+		JOptionPane.showMessageDialog(null, dados.size());
 		dados.remove(dados.size() - 1);
 		laudo.remove(pos);
 		nomeSolicitante.remove(pos);
@@ -1822,7 +1832,7 @@ public class Principal extends JFrame {
 			// código para executar quando uma tecla é digitada
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
