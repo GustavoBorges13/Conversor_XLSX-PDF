@@ -150,7 +150,7 @@ public class Principal extends JFrame {
 		dados.clear();
 
 		try {
-			for (int i = 0; i < colunas.size(); i++) {
+			for (int i = 0; i < laudo.size(); i++) {
 				dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
 						(" " + centroCusto.get(i)), (" " + item.get(i)), (" " + qtd.get(i)), (" " + ativo.get(i)),
 						(" " + dispositivo.get(i)), (" " + hostname.get(i)), (" " + fabricante.get(i)),
@@ -159,7 +159,7 @@ public class Principal extends JFrame {
 						(" " + observacao.get(i)), (" " + status.get(i)) });
 			}
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro fatal na JTable: "+e);
+			JOptionPane.showMessageDialog(null, "Erro fatal na JTable: " + e);
 		}
 
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
@@ -449,6 +449,7 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// File diretorioInicial = new File("\\\\fscatorg01\\...");
 				String userHome = System.getProperty("user.home");
+				@SuppressWarnings("unused")
 				String diretorioInicial = userHome + File.separator + "Downloads";
 				JFileChooser fc = new JFileChooser(
 						"\\\\fscatorg01\\Fileserver\\Financeiro\\Sistemas\\321 - Sistemas - CAT\\Service Desk\\Documentos\\Laudos Técnicos\\Planilha Laudos");
@@ -595,7 +596,6 @@ public class Principal extends JFrame {
 									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
 								else
 									laudo.add("");
-								JOptionPane.showMessageDialog(null, row.getCell(1).getStringCellValue());
 								nomeSolicitante.add(row.getCell(1).getStringCellValue());
 								usuario.add(row.getCell(2).getStringCellValue());
 								centroCusto.add(row.getCell(3).getStringCellValue());
@@ -747,7 +747,7 @@ public class Principal extends JFrame {
 				status = removeEspacos(status);
 
 				dados.clear();
-				
+
 				// Preenche a tabela
 				preencherTabelaProprietario();
 
@@ -1271,7 +1271,7 @@ public class Principal extends JFrame {
 		btnSalvarAlteracoes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				work = null;
-				int reply = JOptionPane.showConfirmDialog(null, "Você realmente deseja salvar (S/N)?", "Salvamento",
+				int reply = JOptionPane.showConfirmDialog(null, "Você realmente deseja salvar?", "Salvamento",
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					try {
@@ -1348,6 +1348,16 @@ public class Principal extends JFrame {
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
 								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.");
+					} catch (NullPointerException e) {
+						JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
+						
+						// Atualiza a tabela...
+						btnPreencher.doClick();
+
+						// Desabilita botoes
+						btnSalvarAlteracoes.setEnabled(false);
+						btnEditar.setEnabled(false);
+						btnGerarArquivoPdf.setEnabled(false);
 					}
 				} else {
 					requestFocus();
@@ -1650,8 +1660,7 @@ public class Principal extends JFrame {
 	}
 
 	public void removerArrayList(int pos) {
-		JOptionPane.showMessageDialog(null, dados.size());
-		dados.remove(dados.size() - 1);
+		dados.removeIf(n -> (dados.size() == 0));
 		laudo.remove(pos);
 		nomeSolicitante.remove(pos);
 		usuario.remove(pos);
