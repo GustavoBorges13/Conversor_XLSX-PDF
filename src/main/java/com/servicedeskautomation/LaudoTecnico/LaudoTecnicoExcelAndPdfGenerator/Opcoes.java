@@ -80,7 +80,7 @@ public class Opcoes extends JDialog {
 			contentPanel.add(tabbedPane);
 			{
 				JPanel panel = new JPanel();
-				panel.setBackground(Color.WHITE);
+				panel.setBackground(new Color(240, 240, 240));
 				panel.setBorder(new TitledBorder(
 						new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 						"Personaliza\u00E7\u00E3o", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));

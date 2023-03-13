@@ -7,12 +7,12 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 
 //esta classe que faz a limitação de caracteres
-class DocumentSizeFilter extends DocumentFilter {
+class TextAreaSizeFilter extends DocumentFilter {
 
 	int maxCharacters;
 	boolean DEBUG = false;
 
-	public DocumentSizeFilter(int maxChars) {
+	public TextAreaSizeFilter(int maxChars) {
 		maxCharacters = maxChars;
 	}
 

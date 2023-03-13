@@ -7,6 +7,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -112,6 +116,9 @@ public class GerarLaudoPDF extends JDialog {
 	private static String textRef;
 	private JCheckBox chckbxNewCheckBox;
 	private JButton btnGerarArquivoPDF;
+	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
+			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+	private BufferedImage convolvedImage;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -136,7 +143,7 @@ public class GerarLaudoPDF extends JDialog {
 		setTitle("Gerar arquivo em PDF");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 770, 598);
+		setBounds(100, 100, 760, 603);
 		// setAlwaysOnTop(true);
 		/*
 		 * // Definindo a posicao da janela Dimension screenSize =
@@ -154,12 +161,56 @@ public class GerarLaudoPDF extends JDialog {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		JLabel lblHelp = new JLabel("Atalhos");
+		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblHelp.setIcon(new ImageIcon(img_help));
+		lblHelp.setBounds(645, 0, 99, 23);
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				convolvedImage = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
+
+				setBrightnessFactor(1.5f);
+
+				lblHelp.setIcon(new ImageIcon(convolvedImage));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// Define a imagem escalada no JLabel
+				lblHelp.setIcon(new ImageIcon(img_help));
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+		});
+		contentPane.add(lblHelp);
+
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Visualiza\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(414, 11, 330, 507);
+		panel.setBounds(414, 19, 330, 507);
 		contentPane.add(panel);
 
 		lblNewLabel = new JLabel("");
@@ -172,7 +223,7 @@ public class GerarLaudoPDF extends JDialog {
 		panel_1.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Prepara\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(10, 11, 399, 507);
+		panel_1.setBounds(10, 19, 399, 507);
 		contentPane.add(panel_1);
 
 		JLabel lblNomeDoTcnico = new JLabel("Nome do técnico *");
@@ -271,7 +322,7 @@ public class GerarLaudoPDF extends JDialog {
 		textAreaAnalise.setAutoscrolls(false);
 
 		doc = new DefaultStyledDocument();
-		doc.setDocumentFilter(new DocumentSizeFilter(textAreaCaracteresLimit)); // Define o limite de qtd. caracteres
+		doc.setDocumentFilter(new TextAreaSizeFilter(textAreaCaracteresLimit)); // Define o limite de qtd. caracteres
 		;// Limite de 315 caracteres no JTextArea
 		doc.addDocumentListener(new DocumentListener() {
 			@Override
@@ -476,7 +527,7 @@ public class GerarLaudoPDF extends JDialog {
 						}
 					} else {
 						flag = !flag;
-						if(num == 0) {
+						if (num == 0) {
 							btnAdd.setEnabled(false);
 							chckbxNewCheckBox.doClick();
 							linkEndereco.clear();
@@ -495,7 +546,6 @@ public class GerarLaudoPDF extends JDialog {
 		btnAdd.setEnabled(false);
 		panel_1.add(btnAdd);
 
-		
 		// Inserir links
 		chckbxNewCheckBox = new JCheckBox("Links de referência");
 		chckbxNewCheckBox.setSelected(false);
@@ -565,7 +615,7 @@ public class GerarLaudoPDF extends JDialog {
 				}
 			}
 		});
-		btnGerarArquivoPDF.setBounds(83, 523, 245, 23);
+		btnGerarArquivoPDF.setBounds(83, 531, 245, 23);
 		contentPane.add(btnGerarArquivoPDF);
 
 		btnVisualizar = new JButton("Visualizar");
@@ -592,7 +642,7 @@ public class GerarLaudoPDF extends JDialog {
 			}
 		});
 		btnVisualizar.setEnabled(false);
-		btnVisualizar.setBounds(443, 523, 123, 23);
+		btnVisualizar.setBounds(443, 531, 123, 23);
 		contentPane.add(btnVisualizar);
 
 		btnAbrirLocal = new JButton("Abrir local");
@@ -619,7 +669,7 @@ public class GerarLaudoPDF extends JDialog {
 			}
 		});
 		btnAbrirLocal.setEnabled(false);
-		btnAbrirLocal.setBounds(586, 522, 123, 23);
+		btnAbrirLocal.setBounds(586, 530, 123, 23);
 		contentPane.add(btnAbrirLocal);
 
 		addKeyListener(new KeyHandler() {
@@ -635,7 +685,6 @@ public class GerarLaudoPDF extends JDialog {
 
 		// Adiciona a funcionalidade de desfazer/refazer em todos os componentes
 		addUndoRedoFunctionality(getContentPane());
-
 	}
 
 	private void processamentoWord() {
@@ -1126,5 +1175,17 @@ public class GerarLaudoPDF extends JDialog {
 		public void keyTyped(KeyEvent e) {
 			// código para executar quando uma tecla é digitada
 		}
+	}
+
+	private void setBrightnessFactor(float multiple) {
+		float[] brightKernel = { multiple };
+		BufferedImageOp bright = new ConvolveOp(new Kernel(1, 1, brightKernel));
+		BufferedImage bufferedImage = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = bufferedImage.createGraphics();
+		g2d.drawImage(img_help, 0, 0, null);
+		g2d.dispose();
+		convolvedImage = bright.filter(bufferedImage, null);
+		repaint();
+
 	}
 }

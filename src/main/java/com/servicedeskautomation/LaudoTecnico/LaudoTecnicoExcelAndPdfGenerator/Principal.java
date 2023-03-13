@@ -6,6 +6,8 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +22,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -75,6 +81,9 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 public class Principal extends JFrame {
 	// Variaveis Locais
 	private static final long serialVersionUID = 6391163855934589017L;
@@ -101,6 +110,10 @@ public class Principal extends JFrame {
 	private int row = 0;
 	private int ultimaLinhaOld = 0;
 	private boolean flagAdd = false;
+	static boolean flagSaved = true;
+	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
+			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+	private BufferedImage convolvedImage;
 
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
@@ -127,6 +140,8 @@ public class Principal extends JFrame {
 	static ArrayList<String> storageType = new ArrayList<String>();
 	static ArrayList<String> storageValue = new ArrayList<String>();
 	static String[] storageSpliter;
+	private JLabel lblHelp;
+	private JButton btnFechar;
 
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
@@ -165,7 +180,8 @@ public class Principal extends JFrame {
 		// ModeloTabela mode = new ModeloTabela(dados,Colunas);
 		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
-
+		table.setEnabled(true);
+		
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
 		table.getColumnModel().getColumn(0).setPreferredWidth(50); // coluna LAUDO
@@ -247,7 +263,7 @@ public class Principal extends JFrame {
 		setTitle("E-ServiceDesk application");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 755, 580);
+		setBounds(100, 100, 744, 580);
 		setLocationRelativeTo(null);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -354,7 +370,7 @@ public class Principal extends JFrame {
 			}
 		});
 
-		contentPane.add(internalFrame);
+		// contentPane.add(internalFrame);
 
 		internalFrame.pack();
 		internalFrame.getContentPane().setLayout(null);
@@ -423,18 +439,43 @@ public class Principal extends JFrame {
 		internalFrame.getContentPane().add(separator);
 
 		jlocal = new JTextField();
-		jlocal.setFocusable(false);
-		jlocal.setEditable(false);
-		jlocal.setBackground(new Color(255, 255, 255));
+		jlocal.setFocusable(true);
+		jlocal.setBackground(new Color(240, 240, 240));
 		jlocal.setBounds(39, 49, 521, 39);
+		jlocal.setForeground(new Color(100, 100, 100));
 		contentPane.add(jlocal);
 		jlocal.setColumns(10);
 		jlocal.setOpaque(true);
-		btnXLS = new JButton("XLSX");
+		String maskTextXLSX = "Clique na lupa para procurar a planilha...";
+		jlocal.setText(maskTextXLSX);
+
+		jlocal.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				if (jlocal.getText().equals(maskTextXLSX)) {
+					jlocal.setText("");
+				} else {
+					jlocal.selectAll();
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (jlocal.getText().equals("")) {
+					jlocal.setText(maskTextXLSX);
+				}
+
+			}
+		});
+		btnXLS = new JButton("");
+		Image img_find = new ImageIcon(SplashAnimation.class.getResource("/resources/Find.png")).getImage()
+				.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		btnXLS.setIcon(new ImageIcon(img_find));
 		btnXLS.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (btnXLS.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			}
 
 			@Override
@@ -494,10 +535,12 @@ public class Principal extends JFrame {
 				btnSalvarAlteracoes.setEnabled(false);
 				btnGerarArquivoPdf.setEnabled(false);
 				btnPreencher.setEnabled(true);
+				btnXLS.setEnabled(true);
+				btnFechar.setEnabled(false);
 
 			}
 		});
-		btnXLS.setBounds(583, 49, 113, 39);
+		btnXLS.setBounds(592, 49, 47, 39);
 		contentPane.add(btnXLS);
 
 		// BUTTON FILL
@@ -522,6 +565,7 @@ public class Principal extends JFrame {
 			@SuppressWarnings("unused")
 			public void actionPerformed(ActionEvent e) throws NullPointerException {
 				btnSalvarAlteracoes.setEnabled(false);
+				flagSaved = true;
 				work = null;
 				XSSFSheet sheet;
 				XSSFRow row;
@@ -558,9 +602,11 @@ public class Principal extends JFrame {
 					work.close();
 					// Chegou na ultima linha que possui conteudo da planilha..
 				} catch (FileNotFoundException e1) {
-					JOptionPane.showMessageDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1);
+					JOptionPane.showMessageDialog(null, "Arquivo Excel não encontrado!\nErro: " + e1, "Erro",
+							JOptionPane.ERROR_MESSAGE);
 				} catch (IOException e3) {
-					JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e3);
+					JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e3, "Erro",
+							JOptionPane.ERROR_MESSAGE);
 				} finally {
 					try {
 						work.close();
@@ -715,11 +761,13 @@ public class Principal extends JFrame {
 						JOptionPane.showMessageDialog(null,
 								"Esta não é a planilha que utilizamos em 2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
 										+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
-										+ " e quantidade de colunas.\nErro: " + e3);
+										+ " e quantidade de colunas.\nErro: " + e3,
+								"Aviso", JOptionPane.WARNING_MESSAGE);
 					} catch (java.lang.NullPointerException e4) {
 						JOptionPane.showMessageDialog(null,
 								"Está é uma planilha nova! Possivelmente existem campos vazios, por favor, insira novos laudos.\n Exception: "
-										+ e4);
+										+ e4,
+								"Aviso", JOptionPane.WARNING_MESSAGE);
 					}
 				}
 
@@ -758,15 +806,16 @@ public class Principal extends JFrame {
 				btnAddLinha.setEnabled(true);
 				btnEditar.setEnabled(false);
 				btnRemover.setEnabled(false);
+				btnFechar.setEnabled(true);
 			}
 		});
 
-		btnPreencher.setBounds(583, 131, 113, 39);
+		btnPreencher.setBounds(591, 131, 105, 39);
 		contentPane.add(btnPreencher);
 
 		jtitulo = new JTextField();
+		jtitulo.setEditable(false);
 		jtitulo.setDisabledTextColor(new Color(0, 0, 0));
-		jtitulo.setEnabled(false);
 		jtitulo.setColumns(10);
 		jtitulo.setBounds(39, 131, 521, 39);
 		contentPane.add(jtitulo);
@@ -836,6 +885,9 @@ public class Principal extends JFrame {
 									table.clearSelection();
 									contentPane.requestFocus();
 									btnGerarArquivoPdf.setEnabled(false);
+
+									// flag
+									flagSaved = true;
 									flagAdd = false;
 									// frame.setVisible(false);
 								} else {
@@ -857,6 +909,7 @@ public class Principal extends JFrame {
 								table.updateUI();
 								table.clearSelection();
 								table.requestFocus();
+
 								// table.setRowSelectionInterval(table.getRowCount()-1,table.getRowCount()-1);
 							}
 						}
@@ -1184,7 +1237,9 @@ public class Principal extends JFrame {
 				btnEditar.setEnabled(true);
 				btnRemover.setEnabled(true);
 				btnSalvarAlteracoes.setEnabled(true);
-				flagAdd = true;
+
+				// flag
+				flagSaved = false;
 
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
@@ -1195,7 +1250,6 @@ public class Principal extends JFrame {
 				table.requestFocus();
 				table.setRowSelectionInterval(table.getRowCount() - 1, table.getRowCount() - 1);
 				int selectedRow = table.getSelectedRow();
-				// JOptionPane.showMessageDialog(null,selectedRow);
 
 				if (selectedRow != -1) {
 					// Point p = table.getMousePosition();
@@ -1244,9 +1298,11 @@ public class Principal extends JFrame {
 							MouseEvent.BUTTON1);
 					table.dispatchEvent(me);
 				} else {
-					JOptionPane.showMessageDialog(null,
-							"Por favor selecione apenas uma linha por vez para editar.\nVocê tentou editar com "
-									+ selectedRows.length + " linhas selecionadas.");
+					JOptionPane
+							.showMessageDialog(null,
+									"Por favor selecione apenas uma linha por vez para editar.\nVocê tentou editar com "
+											+ selectedRows.length + " linhas selecionadas.",
+									"Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -1271,7 +1327,8 @@ public class Principal extends JFrame {
 		btnSalvarAlteracoes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				work = null;
-				int reply = JOptionPane.showConfirmDialog(null, "Você realmente deseja salvar?", "Salvamento",
+				int reply = JOptionPane.showConfirmDialog(null,
+						"Você quer salvar as alterações realizadas na planilha?", "Salvamento",
 						JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					try {
@@ -1341,16 +1398,18 @@ public class Principal extends JFrame {
 							btnGerarArquivoPdf.setEnabled(false);
 
 							// Alterar flags
-							flagAdd = false;
+							flagAdd = true;
 						} catch (FileNotFoundException e) {
-							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e);
+							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e, "Erro",
+									JOptionPane.ERROR_MESSAGE);
 						}
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
-								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.");
+								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.",
+								"Erro", JOptionPane.ERROR_MESSAGE);
 					} catch (NullPointerException e) {
 						JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
-						
+
 						// Atualiza a tabela...
 						btnPreencher.doClick();
 
@@ -1413,8 +1472,7 @@ public class Principal extends JFrame {
 				} else {
 					flagContinuacao = true;
 				}
-
-				if (flagContinuacao) {
+				if (flagContinuacao && flagSaved) {
 
 					GerarLaudoPDF frame = new GerarLaudoPDF();
 
@@ -1449,7 +1507,6 @@ public class Principal extends JFrame {
 									frame.setVisible(true);
 								}
 							} else {
-								JOptionPane.showMessageDialog(null, "AQUI");
 								Principal.this.setEnabled(true);
 								btnEditar.setEnabled(false);
 								table.requestFocus();
@@ -1464,9 +1521,18 @@ public class Principal extends JFrame {
 						}
 
 					});
+				} else if (!flagSaved) {
+					JOptionPane.showMessageDialog(null,
+							"Infelizmente existem alterações realizadas na planilha que não foram salvas, por favor, salve as alterações antes continuar.",
+							"Aviso", JOptionPane.WARNING_MESSAGE);
+
+					// Salva as alteracoes antes
+					btnSalvarAlteracoes.doClick();
+
 				} else {
 					JOptionPane.showMessageDialog(null,
-							"Por favor, verifique as linhas que você selecionou, se possuem os mesmos ativos.\nPois não é permitido fazer 1 laudo para computadores diferentes.");
+							"Por favor, verifique as linhas que você selecionou, se possuem os mesmos ativos.\nPois não é permitido fazer 1 laudo para computadores diferentes.",
+							"Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -1477,6 +1543,7 @@ public class Principal extends JFrame {
 		// BUTTON REMOVE
 		btnRemover = new JButton("Remover");
 		btnRemover.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				if (btnRemover.isEnabled())
@@ -1510,12 +1577,118 @@ public class Principal extends JFrame {
 					btnRemover.setEnabled(false);
 					btnSalvarAlteracoes.setEnabled(true);
 					btnGerarArquivoPdf.setEnabled(false);
+
+					// flag
+					flagSaved = false;
 				}
 			}
 		});
 		btnRemover.setEnabled(false);
 		btnRemover.setBounds(269, 485, 105, 23);
 		contentPane.add(btnRemover);
+
+		lblHelp = new JLabel("Atalhos");
+		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblHelp.setIcon(new ImageIcon(img_help));
+		lblHelp.setBounds(640, 0, 85, 23);
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showMessageDialog(null, "Este é o meu texto informativo.");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				convolvedImage = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
+
+				setBrightnessFactor(1.5f);
+
+				lblHelp.setIcon(new ImageIcon(convolvedImage));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// Define a imagem escalada no JLabel
+				lblHelp.setIcon(new ImageIcon(img_help));
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+		});
+		contentPane.add(lblHelp);
+
+		btnFechar = new JButton("");
+		btnFechar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				int reply = JOptionPane.showConfirmDialog(null,
+						"Você tem certeza que deseja fechar a planilha?", "Fechar planilha",JOptionPane.WARNING_MESSAGE,
+						JOptionPane.YES_NO_OPTION);
+				if (reply == JOptionPane.YES_OPTION) {
+					// Habilita os botoes auxiliares para controlar a planilha
+					btnAddLinha.setEnabled(false);
+					btnEditar.setEnabled(false);
+					btnRemover.setEnabled(false);
+					btnSalvarAlteracoes.setEnabled(false);
+					btnGerarArquivoPdf.setEnabled(false);
+					btnPreencher.setEnabled(false);
+					btnXLS.setEnabled(true);
+					btnFechar.setEnabled(false);
+					
+					//Limpa campos de textos
+					table.clearSelection();
+					try {
+						work.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					work = null;
+					jlocal.setText("");
+					jtitulo.setText("");
+	
+					// Limpa tabela se estiver aberta antes
+					limparArrayList();
+					table.createDefaultColumnsFromModel();
+					
+					//Focus
+					requestFocus();
+				}
+			}
+		});
+		btnFechar.setEnabled(false);
+		Image img_close = new ImageIcon(SplashAnimation.class.getResource("/resources/closeRed.png")).getImage()
+				.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
+		btnFechar.setIcon(new ImageIcon(img_close));
+		btnFechar.setBounds(649, 49, 47, 39);
+		btnFechar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				if (btnFechar.isEnabled())
+					setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+
+		contentPane.add(btnFechar);
 
 		// Copy dados da tabela (atalhos)
 		table.addKeyListener(new KeyAdapter() {
@@ -1542,6 +1715,9 @@ public class Principal extends JFrame {
 						btnRemover.setEnabled(false);
 						btnSalvarAlteracoes.setEnabled(true);
 						btnGerarArquivoPdf.setEnabled(false);
+
+						// Flag
+						flagSaved = false;
 					}
 				}
 				if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_X) {
@@ -1840,6 +2016,18 @@ public class Principal extends JFrame {
 		public void keyTyped(KeyEvent e) {
 			// código para executar quando uma tecla é digitada
 		}
+	}
+
+	private void setBrightnessFactor(float multiple) {
+		float[] brightKernel = { multiple };
+		BufferedImageOp bright = new ConvolveOp(new Kernel(1, 1, brightKernel));
+		BufferedImage bufferedImage = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = bufferedImage.createGraphics();
+		g2d.drawImage(img_help, 0, 0, null);
+		g2d.dispose();
+		convolvedImage = bright.filter(bufferedImage, null);
+		repaint();
+
 	}
 
 	public static void main(String[] args) {

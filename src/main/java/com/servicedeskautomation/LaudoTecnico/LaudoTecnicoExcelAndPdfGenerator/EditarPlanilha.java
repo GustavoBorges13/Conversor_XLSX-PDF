@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -15,7 +17,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ConvolveOp;
+import java.awt.image.Kernel;
+
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -38,6 +46,7 @@ import javax.swing.undo.UndoManager;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import javax.swing.SwingConstants;
 
 @SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JDialog {
@@ -73,6 +82,10 @@ public class EditarPlanilha extends JDialog {
 	private JButton btnSave;
 	static boolean finalizado;
 	private static int tempIndex;
+	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
+			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+	private BufferedImage convolvedImage;
+	private JLabel lblHelp;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -95,7 +108,7 @@ public class EditarPlanilha extends JDialog {
 		setTitle("Editar informações da planilha");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 465, 600);
+		setBounds(100, 100, 454, 600);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -118,11 +131,55 @@ public class EditarPlanilha extends JDialog {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		lblHelp = new JLabel("Atalhos");
+		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblHelp.setIcon(new ImageIcon(img_help));
+		lblHelp.setBounds(328, 0, 107, 26);
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+		});
+		lblHelp.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				convolvedImage = new BufferedImage(20, 20, BufferedImage.TYPE_INT_RGB);
+
+				setBrightnessFactor(1.5f);
+
+				lblHelp.setIcon(new ImageIcon(convolvedImage));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// Define a imagem escalada no JLabel
+				lblHelp.setIcon(new ImageIcon(img_help));
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+		});
+		contentPane.add(lblHelp);
+
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				": : Modo edi\u00E7\u00E3o : :", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 11, 429, 539);
+		panel.setBounds(10, 22, 429, 539);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -691,7 +748,8 @@ public class EditarPlanilha extends JDialog {
 				if (flag) {
 					// Fechamento da janela
 					finalizado = true;
-
+					Principal.flagSaved = false;
+					
 					// volta a janela principal para o estado anterior
 					dispose();
 				}
@@ -899,5 +957,17 @@ public class EditarPlanilha extends JDialog {
 				addUndoRedoFunctionality((Container) component);
 			}
 		}
+	}
+
+	private void setBrightnessFactor(float multiple) {
+		float[] brightKernel = { multiple };
+		BufferedImageOp bright = new ConvolveOp(new Kernel(1, 1, brightKernel));
+		BufferedImage bufferedImage = new BufferedImage(20, 20, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = bufferedImage.createGraphics();
+		g2d.drawImage(img_help, 0, 0, null);
+		g2d.dispose();
+		convolvedImage = bright.filter(bufferedImage, null);
+		repaint();
+
 	}
 }
