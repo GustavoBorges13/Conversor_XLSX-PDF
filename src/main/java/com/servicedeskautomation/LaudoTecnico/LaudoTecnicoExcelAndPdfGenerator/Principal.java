@@ -80,8 +80,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.formdev.flatlaf.FlatIntelliJLaf;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 public class Principal extends JFrame {
@@ -181,7 +179,7 @@ public class Principal extends JFrame {
 		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
 		table.setEnabled(true);
-		
+
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
 		table.getColumnModel().getColumn(0).setPreferredWidth(50); // coluna LAUDO
@@ -513,6 +511,8 @@ public class Principal extends JFrame {
 					// Limpa selecoes
 					table.clearSelection();
 					requestFocus();
+					
+					btnFechar.setEnabled(true);
 				} else {
 					pathfileExcel = fc.getSelectedFile();
 					jlocal.setText(pathfileExcel.toString().trim());
@@ -526,6 +526,8 @@ public class Principal extends JFrame {
 					// Limpa tabela se estiver aberta antes
 					limparArrayList();
 					table.createDefaultColumnsFromModel();
+					
+					btnFechar.setEnabled(false);
 				}
 
 				// Habilita os botoes auxiliares para controlar a planilha
@@ -536,8 +538,6 @@ public class Principal extends JFrame {
 				btnGerarArquivoPdf.setEnabled(false);
 				btnPreencher.setEnabled(true);
 				btnXLS.setEnabled(true);
-				btnFechar.setEnabled(false);
-
 			}
 		});
 		btnXLS.setBounds(592, 49, 47, 39);
@@ -579,7 +579,7 @@ public class Principal extends JFrame {
 
 					// Abre o arquivo excel
 					work = new XSSFWorkbook(new FileInputStream(pathfileExcel));
-
+					work.setForceFormulaRecalculation(true);
 					// Junta todas as planilhas deste arquivo.
 					// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
 					sheet = work.getSheetAt(0);
@@ -609,13 +609,12 @@ public class Principal extends JFrame {
 							JOptionPane.ERROR_MESSAGE);
 				} finally {
 					try {
-						work.close();
 						int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
 						int pos = 0; // valor default
 
 						// Abre o arquivo excel
 						work = new XSSFWorkbook(new FileInputStream(pathfileExcel));
-
+						work.setForceFormulaRecalculation(true);
 						// Junta todas as planilhas deste arquivo.
 						// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
 						sheet = work.getSheetAt(0);
@@ -756,7 +755,8 @@ public class Principal extends JFrame {
 							throw new java.lang.ArrayIndexOutOfBoundsException();
 						}
 					} catch (IOException e2) {
-						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e2);
+						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e2, "Erro",
+								JOptionPane.ERROR_MESSAGE);
 					} catch (java.lang.ArrayIndexOutOfBoundsException e3) {
 						JOptionPane.showMessageDialog(null,
 								"Esta não é a planilha que utilizamos em 2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
@@ -807,6 +807,12 @@ public class Principal extends JFrame {
 				btnEditar.setEnabled(false);
 				btnRemover.setEnabled(false);
 				btnFechar.setEnabled(true);
+				try {
+					work.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 
@@ -1326,7 +1332,6 @@ public class Principal extends JFrame {
 		});
 		btnSalvarAlteracoes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				work = null;
 				int reply = JOptionPane.showConfirmDialog(null,
 						"Você quer salvar as alterações realizadas na planilha?", "Salvamento",
 						JOptionPane.YES_NO_OPTION);
@@ -1335,7 +1340,7 @@ public class Principal extends JFrame {
 						// Abra o arquivo xlsx existente
 						int g = 1;
 						work = new XSSFWorkbook(new FileInputStream(pathfileExcel));
-
+						work.setForceFormulaRecalculation(true);
 						// Junta todas as planilhas deste arquivo.
 						// Planilha 1 = 0 ou usar getSheet ("NOME DA Planilha")
 						// Obtenha a planilha desejada
@@ -1369,40 +1374,33 @@ public class Principal extends JFrame {
 						}
 
 						// SALVANDO NEW DADOS NA PLANILHA!
-						escreverPlanilha(work, cell, sheet, textStyle);
-
-						// Salvar alterações na planilha!
-						work.write(new FileOutputStream(pathfileExcel));
+						escreverPlanilha(cell, sheet, textStyle);
 
 						// Adicionando mais linhas se estiver perto da linha de aviso (AMARELO)
 						int limitador = 3;
 						if ((g - laudo.size()) <= limitador) {
 							for (int i = 0; i <= limitador; i++) {
-								addRow(work, sheet, 1, laudo.size() + 1, textStyle);
+								addRow(sheet, 1, laudo.size() + 1, textStyle);
 							}
 						}
+
+						// Salvar alterações na planilha!
 						work.write(new FileOutputStream(pathfileExcel));
 
-						try {
-							// Salvar alterações na planilha!
+						work.close(); // Fecha a planilha
+						JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
 
-							work.close(); // Fecha a planilha
-							JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
+						// Atualiza a tabela...
+						btnPreencher.doClick();
 
-							// Atualiza a tabela...
-							btnPreencher.doClick();
+						// Desabilita botoes
+						btnSalvarAlteracoes.setEnabled(false);
+						btnEditar.setEnabled(false);
+						btnGerarArquivoPdf.setEnabled(false);
 
-							// Desabilita botoes
-							btnSalvarAlteracoes.setEnabled(false);
-							btnEditar.setEnabled(false);
-							btnGerarArquivoPdf.setEnabled(false);
+						// Alterar flags
+						flagAdd = true;
 
-							// Alterar flags
-							flagAdd = true;
-						} catch (FileNotFoundException e) {
-							JOptionPane.showMessageDialog(null, "Erro ao salvar a planilha!\n" + e, "Erro",
-									JOptionPane.ERROR_MESSAGE);
-						}
 					} catch (IOException e) {
 						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
 								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.",
@@ -1635,37 +1633,19 @@ public class Principal extends JFrame {
 		btnFechar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				int reply = JOptionPane.showConfirmDialog(null,
-						"Você tem certeza que deseja fechar a planilha?", "Fechar planilha",JOptionPane.WARNING_MESSAGE,
-						JOptionPane.YES_NO_OPTION);
+				int reply = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja fechar a planilha?",
+						"Fechar planilha", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
-					// Habilita os botoes auxiliares para controlar a planilha
-					btnAddLinha.setEnabled(false);
-					btnEditar.setEnabled(false);
-					btnRemover.setEnabled(false);
-					btnSalvarAlteracoes.setEnabled(false);
-					btnGerarArquivoPdf.setEnabled(false);
-					btnPreencher.setEnabled(false);
-					btnXLS.setEnabled(true);
-					btnFechar.setEnabled(false);
-					
-					//Limpa campos de textos
-					table.clearSelection();
+					work.setForceFormulaRecalculation(true);
 					try {
 						work.close();
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					jlocal.setText("");
-					jtitulo.setText("");
-	
-					// Limpa tabela se estiver aberta antes
-					limparArrayList();
-					table.createDefaultColumnsFromModel();
-					
-					//Focus
-					requestFocus();
+					dispose();
+					Principal pp = new Principal();
+					pp.setVisible(true);
 				}
 			}
 		});
@@ -1859,7 +1839,7 @@ public class Principal extends JFrame {
 		status.remove(pos);
 	}
 
-	private static void addRow(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
+	private static void addRow(XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
 			XSSFCellStyle textStyle) {
 		// Get the source / new row
 		XSSFRow newRow = worksheet.getRow(destinationRowNum);
@@ -1901,7 +1881,7 @@ public class Principal extends JFrame {
 		}
 	}
 
-	public static void escreverPlanilha(XSSFWorkbook work, XSSFCell cell, XSSFSheet sheet, XSSFCellStyle textStyle) {
+	public static void escreverPlanilha(XSSFCell cell, XSSFSheet sheet, XSSFCellStyle textStyle) {
 		int j = 0;
 		try {
 			// Transcreve os valores do arraylist para as celulas da planilha...
