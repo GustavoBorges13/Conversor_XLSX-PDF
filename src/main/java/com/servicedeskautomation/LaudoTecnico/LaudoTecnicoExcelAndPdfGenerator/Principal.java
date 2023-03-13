@@ -181,7 +181,7 @@ public class Principal extends JFrame {
 		ModeloTabela modelo = new ModeloTabela(dados, colunas);
 		table.setModel(modelo);
 		table.setEnabled(true);
-		
+
 		// Nao deixa a aumentar a largura das colunas da tabela usando o mouse e realiza
 		// os alinhamentos das colunas e linhas!
 		table.getColumnModel().getColumn(0).setPreferredWidth(50); // coluna LAUDO
@@ -1635,9 +1635,8 @@ public class Principal extends JFrame {
 		btnFechar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				int reply = JOptionPane.showConfirmDialog(null,
-						"Você tem certeza que deseja fechar a planilha?", "Fechar planilha",JOptionPane.WARNING_MESSAGE,
-						JOptionPane.YES_NO_OPTION);
+				int reply = JOptionPane.showConfirmDialog(null, "Você tem certeza que deseja fechar a planilha?",
+						"Fechar planilha", JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
 				if (reply == JOptionPane.YES_OPTION) {
 					// Habilita os botoes auxiliares para controlar a planilha
 					btnAddLinha.setEnabled(false);
@@ -1648,8 +1647,8 @@ public class Principal extends JFrame {
 					btnPreencher.setEnabled(false);
 					btnXLS.setEnabled(true);
 					btnFechar.setEnabled(false);
-					
-					//Limpa campos de textos
+
+					// Limpa campos de textos
 					table.clearSelection();
 					try {
 						work.close();
@@ -1659,12 +1658,12 @@ public class Principal extends JFrame {
 					}
 					jlocal.setText("");
 					jtitulo.setText("");
-	
+
 					// Limpa tabela se estiver aberta antes
 					limparArrayList();
 					table.createDefaultColumnsFromModel();
-					
-					//Focus
+
+					// Focus
 					requestFocus();
 				}
 			}
@@ -1860,7 +1859,7 @@ public class Principal extends JFrame {
 	}
 
 	private static void addRow(XSSFWorkbook workbook, XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
-			XSSFCellStyle textStyle) {
+			XSSFCellStyle textStyle) throws IOException {
 		// Get the source / new row
 		XSSFRow newRow = worksheet.getRow(destinationRowNum);
 		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
@@ -1899,9 +1898,11 @@ public class Principal extends JFrame {
 			// Set the cell data type
 			newCell.setCellType(oldCell.getCellType());
 		}
+		workbook.close();
 	}
 
-	public static void escreverPlanilha(XSSFWorkbook work, XSSFCell cell, XSSFSheet sheet, XSSFCellStyle textStyle) {
+	public static void escreverPlanilha(XSSFWorkbook work, XSSFCell cell, XSSFSheet sheet, XSSFCellStyle textStyle)
+			throws IOException {
 		int j = 0;
 		try {
 			// Transcreve os valores do arraylist para as celulas da planilha...
@@ -1990,6 +1991,7 @@ public class Principal extends JFrame {
 
 				j++;
 			}
+			work.close();
 		} catch (NumberFormatException | IndexOutOfBoundsException e) {
 			System.out.println("Escrevendo na planilha Exception -> NumberFormat or IndexOutOfBounds" + e);
 		}
