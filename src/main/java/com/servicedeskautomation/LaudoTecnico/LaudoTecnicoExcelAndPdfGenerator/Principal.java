@@ -1657,7 +1657,6 @@ public class Principal extends JFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					work = null;
 					jlocal.setText("");
 					jtitulo.setText("");
 	
