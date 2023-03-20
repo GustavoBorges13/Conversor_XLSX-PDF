@@ -161,7 +161,6 @@ public class Principal extends JFrame {
 	@SuppressWarnings("static-access")
 	public static void preencherTabelaProprietario() {
 		dados.clear();
-
 		try {
 			for (int i = 0; i < laudo.size(); i++) {
 				dados.add(new Object[] { (" " + laudo.get(i)), (" " + nomeSolicitante.get(i)), (" " + usuario.get(i)),
@@ -744,7 +743,7 @@ public class Principal extends JFrame {
 								} else {
 									status.add(cell.getStringCellValue());
 								}
-
+								
 								i++;
 							}
 							qtdTemporaria = laudo.size();
