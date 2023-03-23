@@ -22,16 +22,16 @@
     <maxVersion>1.9.0</maxVersion>
   </jre>
   <versionInfo>
-    <fileVersion>0.2.9.14</fileVersion>
-    <txtFileVersion>2.9.14</txtFileVersion>
+    <fileVersion>0.2.10.3</fileVersion>
+    <txtFileVersion>2.10.3</txtFileVersion>
     <fileDescription>Uma ferramenta para nós auxiliar no estágio com objetivo de otimizar tempo e evitar desperdícios.</fileDescription>
     <copyright>Copyrigth (C) 2022, 2023 Gustavo Borges Peres da Silva</copyright>
-    <productVersion>0.2.9.14</productVersion>
-    <txtProductVersion>2.9.14</txtProductVersion>
+    <productVersion>0.2.10.3</productVersion>
+    <txtProductVersion>2.10.3</txtProductVersion>
     <productName>E-ServiceDesk Application</productName>
     <companyName>HPE AUTOMOTORES LTDA</companyName>
     <internalName> E-ServiceDesk Application</internalName>
-    <originalFilename>TI SD LAUDOS.exe</originalFilename>
+    <originalFilename>TI-SD-Laudos.exe</originalFilename>
     <trademarks></trademarks>
     <language>PORTUGUESE_BRAZIL</language>
   </versionInfo>
