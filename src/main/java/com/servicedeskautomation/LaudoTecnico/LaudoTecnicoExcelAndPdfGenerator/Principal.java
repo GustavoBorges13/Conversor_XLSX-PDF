@@ -316,11 +316,7 @@ public class Principal extends JFrame {
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_2);
-
-		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Atalhos teclado");
 		mntmNewMenuItem_2.setMnemonic('T');
-		mntmNewMenuItem_3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
-		mnNewMenu_2.add(mntmNewMenuItem_3);
 
 		contentPane = new JPanel();
 		contentPane.setOpaque(false);
@@ -367,7 +363,7 @@ public class Principal extends JFrame {
 			}
 		});
 
-		// contentPane.add(internalFrame);
+		contentPane.add(internalFrame);
 
 		internalFrame.pack();
 		internalFrame.getContentPane().setLayout(null);
@@ -510,8 +506,9 @@ public class Principal extends JFrame {
 					// Limpa selecoes
 					table.clearSelection();
 					requestFocus();
-					
-					btnFechar.setEnabled(true);
+
+					btnFechar.setEnabled(false);
+					btnPreencher.setEnabled(false);
 				} else {
 					pathfileExcel = fc.getSelectedFile();
 					jlocal.setText(pathfileExcel.toString().trim());
@@ -525,7 +522,7 @@ public class Principal extends JFrame {
 					// Limpa tabela se estiver aberta antes
 					limparArrayList();
 					table.createDefaultColumnsFromModel();
-					
+
 					btnFechar.setEnabled(false);
 				}
 
@@ -535,7 +532,6 @@ public class Principal extends JFrame {
 				btnRemover.setEnabled(false);
 				btnSalvarAlteracoes.setEnabled(false);
 				btnGerarArquivoPdf.setEnabled(false);
-				btnPreencher.setEnabled(true);
 				btnXLS.setEnabled(true);
 			}
 		});
@@ -743,7 +739,7 @@ public class Principal extends JFrame {
 								} else {
 									status.add(cell.getStringCellValue());
 								}
-								
+
 								i++;
 							}
 							qtdTemporaria = laudo.size();
@@ -1355,7 +1351,10 @@ public class Principal extends JFrame {
 						textStyle.setBorderBottom(BorderStyle.THIN);
 						textStyle.setBorderLeft(BorderStyle.THIN);
 						textStyle.setBorderRight(BorderStyle.THIN);
-
+						
+						JOptionPane.showMessageDialog(null, sheet.getLastRowNum());
+						
+						
 						// Remove todo o conteudo da planilha para fazer o reset
 						if (laudo.size() < qtdTemporaria)
 							sheet.copyRows(sheet.getLastRowNum() - qtdTemporaria, sheet.getLastRowNum(), 1,
@@ -1371,7 +1370,6 @@ public class Principal extends JFrame {
 								&& row.getCell(3).getCellType() != CellType.BLANK) {
 							g++;
 						}
-
 						// SALVANDO NEW DADOS NA PLANILHA!
 						escreverPlanilha(cell, sheet, textStyle);
 
@@ -1404,17 +1402,17 @@ public class Principal extends JFrame {
 						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
 								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.",
 								"Erro", JOptionPane.ERROR_MESSAGE);
-					} catch (NullPointerException e) {
+					} /*catch (NullPointerException e) {
 						JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
 
 						// Atualiza a tabela...
 						btnPreencher.doClick();
-
+						JOptionPane.showMessageDialog(null, aux);
 						// Desabilita botoes
 						btnSalvarAlteracoes.setEnabled(false);
 						btnEditar.setEnabled(false);
 						btnGerarArquivoPdf.setEnabled(false);
-					}
+					}*/
 				} else {
 					requestFocus();
 				}
@@ -1603,7 +1601,7 @@ public class Principal extends JFrame {
 		lblHelp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Este é o meu texto informativo.");
+				JOptionPane.showMessageDialog(null, "Atalhos ");
 			}
 
 			@Override
@@ -1838,8 +1836,7 @@ public class Principal extends JFrame {
 		status.remove(pos);
 	}
 
-	private static void addRow(XSSFSheet worksheet, int sourceRowNum, int destinationRowNum,
-			XSSFCellStyle textStyle) {
+	private static void addRow(XSSFSheet worksheet, int sourceRowNum, int destinationRowNum, XSSFCellStyle textStyle) {
 		// Get the source / new row
 		XSSFRow newRow = worksheet.getRow(destinationRowNum);
 		XSSFRow sourceRow = worksheet.getRow(sourceRowNum);
@@ -1890,8 +1887,7 @@ public class Principal extends JFrame {
 				// SALVANDO NEW DADOS NA PLANILHA!
 				// Alterando valores das celulas...
 				cell = row.getCell(0); // Obtem a celula desejada -> Coluna
-				cell.setCellValue(Integer.parseInt(laudo.get(j))); // Alterando o valor das células da
-																	// planilha
+				cell.setCellValue(Integer.parseInt(laudo.get(j))); // Alterando o valor das células da planilha
 				cell.setCellType(CellType.NUMERIC); // Define o tipo da celula
 				cell.setCellStyle(textStyle); // Define o estilo centralizado
 				cell = row.getCell(1);
@@ -1971,6 +1967,8 @@ public class Principal extends JFrame {
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException e) {
 			System.out.println("Escrevendo na planilha Exception -> NumberFormat or IndexOutOfBounds" + e);
+		} catch(NullPointerException e) {
+			System.out.println("ERRRROOO"+e);
 		}
 	}
 

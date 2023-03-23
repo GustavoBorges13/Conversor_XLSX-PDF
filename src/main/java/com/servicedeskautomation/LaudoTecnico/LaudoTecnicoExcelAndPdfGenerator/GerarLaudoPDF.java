@@ -685,6 +685,8 @@ public class GerarLaudoPDF extends JDialog {
 
 		// Adiciona a funcionalidade de desfazer/refazer em todos os componentes
 		addUndoRedoFunctionality(getContentPane());
+		
+		txtNomeTecnico.setText(Principal.tecnico.get(Principal.table.getSelectedRow()));
 	}
 
 	private void processamentoWord() {
