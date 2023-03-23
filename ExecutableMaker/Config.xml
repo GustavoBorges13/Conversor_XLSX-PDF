@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>C:\Users\gs809861\git\Conversor_XLSX-PDF\target\LaudoTecnicoExcelAndPdfGenerator-0.0.1-SNAPSHOT-jar-with-dependencies.jar</jar>
-  <outfile>C:\Users\gs809861\Documents\SERVICE-DESK APPLICATION\TI SD LAUDOS.exe</outfile>
+  <outfile>C:\Users\gs809861\git\Conversor_XLSX-PDF\ExecutableMaker\TI SD LAUDOS.exe</outfile>
   <errTitle>Você não tem java, por favor, baixe o java no site oficial do java.</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -11,9 +11,9 @@
   <downloadUrl>https://www.java.com/pt-BR/download/ie_manual.jsp?locale=pt_BR</downloadUrl>
   <supportUrl></supportUrl>
   <stayAlive>false</stayAlive>
-  <restartOnCrash>false</restartOnCrash>
+  <restartOnCrash>true</restartOnCrash>
   <manifest></manifest>
-  <icon>C:\Users\gs809861\Downloads\star.ico</icon>
+  <icon>C:\Users\gs809861\git\Conversor_XLSX-PDF\ExecutableMaker\mushroom.ico</icon>
   <jre>
     <path>%JAVA_HOME%;%PATH%</path>
     <requiresJdk>false</requiresJdk>

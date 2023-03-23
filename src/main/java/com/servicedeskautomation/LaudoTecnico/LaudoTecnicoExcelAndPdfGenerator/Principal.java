@@ -1350,10 +1350,7 @@ public class Principal extends JFrame {
 						textStyle.setBorderTop(BorderStyle.THIN);
 						textStyle.setBorderBottom(BorderStyle.THIN);
 						textStyle.setBorderLeft(BorderStyle.THIN);
-						textStyle.setBorderRight(BorderStyle.THIN);
-						
-						JOptionPane.showMessageDialog(null, sheet.getLastRowNum());
-						
+						textStyle.setBorderRight(BorderStyle.THIN);						
 						
 						// Remove todo o conteudo da planilha para fazer o reset
 						if (laudo.size() < qtdTemporaria)
