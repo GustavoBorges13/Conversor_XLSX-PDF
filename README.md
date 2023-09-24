@@ -63,3 +63,34 @@ Build simples somente jar com dependencias inclusas e exec para iniciar automati
 ```diff
 clean compile assembly:single exec:java
 ```
+
+
+# Maven Dependency Utilizadas no Projeto
+Aqui está uma breve descrição de cada uma das dependências utilizadas no projeto (APIs, frameworks e utilitários):
+
+1. **org.apache.poi**: API - O Apache POI é uma API para criar e manipular documentos do Microsoft Office, como arquivos do Word e Excel. Ele permite que você trabalhe com esses formatos de arquivo em Java.
+
+2. **org.apache.poi-ooxml**: API - Uma extensão do Apache POI que lida especificamente com formatos de arquivo Office Open XML, como arquivos .xlsx (Excel).
+
+3. **org.apache.poi.ooxml-schemas**: Utilitário - Este pacote fornece as bibliotecas de esquema XML necessárias para trabalhar com arquivos Office Open XML. É uma dependência de apoio para o Apache POI.
+
+4. **org.apache.pdfbox**: API - O Apache PDFBox é uma biblioteca Java que permite criar e manipular arquivos PDF. É uma API para trabalhar com PDFs em Java. Agradeço muito essa biblioteca pois é a melhor que eu encontrei e gratuita.
+
+5. **org.swinglabs.pdf-renderer**: Framework - O PDF Renderer é um framework Java para renderizar arquivos PDF em componentes Swing. Ele fornece uma visualização de PDF em uma interface gráfica. Usei ele em especifico para mostrar uma visualizacao final do PDF que foi gerado na conversão para nao precisar abrir.
+
+6. **com.documents4j-local**: Framework - O Documents4j é uma biblioteca que permite a conversão de documentos entre diferentes formatos, como Word para PDF. Esta é uma dependência para uso local do Documents4j.
+
+7. **com.documents4j-transformer-msoffice-word**: Framework - Uma extensão do Documents4j para a transformação de documentos do Microsoft Word para outros formatos. É uma dependência para o uso de documentos do Word com o Documents4j.
+
+8. **uk.gov.gchq.gaffer.bitmap-library**: Utilitário - Esta é uma biblioteca para trabalhar com mapas de bits. É um utilitário para manipulação de imagens em Java.
+
+9. **commons-lang**: Utilitário - Apache Commons Lang é uma biblioteca de utilitários para fornecer funcionalidades adicionais à linguagem Java padrão. Ele oferece uma variedade de classes e métodos auxiliares.
+
+10. **com.toedter.jcalendar**: Framework - O JCalendar é um framework para trabalhar com calendários e escolher datas em aplicações Java Swing. Não cheguei a usar ainda, estou testando ele pois tem uma visualização dinamica de calendario.
+
+11. **com.jgoodies.jgoodies-forms**: Framework - O JGoodies Forms é um framework para criar interfaces gráficas de usuário (GUI) baseadas em Swing em Java. Ele fornece um layout de formulário flexível.
+
+12. **com.miglayout-swing**: Framework - O MiGLayout é um layout manager para aplicações Java Swing que oferece um layout flexível e poderoso.
+
+13. **com.formdev.flatlaf**: Framework - FlatLaf é um framework para criar interfaces de usuário em estilo "flat" (sem sombreamento) em aplicações Java Swing. Ele fornece um visual moderno para interfaces gráficas. Usei ele para os temas das janelas.
+
