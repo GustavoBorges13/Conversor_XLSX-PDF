@@ -56,11 +56,10 @@ Manter a linha de resource no arquivo .pom para evitar o erro de acessar as imag
 E por ultimo, a configuração de build utilizada no moven (goals).
 Build completa:
 ```diff
-clean package
 clean install
 clean compile install verify
 ```
-Build simples somente jar com dependencias inclusas:
+Build simples somente jar com dependencias inclusas e exec para iniciar automaticamente a aplicacao depois de compilada:
 ```diff
-clean compile assembly:single
+clean compile assembly:single exec:java
 ```
