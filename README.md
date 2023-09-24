@@ -59,7 +59,7 @@ Build completa:
 clean install
 clean compile install verify
 ```
-Build simples somente jar com dependencias inclusas e exec para iniciar automaticamente a aplicacao depois de compilada:
+Build simples somente jar com dependencias inclusas e exec para iniciar automaticamente a aplicacao depois de compilada (atualmente eu uso essa para criar o arquivo executavel posteriormente no Launch4j, Inno Setup, JSmooth, Exe4j, LaunchAnywhere, install4j, Excelsior ou JexePack):
 ```diff
 clean compile assembly:single exec:java
 ```
