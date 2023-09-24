@@ -67,7 +67,7 @@ clean compile assembly:single exec:java
 
 # Maven Dependency Utilizadas no Projeto
 Aqui está uma breve descrição de cada uma das dependências utilizadas no projeto (APIs, frameworks e utilitários):
-```diff
+
 1. **org.apache.poi**: API - O Apache POI é uma API para criar e manipular documentos do Microsoft Office, como arquivos do Word e Excel. Ele permite que você trabalhe com esses formatos de arquivo em Java.
 
 2. **org.apache.poi-ooxml**: API - Uma extensão do Apache POI que lida especificamente com formatos de arquivo Office Open XML, como arquivos .xlsx (Excel).
@@ -93,4 +93,3 @@ Aqui está uma breve descrição de cada uma das dependências utilizadas no pro
 12. **com.miglayout-swing**: Framework - O MiGLayout é um layout manager para aplicações Java Swing que oferece um layout flexível e poderoso.
 
 13. **com.formdev.flatlaf**: Framework - FlatLaf é um framework para criar interfaces de usuário em estilo "flat" (sem sombreamento) em aplicações Java Swing. Ele fornece um visual moderno para interfaces gráficas. Usei ele para os temas das janelas.
-```
