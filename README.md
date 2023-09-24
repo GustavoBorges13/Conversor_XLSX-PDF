@@ -10,11 +10,18 @@
 # Projeto no estagio
 ```
 # Sobre o projeto
- Esté é um Programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido me levando a obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo Apache POI (ooxml e ooxml-schemas), commons-lang, Toedter (jcalendar), jgoodies (Forms), miglayout (miglayout-layout), formdev (flatlaf) e docx4j. 
- 
- O projeto foi desenvolvido utilizando MAVEN para builds e importações práticas das APIs.
- 
- Sobre o programa em si, se trata de uma interface gráfica dinamica, no qual o usuario se depera com uma primeira janela para escolher a planilha em especifico para abrir, sendo que TODO o codigo foi feito especialmente para este tipo de planilha a ser trabalhado levando em considerações desde das formatações e quantidade de colunas contidas nele. Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel "como se fosse um excel". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Caso o usuario esteja satisfeito, poderá selecionar a linha em especifico e exportar para um documento WORD com FORMATAÇÕES e converter logo seguinte em PDF para ser enviado ao cliente.
+
+Desenvolvemos esta aplicação para aprimorar a eficiência de nossa equipe de service desk.
+
+Esta é uma ferramenta de automação criada com fins educacionais, visando aprofundar nosso conhecimento em várias APIs, como APACHE POI, JXL, OpenCSV e docx4j, e aprimorar nossas habilidades de programação em um ambiente profissional.
+
+O projeto foi desenvolvido no Eclipse (versão de 2022-09) e construído com o Maven para realizar tarefas como limpeza, verificação, instalação de pacotes e builds. Isso garantiu que todas as APIs necessárias estivessem disponíveis ao alternar entre ambientes domésticos e empresariais, facilitando a colaboração por meio do GitHub, onde você pode acessar nosso perfil e o repositório deste projeto para obter mais informações.
+
+A aplicação oferece uma interface gráfica dinâmica. Ao abri-la, o usuário pode escolher uma planilha específica para manipulação, eliminando a necessidade de usar o Excel. O código foi desenvolvido sob medida para esse tipo de planilha, considerando formatações e quantidade de colunas.
+
+Ao selecionar a planilha, ela é exibida em uma JTable, permitindo a edição como se fosse uma planilha Excel. Além disso, ao clicar em uma linha, você terá opções de edição, e ao clicar duas vezes em uma linha, uma janela lateral abrirá para edição dos valores selecionados. O menu "Ferramentas" oferece utilidades adicionais para explorar.
+
+Após realizar as edições desejadas, o usuário pode selecionar uma ou várias linhas e gerar um arquivo PDF. O programa automatiza a criação de um documento MS Word formatado com campos de texto da empresa, servindo como backup. Após a conclusão, o programa converterá o arquivo Word em PDF e permitirá visualizá-lo ou acessar a pasta de destino.
 
 
 # Lembretes
