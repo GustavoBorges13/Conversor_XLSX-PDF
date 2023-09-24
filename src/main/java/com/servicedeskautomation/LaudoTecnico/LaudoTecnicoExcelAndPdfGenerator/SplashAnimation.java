@@ -151,6 +151,7 @@ public class SplashAnimation extends JFrame {
 		}.start();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void downloadFile() {
 		LeitorURL baixarArquivo = new LeitorURL();
 
@@ -175,6 +176,7 @@ public class SplashAnimation extends JFrame {
 		baixarArquivo.copyURLToFile(url, file);
 	}
 
+	@SuppressWarnings("deprecation")
 	public void atualizarFile() {
 		userHome = System.getProperty("user.home");
 		fileName = "modelo laudo.docx";

@@ -1,6 +1,7 @@
 //24-09-2023
 package com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -20,7 +21,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -39,10 +39,10 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -50,20 +50,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -82,6 +77,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.ImageIcon;
+import javax.swing.InputVerifier;
 
 public class Principal extends JFrame {
 	// Variaveis Locais
@@ -96,11 +92,9 @@ public class Principal extends JFrame {
 	private JButton btnPreencher;
 	private JButton btnXLS;
 	private JButton btnAddLinha;
-	private JInternalFrame internalFrame;
 	static JButton btnSalvarAlteracoes;
 	static JButton btnGerarArquivoPdf;
 	static JButton btnEditar;
-	private JTextPane txtpnAplicaoDesenvolvidaPara;;
 	public int KEYCODE_ESC = 27;
 	static Principal frame;
 	private JButton btnRemover;
@@ -283,10 +277,51 @@ public class Principal extends JFrame {
 		});
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				internalFrame.setFocusable(true);
-				internalFrame.setVisible(true);
-				internalFrame.requestFocus();
-				txtpnAplicaoDesenvolvidaPara.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
+
+				String textoParagrafo = "\nAplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\n"
+						+ "Esté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\n"
+						+ "O projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio deste projeto... (Ctrl+R).\r\n\r\n"
+						+ "Sobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\n\n"
+						+ "Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Além disso, vale a pena conferir outras utilidades no menu em \"Ferramentas\" que provavelmente servirá de apoio para o entendimento do programa.\r\n\n"
+						+ "Caso o usuario esteja satisfeito, poderá selecionar a linha ou linhas em conjuntos em especifico e utilizar o botão de gerar arquivo em PDF, onde será realizado uma automação, transcrevendo os dados das linhas selecionadas para um modelo de documento MS Word formatado com campos de textos no padrão da empresa para servir de backup caso queria editar algo que o programa não é capaz e logo após o responsável do laudo terminar de preencher o mesmo, após clicar em gerar, o programa irá salvar o arquivo Word em PDF (conversão) na pasta alvo que posteriormente irá habilitar dois botões: visualizar arquivo e abrir local do arquivo.\r\n\r\n"
+						+ "Att. Gustavo Borges.";
+				
+				 // Crie um JDialog
+	            JDialog dialog = new JDialog(frame, "Sobre - Pressione ESC para fechar a janela", true);
+
+	            // Crie um JTextArea com o texto
+	            JTextArea textArea = new JTextArea(textoParagrafo);
+
+	            textArea.setWrapStyleWord(true);
+	            textArea.setLineWrap(true);
+	            textArea.setCaretPosition(0); // Posiciona o cursor no início do texto (opcional)
+	            textArea.setAlignmentX(JTextArea.LEFT_ALIGNMENT); // Alinhe à esquerda para justificar
+	            textArea.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
+	            textArea.setEditable(false);
+	            
+	       
+	            // Crie um JScrollPane para permitir a rolagem
+	            JScrollPane scrollPane = new JScrollPane(textArea);
+
+	            // Adicione o JScrollPane ao JDialog
+	            dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
+
+	            // Defina o tamanho do JDialog
+	            dialog.setSize(560, 640);
+
+	            // Defina a posição do JDialog (centro da tela principal)
+	            dialog.setLocationRelativeTo(frame);
+	            
+	            // Define que a janela nao seja redimensionada manualmente
+	            dialog.setResizable(false);
+	            
+	            // Tornar o JDialog visível
+	            dialog.setVisible(true);
+	            
+	            textArea.setFocusable(false);
+
+				// txtpnAplicaoDesenvolvidaPara.setCaretPosition(0);// Sobe para cima a barra de
+				// rolagem vertical\
 				jlocal.setOpaque(false);
 			}
 		});
@@ -295,7 +330,7 @@ public class Principal extends JFrame {
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, new MensagemComLink(
-						"Conversor XLSX-PDF<br/>Versão XXX <br/><br/>Autor: Gustavo Borges Peres da Silva<br/><a href=\"https://github.com/GustavoBorges13/Conversor_XLSX-PDF\">https://github.com/GustavoBorges13/Conversor_XLSX-PDF</a>"),
+						"Conversor XLSX-PDF<br/>Versão V0.2.11.0 <br/><br/>Autor: Gustavo Borges Peres da Silva<br/><a href=\"https://github.com/GustavoBorges13/Conversor_XLSX-PDF\">https://github.com/GustavoBorges13/Conversor_XLSX-PDF</a>"),
 						"Informações adicionais", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
@@ -326,112 +361,11 @@ public class Principal extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		internalFrame = new JInternalFrame("Sobre a aplicação");
-		internalFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		internalFrame.setFocusable(false);
-		internalFrame.addKeyListener(new KeyHandler() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					internalFrame.dispose();
-				}
-			}
-		});
-
-		// Janela Ajuda-Sobre (Sobre a aplicacao)
-		BasicInternalFrameUI basicInternalFrameUI = ((javax.swing.plaf.basic.BasicInternalFrameUI) internalFrame
-				.getUI());
-		for (MouseListener listener : basicInternalFrameUI.getNorthPane().getMouseListeners()) {
-			basicInternalFrameUI.getNorthPane().removeMouseListener(listener);
-		}
-
-		internalFrame.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				btnXLS.setVisible(false);
-				table.setVisible(false);
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				btnXLS.setVisible(true);
-				table.setVisible(true);
-			}
-		});
-		internalFrame.addInternalFrameListener(new InternalFrameAdapter() {
-			@Override
-			public void internalFrameClosed(InternalFrameEvent arg0) {
-				jlocal.setOpaque(true);
-			}
-		});
-
-		contentPane.add(internalFrame);
-
-		internalFrame.pack();
-		internalFrame.getContentPane().setLayout(null);
-		internalFrame.setBounds(39, 0, 664, 508);
-		internalFrame.setOpaque(true);
-		internalFrame.setClosable(true);
-		internalFrame.setVisible(false);
-
-		JLabel lblNewLabel = new JLabel("E-ServiceDesk Application - Sobre");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setBounds(10, 11, 628, 19);
-		internalFrame.getContentPane().add(lblNewLabel);
-
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(240, 240, 240));
-		panel.setBounds(10, 41, 628, 426);
-		internalFrame.getContentPane().add(panel);
-		panel.setLayout(null);
-		panel.addKeyListener(new KeyHandler() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					internalFrame.dispose();
-				}
-			}
-		});
 		SimpleAttributeSet attr = new SimpleAttributeSet();
 		attr.copyAttributes();
 		StyleConstants.setAlignment(attr, StyleConstants.ALIGN_JUSTIFIED);
 
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane_1.setBounds(0, 0, 628, 426);
-		scrollPane_1.addKeyListener(new KeyHandler() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					internalFrame.dispose();
-				}
-			}
-		});
-		panel.add(scrollPane_1);
-
-		txtpnAplicaoDesenvolvidaPara = new JTextPane();
-		txtpnAplicaoDesenvolvidaPara.setAutoscrolls(false);
-		scrollPane_1.setViewportView(txtpnAplicaoDesenvolvidaPara);
-
-		txtpnAplicaoDesenvolvidaPara.setDisabledTextColor(new Color(0, 0, 0));
-		txtpnAplicaoDesenvolvidaPara.setEnabled(false);
-		txtpnAplicaoDesenvolvidaPara.setEditable(false);
-		txtpnAplicaoDesenvolvidaPara.setBackground(new Color(240, 240, 240));
-		txtpnAplicaoDesenvolvidaPara.setParagraphAttributes(attr, true);
-		txtpnAplicaoDesenvolvidaPara.setFont(new Font("Dialog", Font.PLAIN, 11));
-		txtpnAplicaoDesenvolvidaPara.setText(
-				"Aplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\nEsté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\nO projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio deste projeto... (Ctrl+R).\r\n\r\nSobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\nAo selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Além disso, vale a pena conferir outras utilidades no menu em \"Ferramentas\" que provavelmente servirá de apoio para o entendimento do programa.\r\nCaso o usuario esteja satisfeito, poderá selecionar a linha ou linhas em conjuntos em especifico e utilizar o botão de gerar arquivo em PDF, onde será realizado uma automação, transcrevendo os dados das linhas selecionadas para um modelo de documento MS Word formatado com campos de textos no padrão da empresa para servir de backup caso queria editar algo que o programa não é capaz e logo após o responsável do laudo terminar de preencher o mesmo, após clicar em gerar, o programa irá salvar o arquivo Word em PDF (conversão) na pasta alvo que posteriormente irá habilitar dois botões: visualizar arquivo e abrir local do arquivo.\r\n\r\nAtt. Gustavo Borges.");
-		txtpnAplicaoDesenvolvidaPara.addKeyListener(new KeyHandler() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					internalFrame.dispose();
-				}
-			}
-		});
-
-		JSeparator separator = new JSeparator();
-		separator.setForeground(new Color(105, 105, 105));
-		separator.setBounds(11, 33, 627, 2);
-		internalFrame.getContentPane().add(separator);
-
+		
 		jlocal = new JTextField();
 		jlocal.setFocusable(true);
 		jlocal.setBackground(new Color(240, 240, 240));
@@ -1351,8 +1285,8 @@ public class Principal extends JFrame {
 						textStyle.setBorderTop(BorderStyle.THIN);
 						textStyle.setBorderBottom(BorderStyle.THIN);
 						textStyle.setBorderLeft(BorderStyle.THIN);
-						textStyle.setBorderRight(BorderStyle.THIN);						
-						
+						textStyle.setBorderRight(BorderStyle.THIN);
+
 						// Remove todo o conteudo da planilha para fazer o reset
 						if (laudo.size() < qtdTemporaria)
 							sheet.copyRows(sheet.getLastRowNum() - qtdTemporaria, sheet.getLastRowNum(), 1,
@@ -1400,17 +1334,15 @@ public class Principal extends JFrame {
 						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
 								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.",
 								"Erro", JOptionPane.ERROR_MESSAGE);
-					} /*catch (NullPointerException e) {
-						JOptionPane.showMessageDialog(null, "As alterações foram salvas com suceeso!");
-
-						// Atualiza a tabela...
-						btnPreencher.doClick();
-						JOptionPane.showMessageDialog(null, aux);
-						// Desabilita botoes
-						btnSalvarAlteracoes.setEnabled(false);
-						btnEditar.setEnabled(false);
-						btnGerarArquivoPdf.setEnabled(false);
-					}*/
+					} /*
+						 * catch (NullPointerException e) { JOptionPane.showMessageDialog(null,
+						 * "As alterações foram salvas com suceeso!");
+						 * 
+						 * // Atualiza a tabela... btnPreencher.doClick();
+						 * JOptionPane.showMessageDialog(null, aux); // Desabilita botoes
+						 * btnSalvarAlteracoes.setEnabled(false); btnEditar.setEnabled(false);
+						 * btnGerarArquivoPdf.setEnabled(false); }
+						 */
 				} else {
 					requestFocus();
 				}
@@ -1711,6 +1643,11 @@ public class Principal extends JFrame {
 				}
 			}
 		});
+		
+		
+		
+		btnXLS.setFocusable(true);
+		btnXLS.requestFocus();
 	}
 
 	public ArrayList<String> removeEspacos(ArrayList<String> lista) {
@@ -1965,8 +1902,8 @@ public class Principal extends JFrame {
 			}
 		} catch (NumberFormatException | IndexOutOfBoundsException e) {
 			System.out.println("Escrevendo na planilha Exception -> NumberFormat or IndexOutOfBounds" + e);
-		} catch(NullPointerException e) {
-			System.out.println("ERRRROOO"+e);
+		} catch (NullPointerException e) {
+			System.out.println("ERRRROOO" + e);
 		}
 	}
 

@@ -6,9 +6,8 @@ import javax.swing.JDialog;
 
 public class Atalhos extends JDialog {
 
-	/**
-	 * Launch the application.
-	 */
+	private static final long serialVersionUID = 7623461976504945799L;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
