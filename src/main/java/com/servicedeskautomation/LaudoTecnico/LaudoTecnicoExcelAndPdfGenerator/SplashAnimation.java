@@ -150,7 +150,8 @@ public class SplashAnimation extends JFrame {
 			}
 		}.start();
 	}
-
+	
+	@Deprecated
 	public void downloadFile() {
 		LeitorURL baixarArquivo = new LeitorURL();
 
