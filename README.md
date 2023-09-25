@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://img.shields.io/badge/version-v0.2.9.3-blue)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
 [![Latest Bug Version](https://img.shields.io/badge/version-v0.2.10.3-orange)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
 [![Latest Actual-Development Version](https://img.shields.io/badge/version-v0.2.11.X-yellow)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
-![GitHub last commit](https://img.shields.io/github/last-commit/GustavoBorges13/Conversor_XLSX-PDF)
+[![GitHub last commit](https://img.shields.io/github/last-commit/GustavoBorges13/Conversor_XLSX-PDF)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/commits/main)
 <!---[![Build Status](https://app.travis-ci.com/GustavoBorges13/RunBlocker.svg?branch=main)](https://app.travis-ci.com/GustavoBorges13/RunBlocker)-->
 
 ```diff
