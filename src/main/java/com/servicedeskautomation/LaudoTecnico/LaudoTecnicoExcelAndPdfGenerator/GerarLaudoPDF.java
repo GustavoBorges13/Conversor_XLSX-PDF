@@ -143,7 +143,7 @@ public class GerarLaudoPDF extends JDialog {
 		setTitle("Gerar arquivo em PDF");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 760, 603);
+		setBounds(100, 100, 813, 603);
 		// setAlwaysOnTop(true);
 		/*
 		 * // Definindo a posicao da janela Dimension screenSize =
@@ -162,10 +162,11 @@ public class GerarLaudoPDF extends JDialog {
 		contentPane.setLayout(null);
 
 		JLabel lblHelp = new JLabel("Atalhos");
+		lblHelp.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
 		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblHelp.setIcon(new ImageIcon(img_help));
-		lblHelp.setBounds(645, 0, 99, 23);
+		lblHelp.setBounds(688, 0, 99, 23);
 		lblHelp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -207,10 +208,20 @@ public class GerarLaudoPDF extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		panel.setBorder(new TitledBorder(
-				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				": : Visualiza\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(414, 19, 330, 507);
+		
+		
+		// Crie uma instância personalizada de TitledBorder com fonte normal
+        TitledBorder titledBorder1 = new TitledBorder(
+            new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+            ": : Visualiza\u00E7\u00E3o - Preview : :",
+            TitledBorder.CENTER,
+            TitledBorder.TOP,
+            new Font("Dialog", Font.PLAIN, 12), // Defina a fonte com estilo normal
+            new Color(0, 0, 0)
+        );
+        panel.setBorder(titledBorder1);
+        
+		panel.setBounds(457, 19, 330, 507);
 		contentPane.add(panel);
 
 		lblNewLabel = new JLabel("");
@@ -220,18 +231,26 @@ public class GerarLaudoPDF extends JDialog {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
-		panel_1.setBorder(new TitledBorder(
-				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				": : Prepara\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_1.setBounds(10, 19, 399, 507);
+		// Crie uma instância personalizada de TitledBorder com fonte normal
+        TitledBorder titledBorder2 = new TitledBorder(
+            new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+            ": : Prepara\u00E7\u00E3o : :",
+            TitledBorder.CENTER,
+            TitledBorder.TOP,
+            new Font("Dialog", Font.PLAIN, 12), // Defina a fonte com estilo normal
+            new Color(0, 0, 0)
+        );
+        panel_1.setBorder(titledBorder2);
+		panel_1.setBounds(10, 19, 437, 507);
 		contentPane.add(panel_1);
 
 		JLabel lblNomeDoTcnico = new JLabel("Nome do técnico *");
-		lblNomeDoTcnico.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblNomeDoTcnico.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblNomeDoTcnico.setBounds(10, 26, 131, 29);
 		panel_1.add(lblNomeDoTcnico);
 
 		txtNomeTecnico = new JTextField();
+		txtNomeTecnico.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtNomeTecnico.addKeyListener(new KeyHandler() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -244,10 +263,11 @@ public class GerarLaudoPDF extends JDialog {
 		});
 		txtNomeTecnico.setForeground(Color.BLACK);
 		txtNomeTecnico.setColumns(10);
-		txtNomeTecnico.setBounds(10, 48, 379, 29);
+		txtNomeTecnico.setBounds(10, 48, 415, 29);
 		panel_1.add(txtNomeTecnico);
 
 		txtUsuarioRede = new JTextField();
+		txtUsuarioRede.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtUsuarioRede.addKeyListener(new KeyHandler() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -264,45 +284,46 @@ public class GerarLaudoPDF extends JDialog {
 		panel_1.add(txtUsuarioRede);
 
 		JLabel lblUsurioDeRede = new JLabel("Usuário de rede *");
-		lblUsurioDeRede.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblUsurioDeRede.setBounds(10, 77, 93, 21);
+		lblUsurioDeRede.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblUsurioDeRede.setBounds(10, 77, 113, 21);
 		panel_1.add(lblUsurioDeRede);
 
 		txtCentroCusto = new JTextField();
+		txtCentroCusto.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCentroCusto.setEnabled(false);
 		txtCentroCusto.setText("321 - Sistemas CAT");
 		txtCentroCusto.setForeground(Color.BLACK);
 		txtCentroCusto.setColumns(10);
-		txtCentroCusto.setBounds(144, 96, 245, 29);
+		txtCentroCusto.setBounds(144, 96, 281, 29);
 		panel_1.add(txtCentroCusto);
 
 		JLabel lblCentroDeCusto = new JLabel("Centro de custo *");
-		lblCentroDeCusto.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblCentroDeCusto.setBounds(144, 77, 93, 21);
+		lblCentroDeCusto.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblCentroDeCusto.setBounds(144, 77, 139, 21);
 		panel_1.add(lblCentroDeCusto);
 
 		JLabel lblTcnicoResponsvel = new JLabel("Técnico responsável");
-		lblTcnicoResponsvel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTcnicoResponsvel.setBounds(10, 11, 131, 29);
+		lblTcnicoResponsvel.setFont(new Font("Dialog", Font.BOLD, 13));
+		lblTcnicoResponsvel.setBounds(10, 11, 131, 21);
 		panel_1.add(lblTcnicoResponsvel);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(9, 132, 370, 2);
+		separator.setBounds(9, 132, 416, 2);
 		panel_1.add(separator);
 
 		JLabel lblAnalise = new JLabel("Análise *");
-		lblAnalise.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblAnalise.setFont(new Font("Dialog", Font.BOLD, 12));
 		lblAnalise.setBounds(10, 144, 93, 29);
 		panel_1.add(lblAnalise);
 
 		JSeparator separator_1 = new JSeparator();
-		separator_1.setBounds(10, 305, 379, 2);
+		separator_1.setBounds(10, 305, 415, 2);
 		panel_1.add(separator_1);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		scrollPane.setBounds(10, 176, 379, 108);
+		scrollPane.setBounds(10, 176, 415, 108);
 		panel_1.add(scrollPane);
 
 		textAreaAnalise = new JTextArea();
@@ -347,6 +368,7 @@ public class GerarLaudoPDF extends JDialog {
 		updateCount();
 
 		comboBoxTemplate = new JComboBox();
+		comboBoxTemplate.setFont(new Font("Dialog", Font.PLAIN, 12));
 		comboBoxTemplate.addKeyListener(new KeyHandler() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -415,15 +437,16 @@ public class GerarLaudoPDF extends JDialog {
 				"Computador lento", "Fonte", "Bateria não segura carga" }));
 		comboBoxTemplate.setMaximumRowCount(7);
 		comboBoxTemplate.setForeground(Color.LIGHT_GRAY);
-		comboBoxTemplate.setBounds(154, 141, 235, 24);
+		comboBoxTemplate.setBounds(154, 141, 271, 24);
 		panel_1.add(comboBoxTemplate);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane_1.setBounds(11, 337, 378, 124);
+		scrollPane_1.setBounds(11, 337, 414, 124);
 		panel_1.add(scrollPane_1);
 
 		editorPaneConsideracoesTecnicas = new JEditorPane();
+		editorPaneConsideracoesTecnicas.setFont(new Font("Dialog", Font.PLAIN, 11));
 		editorPaneConsideracoesTecnicas.setEnabled(false);
 		editorPaneConsideracoesTecnicas.setText(
 				"Considerando as análises realizadas, sugerimos a aquisição dos itens abaixo para upgrade/melhoria do computador:");
@@ -444,17 +467,18 @@ public class GerarLaudoPDF extends JDialog {
 		scrollPane_1.setViewportView(editorPaneConsideracoesTecnicas);
 
 		JLabel lblConsideracoesTecnicas = new JLabel("Considerações Técnicas *");
-		lblConsideracoesTecnicas.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblConsideracoesTecnicas.setFont(new Font("Dialog", Font.BOLD, 12));
 		lblConsideracoesTecnicas.setBounds(10, 312, 181, 29);
 		panel_1.add(lblConsideracoesTecnicas);
 
 		remaningLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		remaningLabel.setFont(new Font("Tahoma", Font.PLAIN, 9));
-		remaningLabel.setBounds(257, 284, 131, 14);
+		remaningLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+		remaningLabel.setBounds(217, 284, 208, 14);
 		panel_1.add(remaningLabel);
 
 		// "Remover -"
 		btnDel = new JButton("-");
+		btnDel.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnDel.addKeyListener(new KeyHandler() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -486,12 +510,13 @@ public class GerarLaudoPDF extends JDialog {
 				}
 			}
 		});
-		btnDel.setBounds(193, 472, 47, 23);
+		btnDel.setBounds(203, 472, 47, 23);
 		btnDel.setEnabled(false);
 		panel_1.add(btnDel);
 
 		// "Adicionar +"
 		btnAdd = new JButton("+");
+		btnAdd.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnAdd.addKeyListener(new KeyHandler() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -542,12 +567,13 @@ public class GerarLaudoPDF extends JDialog {
 				btnDel.setEnabled(true);
 			}
 		});
-		btnAdd.setBounds(144, 472, 47, 23);
+		btnAdd.setBounds(154, 472, 47, 23);
 		btnAdd.setEnabled(false);
 		panel_1.add(btnAdd);
 
 		// Inserir links
 		chckbxNewCheckBox = new JCheckBox("Links de referência");
+		chckbxNewCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
 		chckbxNewCheckBox.setSelected(false);
 		chckbxNewCheckBox.addKeyListener(new KeyHandler() {
 			public void keyPressed(KeyEvent e) {
@@ -582,11 +608,13 @@ public class GerarLaudoPDF extends JDialog {
 		panel_1.add(chckbxNewCheckBox);
 
 		JLabel lblNewLabel_1 = new JLabel("Beta! Tem que testar");
+		lblNewLabel_1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblNewLabel_1.setForeground(Color.GRAY);
-		lblNewLabel_1.setBounds(257, 476, 132, 14);
+		lblNewLabel_1.setBounds(267, 476, 158, 14);
 		panel_1.add(lblNewLabel_1);
 
 		btnGerarArquivoPDF = new JButton("Gerar arquivo em PDF");
+		btnGerarArquivoPDF.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnGerarArquivoPDF.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -619,6 +647,7 @@ public class GerarLaudoPDF extends JDialog {
 		contentPane.add(btnGerarArquivoPDF);
 
 		btnVisualizar = new JButton("Visualizar");
+		btnVisualizar.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnVisualizar.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -642,10 +671,11 @@ public class GerarLaudoPDF extends JDialog {
 			}
 		});
 		btnVisualizar.setEnabled(false);
-		btnVisualizar.setBounds(443, 531, 123, 23);
+		btnVisualizar.setBounds(486, 531, 123, 23);
 		contentPane.add(btnVisualizar);
 
 		btnAbrirLocal = new JButton("Abrir local");
+		btnAbrirLocal.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnAbrirLocal.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -669,7 +699,7 @@ public class GerarLaudoPDF extends JDialog {
 			}
 		});
 		btnAbrirLocal.setEnabled(false);
-		btnAbrirLocal.setBounds(586, 530, 123, 23);
+		btnAbrirLocal.setBounds(629, 530, 123, 23);
 		contentPane.add(btnAbrirLocal);
 
 		addKeyListener(new KeyHandler() {

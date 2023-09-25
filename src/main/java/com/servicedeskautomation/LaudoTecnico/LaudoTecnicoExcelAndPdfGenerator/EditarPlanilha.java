@@ -47,6 +47,7 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.SwingConstants;
+import javax.swing.JSeparator;
 
 @SuppressWarnings("rawtypes")
 public class EditarPlanilha extends JDialog {
@@ -86,6 +87,7 @@ public class EditarPlanilha extends JDialog {
 			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 	private BufferedImage convolvedImage;
 	private JLabel lblHelp;
+	private JSeparator separator_1;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -108,7 +110,7 @@ public class EditarPlanilha extends JDialog {
 		setTitle("Editar informações da planilha");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 454, 600);
+		setBounds(100, 100, 515, 643);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -135,7 +137,7 @@ public class EditarPlanilha extends JDialog {
 		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
 		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblHelp.setIcon(new ImageIcon(img_help));
-		lblHelp.setBounds(328, 0, 107, 26);
+		lblHelp.setBounds(382, 0, 107, 26);
 		lblHelp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -176,14 +178,22 @@ public class EditarPlanilha extends JDialog {
 		contentPane.add(lblHelp);
 
 		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(
-				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				": : Modo edi\u00E7\u00E3o : :", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(10, 22, 429, 539);
+		// Crie uma instância personalizada de TitledBorder com fonte normal
+        TitledBorder titledBorder = new TitledBorder(
+            new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+            ": : Modo edi\u00E7\u00E3o : :",
+            TitledBorder.LEADING,
+            TitledBorder.TOP,
+            new Font("Dialog", Font.PLAIN, 12), // Defina a fonte com estilo normal
+            new Color(0, 0, 0)
+        );
+		panel.setBorder(titledBorder);
+		panel.setBounds(10, 22, 479, 571);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
 		txtLaudo = new JTextField();
+		txtLaudo.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtLaudo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -196,11 +206,12 @@ public class EditarPlanilha extends JDialog {
 			}
 		});
 		txtLaudo.setForeground(Color.BLACK);
-		txtLaudo.setBounds(15, 37, 99, 29);
+		txtLaudo.setBounds(15, 49, 126, 29);
 		panel.add(txtLaudo);
 		txtLaudo.setColumns(10);
 
 		txtNomeSolicitante = new JTextField();
+		txtNomeSolicitante.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtNomeSolicitante.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -214,10 +225,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtNomeSolicitante.setForeground(Color.BLACK);
 		txtNomeSolicitante.setColumns(10);
-		txtNomeSolicitante.setBounds(124, 37, 288, 29);
+		txtNomeSolicitante.setBounds(151, 49, 318, 29);
 		panel.add(txtNomeSolicitante);
 
 		txtUsuario = new JTextField();
+		txtUsuario.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtUsuario.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -231,10 +243,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtUsuario.setForeground(Color.BLACK);
 		txtUsuario.setColumns(10);
-		txtUsuario.setBounds(15, 90, 98, 29);
+		txtUsuario.setBounds(15, 102, 126, 29);
 		panel.add(txtUsuario);
 
 		txtCentroDeCusto = new JTextField();
+		txtCentroDeCusto.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCentroDeCusto.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -248,10 +261,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtCentroDeCusto.setForeground(Color.BLACK);
 		txtCentroDeCusto.setColumns(10);
-		txtCentroDeCusto.setBounds(123, 90, 289, 29);
+		txtCentroDeCusto.setBounds(150, 102, 319, 29);
 		panel.add(txtCentroDeCusto);
 
 		txtItem = new JTextField();
+		txtItem.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtItem.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -265,10 +279,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtItem.setForeground(Color.BLACK);
 		txtItem.setColumns(10);
-		txtItem.setBounds(15, 144, 296, 29);
+		txtItem.setBounds(15, 155, 339, 29);
 		panel.add(txtItem);
 
 		comboBoxQuantidade = new JComboBox();
+		comboBoxQuantidade.setFont(new Font("Dialog", Font.PLAIN, 12));
 		comboBoxQuantidade.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -307,15 +322,16 @@ public class EditarPlanilha extends JDialog {
 		comboBoxQuantidade.setMaximumRowCount(6);
 		comboBoxQuantidade.setModel(new DefaultComboBoxModel(
 				new String[] { "Selecionar", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }));
-		comboBoxQuantidade.setBounds(316, 144, 96, 29);
+		comboBoxQuantidade.setBounds(364, 155, 105, 29);
 		panel.add(comboBoxQuantidade);
 
 		JLabel lblQTD = new JLabel("Quantidade *");
-		lblQTD.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblQTD.setBounds(316, 119, 96, 29);
+		lblQTD.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblQTD.setBounds(365, 131, 104, 23);
 		panel.add(lblQTD);
 
 		txtAtivo = new JTextField();
+		txtAtivo.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtAtivo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -329,10 +345,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtAtivo.setForeground(Color.BLACK);
 		txtAtivo.setColumns(10);
-		txtAtivo.setBounds(15, 198, 99, 29);
+		txtAtivo.setBounds(15, 207, 114, 29);
 		panel.add(txtAtivo);
 
 		txtHostname = new JTextField();
+		txtHostname.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtHostname.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -346,10 +363,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtHostname.setForeground(Color.BLACK);
 		txtHostname.setColumns(10);
-		txtHostname.setBounds(220, 198, 91, 29);
+		txtHostname.setBounds(244, 207, 110, 29);
 		panel.add(txtHostname);
 
 		comboBoxFabricante = new JComboBox();
+		comboBoxFabricante.setFont(new Font("Dialog", Font.PLAIN, 12));
 		comboBoxFabricante.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (comboBoxFabricante.getSelectedIndex() == 0) {
@@ -380,15 +398,16 @@ public class EditarPlanilha extends JDialog {
 		});
 		comboBoxFabricante.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "Dell Inc", "Lenovo" }));
 		comboBoxFabricante.setMaximumRowCount(3);
-		comboBoxFabricante.setBounds(316, 198, 96, 29);
+		comboBoxFabricante.setBounds(364, 207, 105, 29);
 		panel.add(comboBoxFabricante);
 
 		lblFabricante = new JLabel("Fabricante *");
-		lblFabricante.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblFabricante.setBounds(316, 175, 96, 29);
+		lblFabricante.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblFabricante.setBounds(364, 184, 105, 29);
 		panel.add(lblFabricante);
 
 		txtModelo = new JTextField();
+		txtModelo.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtModelo.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -402,10 +421,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtModelo.setForeground(Color.BLACK);
 		txtModelo.setColumns(10);
-		txtModelo.setBounds(15, 258, 152, 29);
+		txtModelo.setBounds(15, 264, 152, 29);
 		panel.add(txtModelo);
 
 		txtServiceTag = new JTextField();
+		txtServiceTag.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtServiceTag.setToolTipText("Caso não tenha, coloque: N/A ou N/D");
 		txtServiceTag.addKeyListener(new KeyAdapter() {
 			@Override
@@ -420,10 +440,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtServiceTag.setForeground(Color.BLACK);
 		txtServiceTag.setColumns(10);
-		txtServiceTag.setBounds(177, 258, 129, 29);
+		txtServiceTag.setBounds(177, 264, 129, 29);
 		panel.add(txtServiceTag);
 
 		txtDdmmyyyy = new JTextField();
+		txtDdmmyyyy.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtDdmmyyyy.setToolTipText("Caso não tenha, coloque: N/A ou N/D");
 		txtDdmmyyyy.addKeyListener(new KeyAdapter() {
 			@Override
@@ -459,15 +480,16 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtDdmmyyyy.setText("dd/MM/yyyy");
 		txtDdmmyyyy.setColumns(10);
-		txtDdmmyyyy.setBounds(314, 258, 98, 29);
+		txtDdmmyyyy.setBounds(314, 264, 155, 29);
 		panel.add(txtDdmmyyyy);
 
 		lblDataAquisicao = new JLabel("Data aquisição *");
-		lblDataAquisicao.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblDataAquisicao.setBounds(314, 236, 98, 29);
+		lblDataAquisicao.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblDataAquisicao.setBounds(314, 236, 155, 29);
 		panel.add(lblDataAquisicao);
 
 		txtCpu = new JTextField();
+		txtCpu.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCpu.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -481,20 +503,21 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtCpu.setForeground(Color.BLACK);
 		txtCpu.setColumns(10);
-		txtCpu.setBounds(15, 309, 397, 29);
+		txtCpu.setBounds(15, 317, 454, 29);
 		panel.add(txtCpu);
 
 		lblsStorage = new JLabel("Storage (GB) *");
-		lblsStorage.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblsStorage.setBounds(15, 337, 132, 29);
+		lblsStorage.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblsStorage.setBounds(15, 346, 132, 29);
 		panel.add(lblsStorage);
 
 		JLabel lblMemoria = new JLabel("Memória (GB) *");
-		lblMemoria.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblMemoria.setBounds(157, 337, 79, 29);
+		lblMemoria.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblMemoria.setBounds(157, 346, 115, 29);
 		panel.add(lblMemoria);
 
 		spinner_memoria = new JSpinner();
+		spinner_memoria.setFont(new Font("Dialog", Font.PLAIN, 12));
 		spinner_memoria.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -524,6 +547,7 @@ public class EditarPlanilha extends JDialog {
 		});
 
 		comboBoxStorage = new JComboBox();
+		comboBoxStorage.setFont(new Font("Dialog", Font.PLAIN, 12));
 		comboBoxStorage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -562,13 +586,14 @@ public class EditarPlanilha extends JDialog {
 		});
 		comboBoxStorage.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "180 HD", "250 HD", "300 HD",
 				"500 HD", "750 HD", "1000 HD", "120 SSD", "240 SSD", "256 SSD-NVMe" }));
-		comboBoxStorage.setBounds(15, 362, 132, 29);
+		comboBoxStorage.setBounds(15, 371, 132, 29);
 		panel.add(comboBoxStorage);
 
-		spinner_memoria.setBounds(157, 362, 99, 29);
+		spinner_memoria.setBounds(157, 371, 115, 29);
 		panel.add(spinner_memoria);
 
 		txtNomeDoTecnico = new JTextField();
+		txtNomeDoTecnico.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtNomeDoTecnico.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -582,10 +607,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtNomeDoTecnico.setForeground(Color.BLACK);
 		txtNomeDoTecnico.setColumns(10);
-		txtNomeDoTecnico.setBounds(15, 415, 397, 29);
+		txtNomeDoTecnico.setBounds(15, 435, 454, 29);
 		panel.add(txtNomeDoTecnico);
 
 		txtObservao = new JTextField();
+		txtObservao.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtObservao.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -599,10 +625,11 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtObservao.setForeground(Color.BLACK);
 		txtObservao.setColumns(10);
-		txtObservao.setBounds(15, 466, 190, 29);
+		txtObservao.setBounds(15, 486, 197, 29);
 		panel.add(txtObservao);
 
 		txtStatus = new JTextField();
+		txtStatus.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtStatus.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -616,19 +643,19 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtStatus.setForeground(Color.BLACK);
 		txtStatus.setColumns(10);
-		txtStatus.setBounds(220, 466, 192, 29);
+		txtStatus.setBounds(220, 486, 249, 29);
 		panel.add(txtStatus);
 
 		lblObservacao = new JLabel("Observação");
 		lblObservacao.setForeground(Color.BLACK);
-		lblObservacao.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblObservacao.setBounds(15, 442, 85, 29);
+		lblObservacao.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblObservacao.setBounds(15, 462, 197, 29);
 		panel.add(lblObservacao);
 
 		lblStatus = new JLabel("Status");
 		lblStatus.setForeground(Color.BLACK);
-		lblStatus.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblStatus.setBounds(220, 442, 83, 29);
+		lblStatus.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblStatus.setBounds(220, 462, 249, 29);
 		panel.add(lblStatus);
 
 		// Botao salvar
@@ -755,70 +782,71 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		btnSave.setBounds(149, 505, 129, 23);
+		btnSave.setBounds(177, 537, 129, 23);
 		panel.add(btnSave);
 
 		JLabel lblChamado = new JLabel("Chamado *");
-		lblChamado.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblChamado.setBounds(15, 15, 93, 29);
+		lblChamado.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblChamado.setBounds(15, 27, 126, 20);
 		panel.add(lblChamado);
 
 		JLabel lblNomeDoColaborador = new JLabel("Nome do colaborador *");
-		lblNomeDoColaborador.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblNomeDoColaborador.setBounds(124, 15, 288, 29);
+		lblNomeDoColaborador.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblNomeDoColaborador.setBounds(151, 27, 318, 20);
 		panel.add(lblNomeDoColaborador);
 
 		JLabel lblUsurioDeRede = new JLabel("Usuário de rede *");
-		lblUsurioDeRede.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblUsurioDeRede.setBounds(15, 68, 102, 29);
+		lblUsurioDeRede.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblUsurioDeRede.setBounds(15, 78, 126, 25);
 		panel.add(lblUsurioDeRede);
 
 		JLabel lblDescrioDoItem = new JLabel("Descrição do item *");
-		lblDescrioDoItem.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblDescrioDoItem.setBounds(15, 121, 128, 29);
+		lblDescrioDoItem.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblDescrioDoItem.setBounds(15, 132, 339, 21);
 		panel.add(lblDescrioDoItem);
 
 		JLabel lblCentroDeCusto = new JLabel("Centro de custo *");
-		lblCentroDeCusto.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblCentroDeCusto.setBounds(124, 68, 288, 29);
+		lblCentroDeCusto.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblCentroDeCusto.setBounds(151, 78, 318, 25);
 		panel.add(lblCentroDeCusto);
 
 		JLabel lblAtivo = new JLabel("Ativo *");
-		lblAtivo.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblAtivo.setBounds(15, 175, 99, 29);
+		lblAtivo.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblAtivo.setBounds(15, 184, 114, 29);
 		panel.add(lblAtivo);
 
 		JLabel lblDispositivo = new JLabel("Dispositivo *");
-		lblDispositivo.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblDispositivo.setBounds(118, 175, 97, 29);
+		lblDispositivo.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblDispositivo.setBounds(135, 184, 96, 29);
 		panel.add(lblDispositivo);
 
 		JLabel lblHostname = new JLabel("Hostname *");
-		lblHostname.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblHostname.setBounds(220, 175, 91, 29);
+		lblHostname.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblHostname.setBounds(244, 184, 110, 29);
 		panel.add(lblHostname);
 
 		JLabel lblModelo = new JLabel("Modelo *");
-		lblModelo.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblModelo.setBounds(15, 236, 105, 29);
+		lblModelo.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblModelo.setBounds(15, 236, 152, 29);
 		panel.add(lblModelo);
 
 		JLabel lblServiceTag = new JLabel("Service TAG *");
-		lblServiceTag.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblServiceTag.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblServiceTag.setBounds(177, 237, 129, 29);
 		panel.add(lblServiceTag);
 
 		JLabel lblEspecificaesDoProcessador = new JLabel("Especificações do processador *");
-		lblEspecificaesDoProcessador.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblEspecificaesDoProcessador.setBounds(15, 286, 189, 29);
+		lblEspecificaesDoProcessador.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblEspecificaesDoProcessador.setBounds(15, 294, 454, 23);
 		panel.add(lblEspecificaesDoProcessador);
 
 		JLabel lblNomeDoTcnico = new JLabel("Nome do técnico (elaborador do laudo) *");
-		lblNomeDoTcnico.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblNomeDoTcnico.setBounds(15, 391, 237, 29);
+		lblNomeDoTcnico.setFont(new Font("Dialog", Font.PLAIN, 12));
+		lblNomeDoTcnico.setBounds(15, 411, 454, 29);
 		panel.add(lblNomeDoTcnico);
 
 		comboBoxDispositivo = new JComboBox();
+		comboBoxDispositivo.setFont(new Font("Dialog", Font.PLAIN, 12));
 		comboBoxDispositivo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -858,8 +886,16 @@ public class EditarPlanilha extends JDialog {
 		comboBoxDispositivo.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "Desktop", "Notebook" }));
 		comboBoxDispositivo.setMaximumRowCount(3);
 		comboBoxDispositivo.setForeground(Color.RED);
-		comboBoxDispositivo.setBounds(121, 198, 94, 29);
+		comboBoxDispositivo.setBounds(138, 207, 96, 29);
 		panel.add(comboBoxDispositivo);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(15, 525, 454, 1);
+		panel.add(separator);
+		
+		separator_1 = new JSeparator();
+		separator_1.setBounds(15, 411, 454, 1);
+		panel.add(separator_1);
 		requestFocus();
 
 		addKeyListener(new KeyHandler() {

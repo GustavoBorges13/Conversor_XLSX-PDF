@@ -76,8 +76,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
-import javax.swing.InputVerifier;
 
 public class Principal extends JFrame {
 	// Variaveis Locais
@@ -106,8 +106,8 @@ public class Principal extends JFrame {
 	static boolean flagSaved = true;
 	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
 			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-	private BufferedImage convolvedImage;	
-	
+	private BufferedImage convolvedImage;
+
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
 	static ArrayList<String> nomeSolicitante = new ArrayList<String>();
@@ -262,68 +262,59 @@ public class Principal extends JFrame {
 		setJMenuBar(menuBar);
 
 		JMenu mnNewMenu = new JMenu("Ajuda");
+		mnNewMenu.setFont(new Font("Dialog", Font.PLAIN, 12));
 		mnNewMenu.setMnemonic('A');
 		menuBar.add(mnNewMenu);
 
 		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre E-ServiceDesk Application...");
+		mntmNewMenuItem.setFont(new Font("Dialog", Font.PLAIN, 12));
 		mntmNewMenuItem.setMnemonic('S');
 		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
 		mntmNewMenuItem.addActionListener(new ActionListener() {
+			@SuppressWarnings("serial")
 			public void actionPerformed(ActionEvent arg0) {
 
 				String textoParagrafo = "Desenvolvemos esta aplicação para aprimorar a eficiência de nossa equipe de service desk.\n\n"
-				        + "Esta é uma ferramenta de automação criada com fins educacionais, visando aprofundar nosso conhecimento em várias APIs, como APACHE POI, JXL, OpenCSV e docx4j, e aprimorar nossas habilidades de programação em um ambiente profissional.\n\n"
-				        + "O projeto foi desenvolvido no Eclipse (versão de 2022-09) e construído com o Maven para realizar tarefas como limpeza, verificação, instalação de pacotes e builds. Isso garantiu que todas as APIs necessárias estivessem disponíveis ao alternar entre ambientes domésticos e empresariais, facilitando a colaboração por meio do GitHub, onde você pode acessar nosso perfil e o repositório deste projeto para obter mais informações.\n\n"
-				        + "A aplicação oferece uma interface gráfica dinâmica. Ao abri-la, o usuário pode escolher uma planilha específica para manipulação, eliminando a necessidade de usar o Excel. O código foi desenvolvido sob medida para esse tipo de planilha, considerando formatações e quantidade de colunas.\n\n"
-				        + "Ao selecionar a planilha, ela é exibida em uma JTable, permitindo a edição como se fosse uma planilha Excel. Além disso, ao clicar em uma linha, você terá opções de edição, e ao clicar duas vezes em uma linha, uma janela lateral abrirá para edição dos valores selecionados. O menu \"Ferramentas\" oferece utilidades adicionais para explorar.\n\n"
-				        + "Após realizar as edições desejadas, o usuário pode selecionar uma ou várias linhas e gerar um arquivo PDF. O programa automatiza a criação de um documento MS Word formatado com campos de texto da empresa, servindo como backup. Após a conclusão, o programa converterá o arquivo Word em PDF e permitirá visualizá-lo ou acessar a pasta de destino.\n\n"
-				        + "Atenciosamente,\nGustavo Borges.";
+						+ "Esta é uma ferramenta de automação criada com fins educacionais, visando aprofundar nosso conhecimento em várias APIs, como APACHE POI, JXL, OpenCSV e docx4j, e aprimorar nossas habilidades de programação em um ambiente profissional.\n\n"
+						+ "O projeto foi desenvolvido no Eclipse (versão de 2022-09) e construído com o Maven para realizar tarefas como limpeza, verificação, instalação de pacotes e builds. Isso garantiu que todas as APIs necessárias estivessem disponíveis ao alternar entre ambientes domésticos e empresariais, facilitando a colaboração por meio do GitHub, onde você pode acessar nosso perfil e o repositório deste projeto para obter mais informações.\n\n"
+						+ "A aplicação oferece uma interface gráfica dinâmica. Ao abri-la, o usuário pode escolher uma planilha específica para manipulação, eliminando a necessidade de usar o Excel. O código foi desenvolvido sob medida para esse tipo de planilha, considerando formatações e quantidade de colunas.\n\n"
+						+ "Ao selecionar a planilha, ela é exibida em uma JTable, permitindo a edição como se fosse uma planilha Excel. Além disso, ao clicar em uma linha, você terá opções de edição, e ao clicar duas vezes em uma linha, uma janela lateral abrirá para edição dos valores selecionados. O menu \"Ferramentas\" oferece utilidades adicionais para explorar.\n\n"
+						+ "Após realizar as edições desejadas, o usuário pode selecionar uma ou várias linhas e gerar um arquivo PDF. O programa automatiza a criação de um documento MS Word formatado com campos de texto da empresa, servindo como backup. Após a conclusão, o programa converterá o arquivo Word em PDF e permitirá visualizá-lo ou acessar a pasta de destino.\n\n"
+						+ "Atenciosamente,\nGustavo Borges.";
 
-				
-				 // Crie um JDialog
+				// Crie um JDialog
 				JDialog dialogSobre = new JDialog(frame, "Sobre - Pressione ESC para fechar a janela", true);
-	            dialogSobre.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-	            // Crie um JTextArea com o texto
-	            JTextArea textAreaSobre = new JTextArea(textoParagrafo);
+				dialogSobre.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				// Crie um JTextArea com o texto
+				JTextArea textAreaSobre = new JTextArea(textoParagrafo);
 
-	            textAreaSobre.setWrapStyleWord(true);
-	            textAreaSobre.setLineWrap(true);
-	            textAreaSobre.setCaretPosition(0); // Posiciona o cursor no início do texto (opcional)
-	            textAreaSobre.setAlignmentX(JTextArea.LEFT_ALIGNMENT); // Alinhe à esquerda para justificar
-	            textAreaSobre.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-	            textAreaSobre.setEditable(false);
-	           // textAreaSobre.setEnabled(false);
-	       
-	            // Crie um JScrollPane para permitir a rolagem
-	            JScrollPane scrollPane = new JScrollPane(textAreaSobre);
+				textAreaSobre.setWrapStyleWord(true);
+				textAreaSobre.setLineWrap(true);
+				textAreaSobre.setCaretPosition(0); // Posiciona o cursor no início do texto (opcional)
+				textAreaSobre.setAlignmentX(JTextArea.LEFT_ALIGNMENT); // Alinhe à esquerda para justificar
+				textAreaSobre.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
+				textAreaSobre.setEditable(false);
+				// textAreaSobre.setEnabled(false);
 
-	            // Adicione o JScrollPane ao JDialog
-	            dialogSobre.getContentPane().add(scrollPane, BorderLayout.CENTER);
+				JScrollPane scrollPane = new JScrollPane(textAreaSobre);
+				dialogSobre.getContentPane().add(scrollPane, BorderLayout.CENTER);
+				dialogSobre.setSize(560, 520);
+				dialogSobre.setLocationRelativeTo(frame);
 
-	            // Defina o tamanho do JDialog
-	            dialogSobre.setSize(560, 520);
+				dialogSobre.setResizable(false);
 
-	            // Defina a posição do JDialog (centro da tela principal)
-	            dialogSobre.setLocationRelativeTo(frame);
-	            
-	            // Define que a janela nao seja redimensionada manualmente
-	            dialogSobre.setResizable(false);
-	            // Adicione um KeyListener ao textAreaSobre
-	    		dialogSobre.addKeyListener(new KeyAdapter() {
-	                @Override
-	                public void keyPressed(KeyEvent e) {
-	                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-	             
-	                        dialogSobre.dispose(); // Feche o diálogo ao pressionar "Esc"
-	                    }
-	                }
-	            });
-	    
-	            // Tornar o JDialog visível
-	            dialogSobre.setVisible(true);
-	            
-	            textAreaSobre.setFocusable(false);
-	    		
+				// Adicione um KeyStroke para fechar o diálogo quando "ESC" for pressionado
+				KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+				dialogSobre.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+				dialogSobre.getRootPane().getActionMap().put("ESCAPE", new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						dialogSobre.dispose();
+
+					}
+				});
+
+				dialogSobre.setVisible(true);
+
 				// txtpnAplicaoDesenvolvidaPara.setCaretPosition(0);// Sobe para cima a barra de
 				// rolagem vertical\
 				jlocal.setOpaque(false);
@@ -331,8 +322,8 @@ public class Principal extends JFrame {
 			}
 		});
 
-
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Repositorio deste projeto...");
+		mntmNewMenuItem_1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(null, new MensagemComLink(
@@ -346,17 +337,41 @@ public class Principal extends JFrame {
 		mnNewMenu.add(mntmNewMenuItem);
 
 		JMenu mnNewMenu_2 = new JMenu("Ferramentas");
+		mnNewMenu_2.setFont(new Font("Dialog", Font.PLAIN, 12));
 		menuBar.add(mnNewMenu_2);
 
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Opções...");
+		mntmNewMenuItem_2.setFont(new Font("Dialog", Font.PLAIN, 12));
 		mntmNewMenuItem_2.setMnemonic('O');
 		mntmNewMenuItem_2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
 		mntmNewMenuItem_2.addActionListener(new ActionListener() {
+			@SuppressWarnings("serial")
 			public void actionPerformed(ActionEvent arg0) {
-				Opcoes opcoesDialog = new Opcoes();
+				Opcoes opcoesDialog = new Opcoes(frame);
+
+				// Adicione um KeyStroke para fechar o diálogo quando "ESC" for pressionado
+				KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+				opcoesDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+				opcoesDialog.getRootPane().getActionMap().put("ESCAPE", new AbstractAction() {
+				    public void actionPerformed(ActionEvent e) {
+				        opcoesDialog.dispose();
+				    }
+				});
+
+				
+				// Mostra a janela
 				opcoesDialog.setVisible(true);
+
+				// WindowListener para monitorar o evento de fechamento da janela
+				addWindowListener(new WindowAdapter() {
+					@Override
+					public void windowClosing(WindowEvent e) {
+						dispose(); // Fecha a janela e libera recursos
+					}
+				});
 			}
 		});
+
 		mnNewMenu_2.add(mntmNewMenuItem_2);
 		mntmNewMenuItem_2.setMnemonic('T');
 
@@ -371,8 +386,8 @@ public class Principal extends JFrame {
 		attr.copyAttributes();
 		StyleConstants.setAlignment(attr, StyleConstants.ALIGN_JUSTIFIED);
 
-		
 		jlocal = new JTextField();
+		jlocal.setFont(new Font("Dialog", Font.PLAIN, 12));
 		jlocal.setFocusable(true);
 		jlocal.setBackground(new Color(240, 240, 240));
 		jlocal.setBounds(39, 49, 521, 39);
@@ -481,6 +496,7 @@ public class Principal extends JFrame {
 
 		// BUTTON FILL
 		btnPreencher = new JButton("Preencher");
+		btnPreencher.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnPreencher.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -756,6 +772,7 @@ public class Principal extends JFrame {
 		contentPane.add(btnPreencher);
 
 		jtitulo = new JTextField();
+		jtitulo.setFont(new Font("Dialog", Font.PLAIN, 12));
 		jtitulo.setEditable(false);
 		jtitulo.setDisabledTextColor(new Color(0, 0, 0));
 		jtitulo.setColumns(10);
@@ -763,6 +780,7 @@ public class Principal extends JFrame {
 		contentPane.add(jtitulo);
 
 		JLabel lblTituloPlanilha = new JLabel("Nome da planilha");
+		lblTituloPlanilha.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblTituloPlanilha.setBounds(39, 106, 105, 14);
 		contentPane.add(lblTituloPlanilha);
 
@@ -1159,6 +1177,7 @@ public class Principal extends JFrame {
 
 		// BUTTO ADD ROW
 		btnAddLinha = new JButton("Adicionar");
+		btnAddLinha.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnAddLinha.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -1209,11 +1228,13 @@ public class Principal extends JFrame {
 		contentPane.add(btnAddLinha);
 
 		JLabel lblSelecioneUmaPlanilha = new JLabel("Selecione a planilha de laudo técnico .xlsx");
+		lblSelecioneUmaPlanilha.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblSelecioneUmaPlanilha.setBounds(39, 24, 393, 14);
 		contentPane.add(lblSelecioneUmaPlanilha);
 
 		// BUTTON EDIT
 		btnEditar = new JButton("Editar");
+		btnEditar.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnEditar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -1254,6 +1275,7 @@ public class Principal extends JFrame {
 
 		// BUTTON SAVE
 		btnSalvarAlteracoes = new JButton("Salvar alterações");
+		btnSalvarAlteracoes.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnSalvarAlteracoes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -1360,6 +1382,7 @@ public class Principal extends JFrame {
 
 		// BUTTON GENERATE PDF FILE
 		btnGerarArquivoPdf = new JButton("Gerar arquivo PDF");
+		btnGerarArquivoPdf.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnGerarArquivoPdf.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -1377,12 +1400,14 @@ public class Principal extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				boolean flagContinuacao = false;
 				int[] linhasSelecionadas = Principal.table.getSelectedRows();
+				int flag_aux = 0; // Essa flag vai contar quantas linhas diferentes que voce selecionou...
 				String aux = null;
 
 				// Verifica se os vetores têm elementos em comum
 				boolean temElementosEmComum = false;
 				if (linhasSelecionadas.length > 1) {
 					for (int i = 0; i < linhasSelecionadas.length; i++) {
+						JOptionPane.showMessageDialog(null, i);
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
 							if (Principal.table.getValueAt(linhasSelecionadas[i], 8)
 									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8))
@@ -1390,20 +1415,29 @@ public class Principal extends JFrame {
 											.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8 - 2))) {
 								temElementosEmComum = true;
 							} else {
-								flagContinuacao = false;
-								temElementosEmComum = false;
+								flag_aux++; // Soma a qtd de linhas diferentes
+								flagContinuacao = false; // Flag dizendo que as linhas sao diferentes
+								temElementosEmComum = false; // Cancela a continuação da condição abaixo
+								break;
+							}
+
+							// Se tiver linhas iguais ele habilita a flag e continua
+							if (temElementosEmComum) {
+								flagContinuacao = true;
 								break;
 							}
 						}
-						if (temElementosEmComum) {
-							flagContinuacao = true;
-							break;
-						}
 					}
+					// Chegou na ultima linha selecionada entao OK - Skip..
 				} else {
 					flagContinuacao = true;
 				}
-				if (flagContinuacao && flagSaved) {
+
+				// Se chegou até aqui entao vai ver se as flags estão todas verdadeiras
+				// para ele prosseguir nao pode ter linhas diferentes...
+				// flag = 0; flagContinuacao=true e flagSaved=true
+				// Obs.: flagSaved serve para saber se o usuario ja salvou as alteracoes ou não.
+				if (flagContinuacao && flagSaved && flag_aux == 0) {
 
 					GerarLaudoPDF frame = new GerarLaudoPDF();
 
@@ -1473,6 +1507,7 @@ public class Principal extends JFrame {
 
 		// BUTTON REMOVE
 		btnRemover = new JButton("Remover");
+		btnRemover.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnRemover.addMouseListener(new MouseAdapter() {
 
 			@Override
@@ -1519,10 +1554,11 @@ public class Principal extends JFrame {
 		contentPane.add(btnRemover);
 
 		lblHelp = new JLabel("Atalhos");
+		lblHelp.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
 		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblHelp.setIcon(new ImageIcon(img_help));
-		lblHelp.setBounds(640, 0, 85, 23);
+		lblHelp.setBounds(611, 0, 85, 23);
 		lblHelp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -1537,7 +1573,7 @@ public class Principal extends JFrame {
 		lblHelp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				JOptionPane.showMessageDialog(null, "Atalhos ");
+				JOptionPane.showMessageDialog(null, "Atalhos em desenvolvimento :/");
 			}
 
 			@Override
@@ -1649,9 +1685,7 @@ public class Principal extends JFrame {
 				}
 			}
 		});
-		
-		
-		
+
 		btnXLS.setFocusable(true);
 		btnXLS.requestFocus();
 	}
@@ -1921,6 +1955,7 @@ public class Principal extends JFrame {
 		return (long) (cm * 567);
 	}
 
+	@SuppressWarnings("unused")
 	private class KeyHandler implements KeyListener {
 		public void keyPressed(KeyEvent e) {
 			// código para executar quando uma tecla é pressionada
