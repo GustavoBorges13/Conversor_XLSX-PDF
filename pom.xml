@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.servicedeskautomation.LaudoTecnico</groupId>
@@ -11,13 +12,7 @@
 		<maven.compiler.source>1.8.0</maven.compiler.source>
 		<maven.compiler.target>1.8.0</maven.compiler.target>
 	</properties>
-	<!-- REPOSITORIO para utilizar os servicos da cloudmersive native java library -->
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
+	
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
@@ -59,7 +54,8 @@
 			<artifactId>documents4j-transformer-msoffice-word</artifactId>
 			<version>1.0.3</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/uk.gov.gchq.gaffer/bitmap-library -->
+		<!--
+		https://mvnrepository.com/artifact/uk.gov.gchq.gaffer/bitmap-library -->
 		<dependency>
 			<groupId>uk.gov.gchq.gaffer</groupId>
 			<artifactId>bitmap-library</artifactId>
@@ -134,7 +130,8 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator.SplashAnimation</mainClass>
+							<mainClass>
+								com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator.SplashAnimation</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -164,6 +161,15 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<mainClass>com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator.SplashAnimation</mainClass>
+					<!-- Outros parâmetros, se necessário -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

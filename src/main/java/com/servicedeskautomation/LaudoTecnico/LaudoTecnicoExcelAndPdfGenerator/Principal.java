@@ -106,8 +106,8 @@ public class Principal extends JFrame {
 	static boolean flagSaved = true;
 	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
 			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-	private BufferedImage convolvedImage;
-
+	private BufferedImage convolvedImage;	
+	
 	// Database
 	static ArrayList<String> laudo = new ArrayList<String>();
 	static ArrayList<String> nomeSolicitante = new ArrayList<String>();
@@ -268,63 +268,69 @@ public class Principal extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Sobre E-ServiceDesk Application...");
 		mntmNewMenuItem.setMnemonic('S');
 		mntmNewMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
-		mntmNewMenuItem.addKeyListener(new KeyHandler() {
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					dispose();
-				}
-			}
-		});
 		mntmNewMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				String textoParagrafo = "\nAplicação desenvolvida para ajudar a nossa equipe service-desk.\r\n\r\n"
-						+ "Esté é um programa que realiza um espécime de automação, para tornar o trabalho desenvolvido mais rapido. Foi desenvolvido para fins educacionais com a intenção de obter mais conhecimentos em APIs distintas que antes eu nunca tinha visto como por exemplo APACHE POI, JXL, OpenCSV e docx4j, e claro, melhorar minhas habilidades com a linguagem de programação em um ambiente profissional.\r\n\r\n"
-						+ "O projeto foi desenvolvido utilizando Eclipse versão de 2022-09, cujo as builds foram realizadas no MAVEN para fazer clean verify, instalar pacotes, e builds para evitar problemas de ter alguma API ausente no projeto ao transitar entre as máquinas da minha casa com a da empresa, ou seja, essa transição foi feita pelo github para salvar os commits do projeto livremente, para mais informações acesse o meu perfil no gitHub e verifique o repositorio deste projeto... (Ctrl+R).\r\n\r\n"
-						+ "Sobre a execução do programa, se trata de uma interface gráfica dinâmica, no qual o usuário se depara com uma primeira janela para escolher a planilha em especifico que será manipulada sem precisar utilizar o excel, sendo que TODO o codigo foi feito especialmente para este tipo de planilha, levando em considerações desde das formatações e quantidade de colunas contidas nele. \r\n\n"
-						+ "Ao selecionar a planilha a mesma é transposta para uma Jtable afins de tornar a tabela editavel \"como se fosse um excel\". Além disso, caso o usuario selecione alguma linha da tabela, a mesma irá habilitar opções de edições e ao clicar no botão ou clicar duas vezes na linha que deseja editar, irá abrir uma janela na lateral esquerda transcrevendo os valores selecionados para a edição do mesmo. Além disso, vale a pena conferir outras utilidades no menu em \"Ferramentas\" que provavelmente servirá de apoio para o entendimento do programa.\r\n\n"
-						+ "Caso o usuario esteja satisfeito, poderá selecionar a linha ou linhas em conjuntos em especifico e utilizar o botão de gerar arquivo em PDF, onde será realizado uma automação, transcrevendo os dados das linhas selecionadas para um modelo de documento MS Word formatado com campos de textos no padrão da empresa para servir de backup caso queria editar algo que o programa não é capaz e logo após o responsável do laudo terminar de preencher o mesmo, após clicar em gerar, o programa irá salvar o arquivo Word em PDF (conversão) na pasta alvo que posteriormente irá habilitar dois botões: visualizar arquivo e abrir local do arquivo.\r\n\r\n"
-						+ "Att. Gustavo Borges.";
+				String textoParagrafo = "Desenvolvemos esta aplicação para aprimorar a eficiência de nossa equipe de service desk.\n\n"
+				        + "Esta é uma ferramenta de automação criada com fins educacionais, visando aprofundar nosso conhecimento em várias APIs, como APACHE POI, JXL, OpenCSV e docx4j, e aprimorar nossas habilidades de programação em um ambiente profissional.\n\n"
+				        + "O projeto foi desenvolvido no Eclipse (versão de 2022-09) e construído com o Maven para realizar tarefas como limpeza, verificação, instalação de pacotes e builds. Isso garantiu que todas as APIs necessárias estivessem disponíveis ao alternar entre ambientes domésticos e empresariais, facilitando a colaboração por meio do GitHub, onde você pode acessar nosso perfil e o repositório deste projeto para obter mais informações.\n\n"
+				        + "A aplicação oferece uma interface gráfica dinâmica. Ao abri-la, o usuário pode escolher uma planilha específica para manipulação, eliminando a necessidade de usar o Excel. O código foi desenvolvido sob medida para esse tipo de planilha, considerando formatações e quantidade de colunas.\n\n"
+				        + "Ao selecionar a planilha, ela é exibida em uma JTable, permitindo a edição como se fosse uma planilha Excel. Além disso, ao clicar em uma linha, você terá opções de edição, e ao clicar duas vezes em uma linha, uma janela lateral abrirá para edição dos valores selecionados. O menu \"Ferramentas\" oferece utilidades adicionais para explorar.\n\n"
+				        + "Após realizar as edições desejadas, o usuário pode selecionar uma ou várias linhas e gerar um arquivo PDF. O programa automatiza a criação de um documento MS Word formatado com campos de texto da empresa, servindo como backup. Após a conclusão, o programa converterá o arquivo Word em PDF e permitirá visualizá-lo ou acessar a pasta de destino.\n\n"
+				        + "Atenciosamente,\nGustavo Borges.";
+
 				
 				 // Crie um JDialog
-	            JDialog dialog = new JDialog(frame, "Sobre - Pressione ESC para fechar a janela", true);
-
+				JDialog dialogSobre = new JDialog(frame, "Sobre - Pressione ESC para fechar a janela", true);
+	            dialogSobre.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	            // Crie um JTextArea com o texto
-	            JTextArea textArea = new JTextArea(textoParagrafo);
+	            JTextArea textAreaSobre = new JTextArea(textoParagrafo);
 
-	            textArea.setWrapStyleWord(true);
-	            textArea.setLineWrap(true);
-	            textArea.setCaretPosition(0); // Posiciona o cursor no início do texto (opcional)
-	            textArea.setAlignmentX(JTextArea.LEFT_ALIGNMENT); // Alinhe à esquerda para justificar
-	            textArea.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
-	            textArea.setEditable(false);
-	            
+	            textAreaSobre.setWrapStyleWord(true);
+	            textAreaSobre.setLineWrap(true);
+	            textAreaSobre.setCaretPosition(0); // Posiciona o cursor no início do texto (opcional)
+	            textAreaSobre.setAlignmentX(JTextArea.LEFT_ALIGNMENT); // Alinhe à esquerda para justificar
+	            textAreaSobre.setAlignmentY(JTextArea.CENTER_ALIGNMENT);
+	            textAreaSobre.setEditable(false);
+	           // textAreaSobre.setEnabled(false);
 	       
 	            // Crie um JScrollPane para permitir a rolagem
-	            JScrollPane scrollPane = new JScrollPane(textArea);
+	            JScrollPane scrollPane = new JScrollPane(textAreaSobre);
 
 	            // Adicione o JScrollPane ao JDialog
-	            dialog.getContentPane().add(scrollPane, BorderLayout.CENTER);
+	            dialogSobre.getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 	            // Defina o tamanho do JDialog
-	            dialog.setSize(560, 640);
+	            dialogSobre.setSize(560, 520);
 
 	            // Defina a posição do JDialog (centro da tela principal)
-	            dialog.setLocationRelativeTo(frame);
+	            dialogSobre.setLocationRelativeTo(frame);
 	            
 	            // Define que a janela nao seja redimensionada manualmente
-	            dialog.setResizable(false);
-	            
+	            dialogSobre.setResizable(false);
+	            // Adicione um KeyListener ao textAreaSobre
+	    		dialogSobre.addKeyListener(new KeyAdapter() {
+	                @Override
+	                public void keyPressed(KeyEvent e) {
+	                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+	             
+	                        dialogSobre.dispose(); // Feche o diálogo ao pressionar "Esc"
+	                    }
+	                }
+	            });
+	    
 	            // Tornar o JDialog visível
-	            dialog.setVisible(true);
+	            dialogSobre.setVisible(true);
 	            
-	            textArea.setFocusable(false);
-
+	            textAreaSobre.setFocusable(false);
+	    		
 				// txtpnAplicaoDesenvolvidaPara.setCaretPosition(0);// Sobe para cima a barra de
 				// rolagem vertical\
 				jlocal.setOpaque(false);
+
 			}
 		});
+
 
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Repositorio deste projeto...");
 		mntmNewMenuItem_1.addActionListener(new ActionListener() {
