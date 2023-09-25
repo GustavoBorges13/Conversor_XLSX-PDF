@@ -51,7 +51,7 @@ Ao transferir para outro PC o projeto raiz, certificar-se de configurar IDE para
 E também verificar as versoes de alguns recursos dentro do arquivo .pom para manter atualizado pois caso deia problema no pacote final (arquivo jar) é porque deu algum bug com windows 11 relacionado a versão de alguma biblioteca. 
 Manter a linha de resource no arquivo .pom para evitar o erro de acessar as imagens no pacote de recursos:
 ```diff
-	<resources>
+		<resources>
 			<resource>
 				<directory>src/main/java</directory>
 				<filtering>true</filtering>
