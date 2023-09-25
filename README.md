@@ -1,6 +1,8 @@
 # Conversor XLSX para PDF/WORD
 [![NPM](https://img.shields.io/npm/l/react)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/blob/main/LICENSE) 
-[![Latest Stable Version](https://img.shields.io/badge/version-v0.2.10.3-orange)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
+[![Latest Stable Version](https://img.shields.io/badge/version-v0.2.9.3-blue)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
+[![Latest Bug Version](https://img.shields.io/badge/version-v0.2.10.3-orange)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
+[![Latest Actual-Development Version](https://img.shields.io/badge/version-v0.2.11.X-yellow)](https://github.com/GustavoBorges13/Conversor_XLSX-PDF/releases)
 ![GitHub last commit](https://img.shields.io/github/last-commit/GustavoBorges13/Conversor_XLSX-PDF)
 <!---[![Build Status](https://app.travis-ci.com/GustavoBorges13/RunBlocker.svg?branch=main)](https://app.travis-ci.com/GustavoBorges13/RunBlocker)-->
 
