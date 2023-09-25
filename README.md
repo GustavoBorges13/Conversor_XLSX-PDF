@@ -73,8 +73,12 @@ clean compile assembly:single exec:java
 
 
 # Maven Dependency Utilizadas no Projeto
-Aqui está uma breve descrição de cada uma das dependências utilizadas no projeto (APIs, frameworks e utilitários):
+Aqui está uma breve descrição de cada uma das dependências utilizadas no projeto (APIs, frameworks e utilitários).
+## Relatório de Dependências (SBOM)
+Para uma lista completa de dependências de software e informações sobre licenças, você pode consultar nosso [Relatório de Dependências](./.SBOM/Conversor_XLSX-PDF_GustavoBorges13_f91151e97bee266e8cdd1752ef04a09b1266cc1b.json).
+Este relatório foi gerado automaticamente para garantir a transparência e o cumprimento de licenças de código aberto em nosso projeto.
 
+## Relatório de Dependências Resumo
 1. **org.apache.poi**: API - O Apache POI é uma API para criar e manipular documentos do Microsoft Office, como arquivos do Word e Excel. Ele permite que você trabalhe com esses formatos de arquivo em Java.
 
 2. **org.apache.poi-ooxml**: API - Uma extensão do Apache POI que lida especificamente com formatos de arquivo Office Open XML, como arquivos .xlsx (Excel).
