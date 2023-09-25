@@ -26,6 +26,26 @@ Ao selecionar a planilha, ela é exibida em uma JTable, permitindo a edição co
 Após realizar as edições desejadas, o usuário pode selecionar uma ou várias linhas e gerar um arquivo PDF. O programa automatiza a criação de um documento MS Word formatado com campos de texto da empresa, servindo como backup. Após a conclusão, o programa converterá o arquivo Word em PDF e permitirá visualizá-lo ou acessar a pasta de destino.
 
 
+# Como utilizar (Tutorial em desenvolvimento)
+## Tela de carregamento (SplashAnimation.java)
+## Tela Inicial (Principal.java)
+## Ajuda (Menu_1)
+### Repositorio desde projeto (JDialog)
+### Sobre E-ServiceDesk Application (JDialog)
+## Ferramentas (Menu_2)
+### Opções (Opcoes.java)
+#### Geral (TabbedPane_panel_1)
+#### Paths (TabbedPane_panel_2)
+## Editar informações da planilha (EditarPlanilha.java)
+## Gerar arquivo em PDF (GerarLaudoPDF.java)
+### Links de referencia (JDialog)
+## Atalhos (Atalhos.java)
+### Tela Inicial
+### Editar informações da planilha
+### Gerar arquivo em PDF
+
+
+
 # Lembretes
 O programa em si foi feito utilizando jdk 20+ e precisa de jre 1.8 para rodar na maquina.
 Ao transferir para outro PC o projeto raiz, certificar-se de configurar IDE para rodar em jdk 20+ e configurar o classpath com essa config:
