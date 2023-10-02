@@ -58,7 +58,7 @@ public class SplashAnimation extends JFrame {
 	public SplashAnimation() {
 		setUndecorated(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 381, 122);
+		setBounds(0, 0, 382, 122);
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.WHITE);
@@ -69,14 +69,14 @@ public class SplashAnimation extends JFrame {
 
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(0, 0, 420, 122);
+		panel.setBounds(0, 0, 382, 122);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setIcon(new ImageIcon(img_logo));
-		lblNewLabel.setBounds(0, 0, 381, 81);
+		lblNewLabel.setBounds(0, 0, 382, 81);
 		panel.add(lblNewLabel);
 
 		jProgressBarTelaSplash = new JProgressBar();
@@ -99,7 +99,7 @@ public class SplashAnimation extends JFrame {
 					UIManager.setLookAndFeel(new FlatIntelliJLaf());
 					SplashAnimation frame = new SplashAnimation();
 					frame.setUndecorated(true);
-					frame.setShape(new RoundRectangle2D.Double(0, 0, 420, 122, 25, 25));
+					frame.setShape(new RoundRectangle2D.Double(0, 0, 382, 122, 20, 20));
 					frame.setVisible(true);
 					frame.setVisible(true);
 				} catch (Exception e) {
