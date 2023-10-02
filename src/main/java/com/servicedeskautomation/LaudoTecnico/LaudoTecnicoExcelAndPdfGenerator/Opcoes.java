@@ -44,13 +44,11 @@ public class Opcoes extends JDialog {
 	public Opcoes(JFrame parentFrame) {
 		super(parentFrame, "Ferrramentas - Opções", true); // Janela modal
 		// Shortcuts
-		String userHome = System.getProperty("user.home");
-		String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
-		String pathData = userHome + pathRestante;
-		String pathBackup = userHome + pathRestante + "Backup/";
+		String pathData =  ConfigManager.getDirectoryFromConfigLine(4).replace("\\modelo laudo.docx", "");
+		String pathBackup = ConfigManager.getDirectoryFromConfigLine(1);
 		// File diretorioInicial = new File("\\\\fscatorg01\\..."); //Substituir o local
 		// do pdf
-		String pathPdfGenerated = userHome + pathRestante + "Pdf generated/";
+		String pathPdfGenerated = ConfigManager.getDirectoryFromConfigLine(2);
 
 		setTitle("Ferrramentas - Opções");
 		setBounds(100, 100, 696, 300);

@@ -724,7 +724,7 @@ public class GerarLaudoPDF extends JDialog {
 			// Shortcuts
 			String fileName = "modelo laudo.docx";
 			String userHome = System.getProperty("user.home");
-			String pathRestante = "/Documents/ConversorXLSX-PDF/data/";
+			String pathRestante = "/ConversorXLSX-PDF/data/";
 
 			// Preparacao do arquivo
 			File file = new File(userHome + pathRestante + fileName); // Local pra preparar o arquivo
@@ -954,7 +954,8 @@ public class GerarLaudoPDF extends JDialog {
 			// ------- SALVAMENTO E CONVERSAO --------
 			// Salvando o BACKUP (Word)...
 			// Criando a pasta backup
-			File pathBackup = new File(userHome + pathRestante + "backup");
+			File pathBackup = new File(userHome + pathRestante + "Backup");
+			ConfigManager.setConfigLine(3, pathBackup.toPath().toString());
 			pathBackup.mkdirs();
 			try (FileOutputStream out = new FileOutputStream(pathBackup.getPath() + "\\"
 					+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
@@ -970,7 +971,7 @@ public class GerarLaudoPDF extends JDialog {
 			// do path do pdf
 			File pathPdfGerados = new File(userHome + pathRestante + "Pdf generated");
 			pathPdfGerados.mkdirs();
-
+			
 			// Abrindo o arquivo word a ser convertido
 			try {
 				long start = System.currentTimeMillis();

@@ -441,8 +441,11 @@ public class Principal extends JFrame {
 				String userHome = System.getProperty("user.home");
 				@SuppressWarnings("unused")
 				String diretorioInicial = userHome + File.separator + "Downloads";
-				JFileChooser fc = new JFileChooser(
-						"\\\\fscatorg01\\Fileserver\\Financeiro\\Sistemas\\321 - Sistemas - CAT\\Service Desk\\Documentos\\Laudos Técnicos\\Planilha Laudos");
+				
+				 // Obter o diretório do arquivo .docx a partir da linha 1 do arquivo de configuração
+		        String directoryPath = ConfigManager.getDirectoryFromConfigLine(1);
+		        
+				JFileChooser fc = new JFileChooser(directoryPath);
 				fc.setPreferredSize(new Dimension(700, 400));
 
 				// Restringir o usuário para selecionar arquivos de todos os tipos

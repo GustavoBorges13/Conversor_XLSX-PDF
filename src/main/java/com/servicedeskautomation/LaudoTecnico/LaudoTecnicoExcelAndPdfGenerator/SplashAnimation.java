@@ -20,6 +20,7 @@ import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -31,6 +32,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
 
@@ -41,9 +43,7 @@ public class SplashAnimation extends JFrame {
 	private JLabel jLabelMostraProgresso;
 	private Image img_logo = new ImageIcon(SplashAnimation.class.getResource("/resources/Logo_HPE_menor.png"))
 			.getImage().getScaledInstance(292, 73, Image.SCALE_SMOOTH);
-
-	private boolean flagNecessarioAtualizar = false;
-	private boolean flagDownloading = false;
+	private boolean flagNecessarioFazerDownloading = false;
 	private boolean flagLoading = false;
 	private boolean flagError = false;
 	private String userHome;
@@ -51,6 +51,9 @@ public class SplashAnimation extends JFrame {
 	private String pathRestante;
 	private boolean[] dialogShown = { false }; // Array para armazenar a variável
 	private CountDownLatch latch = new CountDownLatch(1);
+	private File pathfileWord;
+	private int finalOpcao;
+	private File configDirectory = new File(System.getProperty("user.home") + "/ConversorXLSX-PDF");
 
 	public SplashAnimation() {
 		setUndecorated(true);
@@ -108,63 +111,157 @@ public class SplashAnimation extends JFrame {
 
 	public void TelaSplashCondominio() {
 		boolean[] opcaoSelecionada = { false };
-		int opcao = 0;
+		boolean[] arquivoValidado = { false };
+		boolean[] configLinhaDiretorioImportado = { false };
+		boolean[] configLinhaDiretorioRaiz = { false };
+
 		new Thread() {
 			public void run() {
 				userHome = System.getProperty("user.home");
 				fileName = "modelo laudo.docx";
-				pathRestante = "/Documents/ConversorXLSX-PDF/data";
-				File pathVerify = new File(userHome + "/Documents");
-				if (pathVerify.exists() == false) {
-					JOptionPane.showMessageDialog(null,
-							"Pasta \"Documents\" não existe. Portanto será criado uma pasta dentro de: " + userHome);
-					pathRestante = "/Documentos/ConversorXLSX-PDF/data";
-				}
+				pathRestante = "/ConversorXLSX-PDF/data";
 
 				for (int i = 0; i <= 100; i++) {
 					try {
 						sleep(30);
 						jProgressBarTelaSplash.setValue(i);
 
-						// 40%
+						// 20%
 						if (jProgressBarTelaSplash.getValue() <= 20) {
 							jLabelMostraProgresso.setText("Verificando arquivos e pastas dependentes...");
 							File pathExists = new File(userHome + pathRestante + "/" + fileName);
+							File configFile = new File(configDirectory, "config.ini");
 							// JOptionPane.showMessageDialog(null, pathExists.exists());
-							if (pathExists.exists()) {
-								flagLoading = true;
-							} else {
-								flagDownloading = true;
+
+							if (configFile.exists() == false) {
+								ConfigManager.createConfigFileIfNotExists();
+								configLinhaDiretorioImportado[0] = ConfigManager.doesLineExist(3);
+								configLinhaDiretorioRaiz[0] = ConfigManager.doesLineExist(4);
+							}else {
+								configLinhaDiretorioImportado[0] = ConfigManager.doesLineExist(3);
+								configLinhaDiretorioRaiz[0] = ConfigManager.doesLineExist(4);
 							}
-						} else if (jProgressBarTelaSplash.getValue() <= 50 && flagLoading == true) {
-							jLabelMostraProgresso.setText("Carregando o modelo de laudo técnico...");
-							flagNecessarioAtualizar = true;
-						} else if (jProgressBarTelaSplash.getValue() <= 50 && flagDownloading == true) {
+							if (pathExists.exists() && configDirectory.exists() && configLinhaDiretorioRaiz[0]) {
+								flagLoading = true;
+							} else if (!configLinhaDiretorioRaiz[0]) {
+								flagNecessarioFazerDownloading = true;
+							}
+						} else if (jProgressBarTelaSplash.getValue() <= 50 && flagNecessarioFazerDownloading == true) {
 							// Selecionar uma opcao e pausa a thread para nao carregar a barra sozinha...
 							if (opcaoSelecionada[0] == false) {
 								do {
 									SwingUtilities.invokeLater(() -> {
 										String mensagem = "Deseja baixar o \"modelo laudo.docx\" via meu repositório GitHub?\n"
-												+ "Obs.: baixar direto do git somente funciona se o proxy não estiver bloqueando ou desativando o proxy).\n\n"
+												+ "Obs.: se for baixar direto do git somente irá funcionar se o proxy não estiver bloqueando a requisição (URL de download) ou então desativando o proxy em opções de internet.\n\n"
 												+ "Caso precise liberar a requisição bloqueada, basta pedir para equipe da infraestrutura a liberação dessa URL:\n"
-												+ "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx";
+												+ "https://github.com/GustavoBorges13/Conversor_XLSX-PDF/raw/main/data/modelo%20laudo.docx\n\n"
+												+ "Sobre o arquivo a ser baixado, se trata de uma template personalizada que eu fiz onde existem campos com tags para facilitar no momento de transpor os dados das planilhas (Excel -> .xlsx) para a template (word -> .docx).\n\n"
+												+ "Ou se você já estiver com arquivo baixado no computador ou no servidor, basta clicar no botão \"Procurar o arquivo no computador (local)\"";
 
 										int opcao = mostrarDialogoPersonalizado(
 												"Arquivo de modelo laudo.docx não foi encontrado!", mensagem,
 												new String[] { "Baixar o modelo (online)",
 														"Procurar o arquivo no computador (local)", "Cancelar" });
-
 										switch (opcao) {
 										case 0:
 											opcaoSelecionada[0] = true;
-											opcao = 0;
+											finalOpcao = 0;
 											break;
 										case 1:
 											opcaoSelecionada[0] = true;
-											opcao = 1;
+											finalOpcao = 1;
+
+											// File direcionado = new File("\\\\fscatorg01\\...");
+											// Defina o diretório inicial para a área de trabalho
+											String userHome = System.getProperty("user.home");
+
+											JFileChooser fc = new JFileChooser();
+											fc.setCurrentDirectory(new File(userHome)); // Local padrao para abrir a
+																						// janela
+											fc.setPreferredSize(new Dimension(700, 400));
+
+											// Restringir o usuário para selecionar arquivos de todos os tipos
+											fc.setAcceptAllFileFilterUsed(false);
+
+											// Coloca um titulo para a janela de dialogo
+											fc.setDialogTitle("Selecione um arquivo .docx");
+
+											// Habilita para o user escolher apenas arquivos do tipo: .docx
+											FileNameExtensionFilter restrict = new FileNameExtensionFilter(
+													"Somente arquivos .docx", "docx");
+											fc.addChoosableFileFilter(restrict);
+											fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+											int resultado = fc.showOpenDialog(null);
+
+											// Verifica se um arquivo foi selecionado
+											if (resultado == JFileChooser.CANCEL_OPTION) {
+												JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!");
+												System.exit(0);
+											} else {
+												pathfileWord = fc.getSelectedFile();
+
+												// Verifica o tamanho do arquivo em kilobytes
+												long fileSizeInBytes = pathfileWord.length();
+												long fileSizeInKB = fileSizeInBytes / 1024;
+
+												// Verifica se o tamanho do arquivo está entre 27KB e 40KB
+												boolean tamanhoValido = fileSizeInKB > 27 && fileSizeInKB < 40;
+
+												// Verifica se o nome do arquivo é "modelo laudo.docx"
+												boolean nomeValido = pathfileWord.getName().equals("modelo laudo.docx");
+
+												// Se ambos tamanho e nome são válidos
+												if (tamanhoValido && nomeValido) {
+													/*
+													 * JOptionPane.showMessageDialog(null,
+													 * "Arquivo válido: tamanho está entre 27KB e 40KB, e o nome é \"modelo laudo.docx\"."
+													 * );
+													 */
+													arquivoValidado[0] = true;
+
+													// Define o diretório de destino
+													File destino = new File(System.getProperty("user.home")
+															+ "\\ConversorXLSX-PDF\\data");
+
+													// Cria o diretório de destino se ainda não existir
+													destino.mkdirs();
+
+													// Cria o caminho de destino para o arquivo .docx
+													File destinoArquivo = new File(destino, pathfileWord.getName());
+
+													try {
+														// Copia o arquivo para o diretório de destino
+														Files.copy(pathfileWord.toPath(), destinoArquivo.toPath(),
+																StandardCopyOption.REPLACE_EXISTING);
+
+														// Verifica se o arquivo config.ini já existe, se não, cria
+														File configFile = new File(configDirectory, "config.ini");
+														if (!configFile.exists()) {
+															configFile.createNewFile();
+														}
+
+														// Salva o caminho raiz do arquivo .docx do servidor ou da
+														// pasta..
+														ConfigManager.setConfigLine(3,
+																pathfileWord.toPath().toString());
+
+														// Salva o caminho do arquivo .docx no arquivo de configuração
+														ConfigManager.setConfigLine(4, destino.getAbsolutePath());
+													} catch (IOException e) {
+														e.printStackTrace();
+														JOptionPane.showMessageDialog(null,
+																"Erro ao copiar o arquivo para o diretório de destino.");
+														System.exit(0);
+													}
+												}
+											}
+
 											break;
+
 										case 2:
-											JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!");
+											JOptionPane.showMessageDialog(null,
+													"Você não selecionou nenhum arquivo, o programa será fechado.");
 											System.exit(0);
 										}
 
@@ -178,27 +275,26 @@ public class SplashAnimation extends JFrame {
 										// Pausar a thread até que o diálogo seja fechado
 										latch.await();
 									} catch (InterruptedException e) {
-										e.printStackTrace();
+										JOptionPane.showMessageDialog(null,
+												"Erro Thread interrompida: " + e.getMessage());
 									}
 								} while (!dialogShown[0]);
 
 								// Continua executando a thread... barra de progresso... sem mostrar a
 								// joptionpane novamente.
 							} else {
-								if (opcao == 0 && opcaoSelecionada[0] == true) {
+								if (finalOpcao == 0 && opcaoSelecionada[0] == true && arquivoValidado[0] == false) {
 									jLabelMostraProgresso.setText("Fazendo download do modelo de laudo técnico...");
 									downloadFile();
-									flagNecessarioAtualizar = false;
-								} else if (opcao == 1 && opcaoSelecionada[0] == true) {
-
+								} else if (finalOpcao == 1 && opcaoSelecionada[0] == true
+										&& arquivoValidado[0] == true) {
+									jLabelMostraProgresso.setText("Criando/atualizando o arquivo config.ini...");
 								}
 							}
-						} else if (jProgressBarTelaSplash.getValue() <= 60 && flagNecessarioAtualizar == true) {
-							jLabelMostraProgresso.setText("Atualizando o modelo de laudo técnico...");
-							atualizarFile();
-							// 70%
+						} else if (jProgressBarTelaSplash.getValue() <= 60 && flagLoading == true) {
+							jLabelMostraProgresso.setText("Carregando o modelo de laudo técnico...");
 						} else if (jProgressBarTelaSplash.getValue() <= 80) {
-							jLabelMostraProgresso.setText("Carregando banco de dados...");
+							jLabelMostraProgresso.setText("Ajustando a UI..");
 							// 100%
 						} else if (jProgressBarTelaSplash.getValue() == 100 && flagError == false) {
 							jLabelMostraProgresso.setText("Conectando com o sistema...");
@@ -210,7 +306,6 @@ public class SplashAnimation extends JFrame {
 
 					} catch (Exception e) {
 						flagError = false;
-						flagError = false;
 						e.printStackTrace(); // Adicione esta linha para imprimir o rastreamento da exceção
 						JOptionPane.showMessageDialog(null, "Erro crítico (1): " + e);
 					}
@@ -219,47 +314,46 @@ public class SplashAnimation extends JFrame {
 		}.start();
 	}
 
-	 private static int mostrarDialogoPersonalizado(String titulo, String mensagem, String[] opcoes) {
-	        JTextArea textArea = new JTextArea(mensagem);
-	        textArea.setEditable(false);
-	        textArea.setLineWrap(true);
-	        textArea.setWrapStyleWord(true);
+	private static int mostrarDialogoPersonalizado(String titulo, String mensagem, String[] opcoes) {
+		JTextArea textArea = new JTextArea(mensagem);
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
 
-	        JScrollPane scrollPane = new JScrollPane(textArea);
-	        scrollPane.setPreferredSize(new Dimension(400, 200));
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		scrollPane.setPreferredSize(new Dimension(400, 200));
 
-	        JOptionPane optionPane = new JOptionPane(scrollPane, JOptionPane.PLAIN_MESSAGE,
-	                JOptionPane.DEFAULT_OPTION, null, opcoes, opcoes[0]);
+		JOptionPane optionPane = new JOptionPane(scrollPane, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION,
+				null, opcoes, opcoes[0]);
 
-	        JDialog dialog = optionPane.createDialog(titulo);
+		JDialog dialog = optionPane.createDialog(titulo);
 
-	        // Adicione um WindowListener para detectar o fechamento da janela
-	        dialog.addWindowListener(new WindowAdapter() {
-	            @Override
-	            public void windowClosing(WindowEvent e) {
-	                // Se o usuário fechar a janela, saia do programa
-	            	JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!");
-	                System.exit(0);
-	            }
-	        });
+		// Adicione um WindowListener para detectar o fechamento da janela
+		dialog.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// Se o usuário fechar a janela, saia do programa
+				JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!");
+				System.exit(0);
+			}
+		});
 
-	        dialog.setVisible(true);
+		dialog.setVisible(true);
 
-	        // Retorna o valor escolhido pelo usuário
-	        Object selectedValue = optionPane.getValue();
-	        if (selectedValue == null)
-	            return JOptionPane.CLOSED_OPTION;
+		// Retorna o valor escolhido pelo usuário
+		Object selectedValue = optionPane.getValue();
+		if (selectedValue == null)
+			return JOptionPane.CLOSED_OPTION;
 
-	        for (int counter = 0, maxCounter = opcoes.length; counter < maxCounter; counter++) {
-	            if (opcoes[counter].equals(selectedValue))
-	                return counter;
-	        }
+		for (int counter = 0, maxCounter = opcoes.length; counter < maxCounter; counter++) {
+			if (opcoes[counter].equals(selectedValue))
+				return counter;
+		}
 
-	        // Se chegou aqui, algo deu errado
-	        return JOptionPane.CLOSED_OPTION;
-	    }
+		// Se chegou aqui, algo deu errado
+		return JOptionPane.CLOSED_OPTION;
+	}
 
-	@Deprecated
 	public void downloadFile() {
 		LeitorURL baixarArquivo = new LeitorURL();
 
@@ -270,11 +364,10 @@ public class SplashAnimation extends JFrame {
 		try {
 			url = new URL(sUrl);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			flagError = false;
+			flagError = true;
 			JOptionPane.showMessageDialog(null,
-					"Não foi possível encontrar os arquivos necessários para o download." + e);
-			dispose();
+					"Erro critico (2): " + e + "\nPossivel problema com proxy ou offline (sem acesso a internet).");
+			System.exit(0);
 		}
 
 		// Local onde será baixado
@@ -282,8 +375,29 @@ public class SplashAnimation extends JFrame {
 		folder.mkdirs();
 		File file = new File(folder, fileName);
 		baixarArquivo.copyURLToFile(url, file);
+
+		try {
+
+			// Verifica se o arquivo config.ini já existe, se não, cria
+			File configFile = new File(configDirectory, "config.ini");
+			if (!configFile.exists()) {
+				configFile.createNewFile();
+			}
+
+			// Salva o caminho raiz do arquivo .docx do servidor ou da pasta..
+			ConfigManager.setConfigLine(3, "N/A");
+
+			// Salva o caminho do arquivo .docx no arquivo de configuração
+			ConfigManager.setConfigLine(4, file.getAbsolutePath());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Erro ao copiar o arquivo para o diretório de destino.");
+			System.exit(0);
+		}
 	}
 
+	@Deprecated
 	public void atualizarFile() {
 		userHome = System.getProperty("user.home");
 		fileName = "modelo laudo.docx";
