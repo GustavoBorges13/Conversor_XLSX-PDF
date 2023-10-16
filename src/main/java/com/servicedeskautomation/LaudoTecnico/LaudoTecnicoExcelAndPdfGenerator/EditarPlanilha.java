@@ -345,7 +345,7 @@ public class EditarPlanilha extends JDialog {
 		});
 		txtAtivo.setForeground(Color.BLACK);
 		txtAtivo.setColumns(10);
-		txtAtivo.setBounds(15, 207, 114, 29);
+		txtAtivo.setBounds(15, 207, 106, 29);
 		panel.add(txtAtivo);
 
 		txtHostname = new JTextField();
@@ -722,7 +722,7 @@ public class EditarPlanilha extends JDialog {
 					Principal.btnSalvarAlteracoes.setEnabled(true);
 					flag = true;
 					for (int coluna = 0; coluna < Principal.colunas.size(); coluna++) {
-
+						
 						// Manipulando os arraylist (dadabase)
 						Principal.laudo.set(linhaSelecionada, txtLaudo.getText());
 						Principal.nomeSolicitante.set(linhaSelecionada, txtNomeSolicitante.getText());
@@ -817,7 +817,7 @@ public class EditarPlanilha extends JDialog {
 
 		JLabel lblDispositivo = new JLabel("Dispositivo *");
 		lblDispositivo.setFont(new Font("Dialog", Font.PLAIN, 12));
-		lblDispositivo.setBounds(135, 184, 96, 29);
+		lblDispositivo.setBounds(130, 184, 104, 29);
 		panel.add(lblDispositivo);
 
 		JLabel lblHostname = new JLabel("Hostname *");
@@ -886,7 +886,7 @@ public class EditarPlanilha extends JDialog {
 		comboBoxDispositivo.setModel(new DefaultComboBoxModel(new String[] { "Selecionar", "Desktop", "Notebook" }));
 		comboBoxDispositivo.setMaximumRowCount(3);
 		comboBoxDispositivo.setForeground(Color.RED);
-		comboBoxDispositivo.setBounds(138, 207, 96, 29);
+		comboBoxDispositivo.setBounds(130, 207, 104, 29);
 		panel.add(comboBoxDispositivo);
 		
 		JSeparator separator = new JSeparator();

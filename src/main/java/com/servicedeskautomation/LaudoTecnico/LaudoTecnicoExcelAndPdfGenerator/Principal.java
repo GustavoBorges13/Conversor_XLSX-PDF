@@ -32,10 +32,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
@@ -103,6 +106,7 @@ public class Principal extends JFrame {
 	private int row = 0;
 	private int ultimaLinhaOld = 0;
 	private boolean flagAdd = false;
+	private boolean flagNewLinha = false;
 	static boolean flagSaved = true;
 	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
 			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
@@ -276,7 +280,7 @@ public class Principal extends JFrame {
 
 				String textoParagrafo = "Desenvolvemos esta aplicação para aprimorar a eficiência de nossa equipe de service desk.\n\n"
 						+ "Esta é uma ferramenta de automação criada com fins educacionais, visando aprofundar nosso conhecimento em várias APIs, como APACHE POI, JXL, OpenCSV e docx4j, e aprimorar nossas habilidades de programação em um ambiente profissional.\n\n"
-						+ "O projeto foi desenvolvido no Eclipse (versão de 2022-09) e construído com o Maven para realizar tarefas como limpeza, verificação, instalação de pacotes e builds. Isso garantiu que todas as APIs necessárias estivessem disponíveis ao alternar entre ambientes domésticos e empresariais, facilitando a colaboração por meio do GitHub, onde você pode acessar nosso perfil e o repositório deste projeto para obter mais informações.\n\n"
+						+ "O projeto foi desenvolvido no Eclipse (versão de 2022-09) e construído com o Maven para realizar tarefas como limpeza, verificação, instalação de pacotes e builds. Isso garantiu que todas as APIs necessárias estivessem disponíveis ao alternar entre ambientes domésticos e empresariais, facilitando a colaboração por meio do GitHub, onde você pode acessar meu perfil e o repositório deste projeto para obter mais informações.\n\n"
 						+ "A aplicação oferece uma interface gráfica dinâmica. Ao abri-la, o usuário pode escolher uma planilha específica para manipulação, eliminando a necessidade de usar o Excel. O código foi desenvolvido sob medida para esse tipo de planilha, considerando formatações e quantidade de colunas.\n\n"
 						+ "Ao selecionar a planilha, ela é exibida em uma JTable, permitindo a edição como se fosse uma planilha Excel. Além disso, ao clicar em uma linha, você terá opções de edição, e ao clicar duas vezes em uma linha, uma janela lateral abrirá para edição dos valores selecionados. O menu \"Ferramentas\" oferece utilidades adicionais para explorar.\n\n"
 						+ "Após realizar as edições desejadas, o usuário pode selecionar uma ou várias linhas e gerar um arquivo PDF. O programa automatiza a criação de um documento MS Word formatado com campos de texto da empresa, servindo como backup. Após a conclusão, o programa converterá o arquivo Word em PDF e permitirá visualizá-lo ou acessar a pasta de destino.\n\n"
@@ -351,14 +355,14 @@ public class Principal extends JFrame {
 
 				// Adicione um KeyStroke para fechar o diálogo quando "ESC" for pressionado
 				KeyStroke escapeKeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-				opcoesDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+				opcoesDialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke,
+						"ESCAPE");
 				opcoesDialog.getRootPane().getActionMap().put("ESCAPE", new AbstractAction() {
-				    public void actionPerformed(ActionEvent e) {
-				        opcoesDialog.dispose();
-				    }
+					public void actionPerformed(ActionEvent e) {
+						opcoesDialog.dispose();
+					}
 				});
 
-				
 				// Mostra a janela
 				opcoesDialog.setVisible(true);
 
@@ -387,6 +391,7 @@ public class Principal extends JFrame {
 		StyleConstants.setAlignment(attr, StyleConstants.ALIGN_JUSTIFIED);
 
 		jlocal = new JTextField();
+		jlocal.setEditable(false);
 		jlocal.setFont(new Font("Dialog", Font.PLAIN, 12));
 		jlocal.setFocusable(true);
 		jlocal.setBackground(new Color(240, 240, 240));
@@ -398,24 +403,6 @@ public class Principal extends JFrame {
 		String maskTextXLSX = "Clique na lupa para procurar a planilha...";
 		jlocal.setText(maskTextXLSX);
 
-		jlocal.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent arg0) {
-				if (jlocal.getText().equals(maskTextXLSX)) {
-					jlocal.setText("");
-				} else {
-					jlocal.selectAll();
-				}
-			}
-
-			@Override
-			public void focusLost(FocusEvent e) {
-				if (jlocal.getText().equals("")) {
-					jlocal.setText(maskTextXLSX);
-				}
-
-			}
-		});
 		btnXLS = new JButton("");
 		Image img_find = new ImageIcon(SplashAnimation.class.getResource("/resources/Find.png")).getImage()
 				.getScaledInstance(25, 25, Image.SCALE_SMOOTH);
@@ -441,11 +428,19 @@ public class Principal extends JFrame {
 				String userHome = System.getProperty("user.home");
 				@SuppressWarnings("unused")
 				String diretorioInicial = userHome + File.separator + "Downloads";
-				
-				 // Obter o diretório do arquivo .docx a partir da linha 1 do arquivo de configuração
-		        String directoryPath = ConfigManager.getDirectoryFromConfigLine(1);
-		        
-				JFileChooser fc = new JFileChooser(directoryPath);
+
+				// Obter o diretório do arquivo .docx a partir da linha 1 do arquivo de
+				// configuração
+				String directoryPathString = ConfigManager.getDirectoryFromConfigLine(3);
+				Path directoryPath = Paths.get(directoryPathString);
+
+				JFileChooser fc;
+				if (directoryPath.toString().length() <= 3) {
+					fc = new JFileChooser(diretorioInicial);
+				} else {
+					fc = new JFileChooser(directoryPath.getParent().toString());
+				}
+
 				fc.setPreferredSize(new Dimension(700, 400));
 
 				// Restringir o usuário para selecionar arquivos de todos os tipos
@@ -471,6 +466,7 @@ public class Principal extends JFrame {
 				} else {
 					pathfileExcel = fc.getSelectedFile();
 					jlocal.setText(pathfileExcel.toString().trim());
+					jlocal.setCaretPosition(0);
 					jtitulo.setText(fc.getSelectedFile().getName());
 					btnPreencher.setEnabled(true); // Habilita o botao
 
@@ -492,6 +488,7 @@ public class Principal extends JFrame {
 				btnSalvarAlteracoes.setEnabled(false);
 				btnGerarArquivoPdf.setEnabled(false);
 				btnXLS.setEnabled(true);
+
 			}
 		});
 		btnXLS.setBounds(592, 49, 47, 39);
@@ -852,6 +849,8 @@ public class Principal extends JFrame {
 									// flag
 									flagSaved = true;
 									flagAdd = false;
+									flagNewLinha = false;
+									
 									// frame.setVisible(false);
 								} else {
 									frame.setVisible(true);
@@ -903,9 +902,9 @@ public class Principal extends JFrame {
 
 					EditarPlanilha.txtItem.setForeground(Color.BLACK);
 					EditarPlanilha.txtItem.setText(item.get(linhaSelecionada));
-
+					
 					for (int i = 0; i <= EditarPlanilha.comboBoxQuantidade.getItemCount() - 1; i++) {
-						if (!qtd.get(linhaSelecionada).equals(EditarPlanilha.comboBoxQuantidade.getItemAt(i)))
+						if (qtd.get(linhaSelecionada)==null||!qtd.get(linhaSelecionada).equals(EditarPlanilha.comboBoxQuantidade.getItemAt(i)))
 							EditarPlanilha.comboBoxQuantidade.setForeground(Color.RED);
 						else {
 							EditarPlanilha.comboBoxQuantidade.setForeground(Color.BLACK);
@@ -918,7 +917,7 @@ public class Principal extends JFrame {
 					EditarPlanilha.txtAtivo.setText(ativo.get(linhaSelecionada));
 
 					for (int i = 0; i <= EditarPlanilha.comboBoxDispositivo.getItemCount() - 1; i++) {
-						if (!dispositivo.get(linhaSelecionada).equals(EditarPlanilha.comboBoxDispositivo.getItemAt(i)))
+						if (dispositivo.get(linhaSelecionada)==null||!dispositivo.get(linhaSelecionada).equals(EditarPlanilha.comboBoxDispositivo.getItemAt(i)))
 							EditarPlanilha.comboBoxDispositivo.setForeground(Color.RED);
 						else {
 							EditarPlanilha.comboBoxDispositivo.setForeground(Color.BLACK);
@@ -931,14 +930,13 @@ public class Principal extends JFrame {
 					EditarPlanilha.txtHostname.setText(hostname.get(linhaSelecionada));
 
 					for (int i = 0; i <= EditarPlanilha.comboBoxFabricante.getItemCount() - 1; i++) {
-						if (!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i))) {
+						if (fabricante.get(linhaSelecionada)==null||!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i))) {
 							if (EditarPlanilha.comboBoxFabricante.getItemAt(i).toString().toUpperCase()
 									.contains(fabricante.get(linhaSelecionada).toUpperCase())) {
-								EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
+								EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
 								EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
 								break;
 							}
-							EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
 						} else {
 							EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
 							EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
@@ -958,10 +956,16 @@ public class Principal extends JFrame {
 					EditarPlanilha.txtCpu.setForeground(Color.BLACK);
 					EditarPlanilha.txtCpu.setText(cpu.get(linhaSelecionada));
 
+					if (flagSaved == false &&flagNewLinha==false) {
+						storage.get(linhaSelecionada).trim();
+						storageSpliter = storage.get(linhaSelecionada).split(" ");
+						storageValue.set(linhaSelecionada,storageSpliter[0]);
+						storageType.set(linhaSelecionada,storageSpliter[1]);
+					}
 					// System.out.println("Type: "+storageType.get(linhaSelecionada)+" Value:
 					// "+Integer.parseInt(storageValue.get(linhaSelecionada)));
 					// --- HD ---
-					if (flagAdd == true && (ultimaLinhaOld <= table.getRowCount())) {
+					if (flagAdd == true && (ultimaLinhaOld <= table.getRowCount()) && flagNewLinha==false) {
 						storageSpliter = storage.get(linhaSelecionada).split(" ");
 						storageValue.set(linhaSelecionada, storageSpliter[pos]);
 						storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
@@ -1204,7 +1208,8 @@ public class Principal extends JFrame {
 
 				// flag
 				flagSaved = false;
-
+				flagNewLinha = true;
+				
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
 				adicionarArrayList();
@@ -1223,7 +1228,6 @@ public class Principal extends JFrame {
 					me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1, false,
 							MouseEvent.BUTTON1);
 					table.dispatchEvent(me);
-
 				}
 			}
 		});
@@ -1239,6 +1243,7 @@ public class Principal extends JFrame {
 		btnEditar = new JButton("Editar");
 		btnEditar.setFont(new Font("Dialog", Font.PLAIN, 12));
 		btnEditar.addMouseListener(new MouseAdapter() {
+
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				if (btnEditar.isEnabled())
@@ -1253,22 +1258,27 @@ public class Principal extends JFrame {
 		btnEditar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int[] selectedRows = table.getSelectedRows();
-				if (selectedRows.length != -1 && selectedRows.length <= 1) {
+				int[] linhasSelecionadas = Principal.table.getSelectedRows();
 
-					// Point p = table.getMousePosition();
-					MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0,
-							1, false);
-					table.dispatchEvent(me);
-					me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1, false,
-							MouseEvent.BUTTON1);
-					table.dispatchEvent(me);
-				} else {
-					JOptionPane
-							.showMessageDialog(null,
-									"Por favor selecione apenas uma linha por vez para editar.\nVocê tentou editar com "
-											+ selectedRows.length + " linhas selecionadas.",
-									"Erro", JOptionPane.ERROR_MESSAGE);
+				if (linhasSelecionadas.length > 1) {
+					JOptionPane.showMessageDialog(null,
+							"Voce clicou em editar linha. Porém selecionou mais de 1 linha.\nPor favor, selecione somente 1 linha para editar.");
+				} else if (linhasSelecionadas.length == 1) {
+					if (linhasSelecionadas.length != -1 && linhasSelecionadas.length <= 1) {
+
+						// Point p = table.getMousePosition();
+						MouseEvent me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0,
+								0, 0, 1, false);
+						table.dispatchEvent(me);
+						me = new MouseEvent(table, MouseEvent.MOUSE_CLICKED, System.currentTimeMillis(), 0, 0, 0, 1,
+								false, MouseEvent.BUTTON1);
+						table.dispatchEvent(me);
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"Por favor selecione apenas uma linha por vez para editar.\nVocê tentou editar com "
+										+ linhasSelecionadas.length + " linhas selecionadas.",
+								"Erro", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
@@ -1326,7 +1336,8 @@ public class Principal extends JFrame {
 							sheet.copyRows(sheet.getLastRowNum() - laudo.size(), sheet.getLastRowNum(), 1,
 									new CellCopyPolicy());
 
-						// Calcula g
+						// Calcula g ... g = espaço em branco de reserva para adicionar mais laudos... é
+						// o espaço em branco ate a linha amarela na planilha.
 						while ((row = sheet.getRow(g)) != null && row.getCell(0).getCellType() == CellType.BLANK
 								&& row.getCell(1).getCellType() == CellType.BLANK
 								&& row.getCell(2).getCellType() == CellType.BLANK

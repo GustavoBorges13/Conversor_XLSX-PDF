@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.concurrent.CountDownLatch;
 
 import javax.swing.ImageIcon;
@@ -54,6 +55,7 @@ public class SplashAnimation extends JFrame {
 	private File pathfileWord;
 	private int finalOpcao;
 	private File configDirectory = new File(System.getProperty("user.home") + "/ConversorXLSX-PDF");
+	private final long originalSize = 30652;
 
 	public SplashAnimation() {
 		setUndecorated(true);
@@ -114,7 +116,8 @@ public class SplashAnimation extends JFrame {
 		boolean[] arquivoValidado = { false };
 		boolean[] configLinhaDiretorioImportado = { false };
 		boolean[] configLinhaDiretorioRaiz = { false };
-
+		boolean[] avisoflag = {true};
+		
 		new Thread() {
 			public void run() {
 				userHome = System.getProperty("user.home");
@@ -137,13 +140,14 @@ public class SplashAnimation extends JFrame {
 								ConfigManager.createConfigFileIfNotExists();
 								configLinhaDiretorioImportado[0] = ConfigManager.doesLineExist(3);
 								configLinhaDiretorioRaiz[0] = ConfigManager.doesLineExist(4);
-							}else {
+							} else {
 								configLinhaDiretorioImportado[0] = ConfigManager.doesLineExist(3);
 								configLinhaDiretorioRaiz[0] = ConfigManager.doesLineExist(4);
 							}
 							if (pathExists.exists() && configDirectory.exists() && configLinhaDiretorioRaiz[0]) {
+								pathfileWord = pathExists;
 								flagLoading = true;
-							} else if (!configLinhaDiretorioRaiz[0]) {
+							} else if (!pathExists.exists() || !configLinhaDiretorioRaiz[0]) {
 								flagNecessarioFazerDownloading = true;
 							}
 						} else if (jProgressBarTelaSplash.getValue() <= 50 && flagNecessarioFazerDownloading == true) {
@@ -196,23 +200,26 @@ public class SplashAnimation extends JFrame {
 
 											// Verifica se um arquivo foi selecionado
 											if (resultado == JFileChooser.CANCEL_OPTION) {
-												JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!");
 												System.exit(0);
 											} else {
 												pathfileWord = fc.getSelectedFile();
 
 												// Verifica o tamanho do arquivo em kilobytes
 												long fileSizeInBytes = pathfileWord.length();
-												long fileSizeInKB = fileSizeInBytes / 1024;
+												//long fileSizeInKB = fileSizeInBytes / 1024;
 
 												// Verifica se o tamanho do arquivo está entre 27KB e 40KB
-												boolean tamanhoValido = fileSizeInKB > 27 && fileSizeInKB < 40;
+												// boolean tamanhoValido = fileSizeInKB > 27 && fileSizeInKB < 40;
+												boolean tamanhoValido = fileSizeInBytes == originalSize; // 29.9 KB em
+																											// bytes
 
 												// Verifica se o nome do arquivo é "modelo laudo.docx"
-												boolean nomeValido = pathfileWord.getName().equals("modelo laudo.docx");
+												// boolean nomeValido = pathfileWord.getName().equals("modelo
+												// laudo.docx");
 
 												// Se ambos tamanho e nome são válidos
-												if (tamanhoValido && nomeValido) {
+												// nomeValido removido..
+												if (tamanhoValido) {
 													/*
 													 * JOptionPane.showMessageDialog(null,
 													 * "Arquivo válido: tamanho está entre 27KB e 40KB, e o nome é \"modelo laudo.docx\"."
@@ -251,9 +258,21 @@ public class SplashAnimation extends JFrame {
 													} catch (IOException e) {
 														e.printStackTrace();
 														JOptionPane.showMessageDialog(null,
-																"Erro ao copiar o arquivo para o diretório de destino.");
+																"Erro ao copiar o arquivo para o diretório de destino.","Erro", JOptionPane.ERROR_MESSAGE);
 														System.exit(0);
 													}
+												} else {
+													DecimalFormat decimalFormat = new DecimalFormat("0.0");
+													JOptionPane.showMessageDialog(null,
+															"O tamanho do arquivo de template do laudo não é compátivel. Por favor, baixe a template original via github.\n"
+																	+ "Tamanho da template original: "
+																	+ decimalFormat.format(originalSize / 1024f)
+																	+ "KB (" + originalSize + " bytes)"
+																	+ "\nTamanho da template selecionada: "
+																	+ decimalFormat.format(fileSizeInBytes / 1024f)
+																	+ "KB (" + fileSizeInBytes + " bytes)",
+															"Aviso", JOptionPane.WARNING_MESSAGE);
+													System.exit(0);
 												}
 											}
 
@@ -261,7 +280,7 @@ public class SplashAnimation extends JFrame {
 
 										case 2:
 											JOptionPane.showMessageDialog(null,
-													"Você não selecionou nenhum arquivo, o programa será fechado.");
+													"Você não selecionou nenhum arquivo, o programa será fechado.","Erro", JOptionPane.ERROR_MESSAGE);
 											System.exit(0);
 										}
 
@@ -276,7 +295,7 @@ public class SplashAnimation extends JFrame {
 										latch.await();
 									} catch (InterruptedException e) {
 										JOptionPane.showMessageDialog(null,
-												"Erro Thread interrompida: " + e.getMessage());
+												"Erro Thread interrompida: " + e.getMessage(),"Erro", JOptionPane.ERROR_MESSAGE);
 									}
 								} while (!dialogShown[0]);
 
@@ -293,6 +312,20 @@ public class SplashAnimation extends JFrame {
 							}
 						} else if (jProgressBarTelaSplash.getValue() <= 60 && flagLoading == true) {
 							jLabelMostraProgresso.setText("Carregando o modelo de laudo técnico...");
+							if(!(pathfileWord.length() == originalSize)&&avisoflag[0]==true) {
+								DecimalFormat decimalFormat = new DecimalFormat("0.0");
+								long fileSizeInBytes = pathfileWord.length();
+								JOptionPane.showMessageDialog(null, "O tamanho atual do arquivo de template instalado na máquina não batem com os valores programados no sistema, recomenda-se fortemente a exclusão manual da template em uso."
+															+"\nTemplate localização: "+pathfileWord.getAbsolutePath()
+															+ "\nTamanho da template original: "
+															+ decimalFormat.format(originalSize / 1024f)
+															+ "KB (" + originalSize + " bytes)"
+															+ "\nTamanho da template selecionada: "
+															+ decimalFormat.format(fileSizeInBytes / 1024f)
+															+ "KB (" + fileSizeInBytes + " bytes)",
+															"Aviso", JOptionPane.WARNING_MESSAGE);
+								avisoflag[0]=false;
+							}
 						} else if (jProgressBarTelaSplash.getValue() <= 80) {
 							jLabelMostraProgresso.setText("Ajustando a UI..");
 							// 100%
@@ -307,7 +340,7 @@ public class SplashAnimation extends JFrame {
 					} catch (Exception e) {
 						flagError = false;
 						e.printStackTrace(); // Adicione esta linha para imprimir o rastreamento da exceção
-						JOptionPane.showMessageDialog(null, "Erro crítico (1): " + e);
+						JOptionPane.showMessageDialog(null, "Erro crítico (1): " + e,"Erro", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
@@ -333,7 +366,8 @@ public class SplashAnimation extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// Se o usuário fechar a janela, saia do programa
-				JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!");
+				JOptionPane.showMessageDialog(null, "Você escolheu sair do programa!", "Aviso",
+						JOptionPane.WARNING_MESSAGE);
 				System.exit(0);
 			}
 		});
@@ -366,7 +400,8 @@ public class SplashAnimation extends JFrame {
 		} catch (MalformedURLException e) {
 			flagError = true;
 			JOptionPane.showMessageDialog(null,
-					"Erro critico (2): " + e + "\nPossivel problema com proxy ou offline (sem acesso a internet).");
+					"Erro critico (2): " + e + "\nPossivel problema com proxy ou offline (sem acesso a internet).",
+					"Erro", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 
@@ -392,7 +427,8 @@ public class SplashAnimation extends JFrame {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "Erro ao copiar o arquivo para o diretório de destino.");
+			JOptionPane.showMessageDialog(null, "Erro ao copiar o arquivo para o diretório de destino.", "Erro",
+					JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}
@@ -412,7 +448,8 @@ public class SplashAnimation extends JFrame {
 		} catch (MalformedURLException e) {
 			flagError = true;
 			JOptionPane.showMessageDialog(null,
-					"Não foi possível encontrar os arquivos necessários para a atualização." + e);
+					"Não foi possível encontrar os arquivos necessários para a atualização." + e, "Erro",
+					JOptionPane.ERROR_MESSAGE);
 			dispose();
 		}
 
@@ -426,7 +463,8 @@ public class SplashAnimation extends JFrame {
 		} catch (IOException e) {
 			flagError = true;
 			JOptionPane.showMessageDialog(null,
-					"Erro critico (2): " + e + "\nPossivel erro de proxy ou offline (sem acesso a internet).");
+					"Erro critico (2): " + e + "\nPossivel erro de proxy ou offline (sem acesso a internet).", "Erro",
+					JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}
