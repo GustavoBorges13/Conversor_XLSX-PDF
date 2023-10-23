@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -44,6 +45,9 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import javax.swing.SwingConstants;
@@ -90,10 +94,11 @@ public class EditarPlanilha extends JDialog {
 	private JSeparator separator_1;
 
 	public static void main(String[] args) {
+		FlatLaf.registerCustomDefaultsSource("com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
+		FlatMacDarkLaf.setup();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(new FlatIntelliJLaf());
 					EditarPlanilha frame = new EditarPlanilha();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -184,8 +189,7 @@ public class EditarPlanilha extends JDialog {
             ": : Modo edi\u00E7\u00E3o : :",
             TitledBorder.LEADING,
             TitledBorder.TOP,
-            new Font("Dialog", Font.PLAIN, 12), // Defina a fonte com estilo normal
-            new Color(0, 0, 0)
+            new Font("Dialog", Font.PLAIN, 12)
         );
 		panel.setBorder(titledBorder);
 		panel.setBounds(10, 22, 479, 571);
@@ -205,7 +209,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtLaudo.setForeground(Color.BLACK);
 		txtLaudo.setBounds(15, 49, 126, 29);
 		panel.add(txtLaudo);
 		txtLaudo.setColumns(10);
@@ -223,7 +226,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtNomeSolicitante.setForeground(Color.BLACK);
 		txtNomeSolicitante.setColumns(10);
 		txtNomeSolicitante.setBounds(151, 49, 318, 29);
 		panel.add(txtNomeSolicitante);
@@ -241,7 +243,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtUsuario.setForeground(Color.BLACK);
 		txtUsuario.setColumns(10);
 		txtUsuario.setBounds(15, 102, 126, 29);
 		panel.add(txtUsuario);
@@ -259,7 +260,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtCentroDeCusto.setForeground(Color.BLACK);
 		txtCentroDeCusto.setColumns(10);
 		txtCentroDeCusto.setBounds(150, 102, 319, 29);
 		panel.add(txtCentroDeCusto);
@@ -277,7 +277,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtItem.setForeground(Color.BLACK);
 		txtItem.setColumns(10);
 		txtItem.setBounds(15, 155, 339, 29);
 		panel.add(txtItem);
@@ -306,7 +305,7 @@ public class EditarPlanilha extends JDialog {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if (comboBoxQuantidade.getSelectedIndex() == 0) {
-					comboBoxQuantidade.setForeground(Color.BLACK);
+					comboBoxQuantidade.setForeground(null);
 				}
 			}
 
@@ -315,7 +314,7 @@ public class EditarPlanilha extends JDialog {
 				if (comboBoxQuantidade.getSelectedIndex() == 0) {
 					comboBoxQuantidade.setForeground(Color.RED);
 				} else {
-					comboBoxQuantidade.setForeground(Color.BLACK);
+					comboBoxQuantidade.setForeground(null);
 				}
 			}
 		});
@@ -343,7 +342,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtAtivo.setForeground(Color.BLACK);
 		txtAtivo.setColumns(10);
 		txtAtivo.setBounds(15, 207, 106, 29);
 		panel.add(txtAtivo);
@@ -361,24 +359,55 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtHostname.setForeground(Color.BLACK);
 		txtHostname.setColumns(10);
 		txtHostname.setBounds(244, 207, 110, 29);
 		panel.add(txtHostname);
 
 		comboBoxFabricante = new JComboBox();
 		comboBoxFabricante.setFont(new Font("Dialog", Font.PLAIN, 12));
+		comboBoxFabricante.setForeground(Color.RED);
 		comboBoxFabricante.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				if (comboBoxFabricante.getSelectedIndex() == 0) {
+				if (comboBoxFabricante.getSelectedItem().equals("Selecionar")) {
 					comboBoxFabricante.setForeground(Color.RED);
 				} else {
-					comboBoxFabricante.setForeground(Color.BLACK);
-				}
+					comboBoxFabricante.setForeground(null);
+				}	
 			}
 		});
 		comboBoxFabricante.setForeground(Color.RED);
 		comboBoxFabricante.setEditable(true);
+		comboBoxFabricante.getEditor().getEditorComponent().addFocusListener(new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent arg0) {
+				if (comboBoxFabricante.getSelectedItem().equals("Selecionar")) {
+					comboBoxFabricante.setSelectedItem("");
+					comboBoxFabricante.setForeground(null);
+				} else {
+					comboBoxFabricante.getEditor().selectAll();
+				}
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (comboBoxFabricante.getSelectedItem().equals("")) {
+					comboBoxFabricante.setForeground(Color.RED);
+					comboBoxFabricante.setSelectedItem("Selecionar");
+				}
+
+			}
+		});
+		comboBoxFabricante.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnSave.doClick();
+				}
+			}
+		});
 		comboBoxFabricante.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -419,7 +448,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtModelo.setForeground(Color.BLACK);
 		txtModelo.setColumns(10);
 		txtModelo.setBounds(15, 264, 152, 29);
 		panel.add(txtModelo);
@@ -438,7 +466,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtServiceTag.setForeground(Color.BLACK);
 		txtServiceTag.setColumns(10);
 		txtServiceTag.setBounds(177, 264, 129, 29);
 		panel.add(txtServiceTag);
@@ -463,7 +490,7 @@ public class EditarPlanilha extends JDialog {
 			public void focusGained(FocusEvent arg0) {
 				if (txtDdmmyyyy.getText().equals("dd/MM/yyyy")) {
 					txtDdmmyyyy.setText("");
-					txtDdmmyyyy.setForeground(Color.BLACK);
+					txtDdmmyyyy.setForeground(null);
 				} else {
 					txtDdmmyyyy.selectAll();
 				}
@@ -501,7 +528,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtCpu.setForeground(Color.BLACK);
 		txtCpu.setColumns(10);
 		txtCpu.setBounds(15, 317, 454, 29);
 		panel.add(txtCpu);
@@ -537,7 +563,7 @@ public class EditarPlanilha extends JDialog {
 			public void stateChanged(ChangeEvent arg0) {
 
 				if (((int) spinner_memoria.getValue()) > 0) {
-					c.setForeground(Color.BLACK);
+					c.setForeground(null);
 				} else {
 
 					c.setForeground(Color.RED);
@@ -571,7 +597,7 @@ public class EditarPlanilha extends JDialog {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if (comboBoxStorage.getSelectedIndex() == 0) {
-					comboBoxStorage.setForeground(Color.BLACK);
+					comboBoxStorage.setForeground(null);
 				}
 			}
 
@@ -605,7 +631,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtNomeDoTecnico.setForeground(Color.BLACK);
 		txtNomeDoTecnico.setColumns(10);
 		txtNomeDoTecnico.setBounds(15, 435, 454, 29);
 		panel.add(txtNomeDoTecnico);
@@ -623,7 +648,6 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtObservao.setForeground(Color.BLACK);
 		txtObservao.setColumns(10);
 		txtObservao.setBounds(15, 486, 197, 29);
 		panel.add(txtObservao);
@@ -641,19 +665,16 @@ public class EditarPlanilha extends JDialog {
 				}
 			}
 		});
-		txtStatus.setForeground(Color.BLACK);
 		txtStatus.setColumns(10);
 		txtStatus.setBounds(220, 486, 249, 29);
 		panel.add(txtStatus);
 
 		lblObservacao = new JLabel("Observação");
-		lblObservacao.setForeground(Color.BLACK);
 		lblObservacao.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblObservacao.setBounds(15, 462, 197, 29);
 		panel.add(lblObservacao);
 
 		lblStatus = new JLabel("Status");
-		lblStatus.setForeground(Color.BLACK);
 		lblStatus.setFont(new Font("Dialog", Font.PLAIN, 12));
 		lblStatus.setBounds(220, 462, 249, 29);
 		panel.add(lblStatus);
@@ -870,7 +891,7 @@ public class EditarPlanilha extends JDialog {
 			@Override
 			public void focusGained(FocusEvent arg0) {
 				if (comboBoxDispositivo.getSelectedIndex() == 0) {
-					comboBoxDispositivo.setForeground(Color.BLACK);
+					comboBoxDispositivo.setForeground(null);
 				}
 			}
 
@@ -879,7 +900,7 @@ public class EditarPlanilha extends JDialog {
 				if (comboBoxDispositivo.getSelectedIndex() == 0) {
 					comboBoxDispositivo.setForeground(Color.RED);
 				} else {
-					comboBoxDispositivo.setForeground(Color.BLACK);
+					comboBoxDispositivo.setForeground(null);
 				}
 			}
 		});

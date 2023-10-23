@@ -85,6 +85,8 @@ import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
 import com.documents4j.job.LocalConverter;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 public class GerarLaudoPDF extends JDialog {
 	private static final long serialVersionUID = 4893492449132639712L;
@@ -124,7 +126,8 @@ public class GerarLaudoPDF extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(new FlatIntelliJLaf());
+					FlatLaf.registerCustomDefaultsSource("com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
+					FlatMacDarkLaf.setup();
 					GerarLaudoPDF frame = new GerarLaudoPDF();
 					frame.setVisible(true);
 
@@ -216,8 +219,7 @@ public class GerarLaudoPDF extends JDialog {
             ": : Visualiza\u00E7\u00E3o - Preview : :",
             TitledBorder.CENTER,
             TitledBorder.TOP,
-            new Font("Dialog", Font.PLAIN, 12), // Defina a fonte com estilo normal
-            new Color(0, 0, 0)
+            new Font("Dialog", Font.PLAIN, 12) // Defina a fonte com estilo normal
         );
         panel.setBorder(titledBorder1);
         
@@ -225,7 +227,6 @@ public class GerarLaudoPDF extends JDialog {
 		contentPane.add(panel);
 
 		lblNewLabel = new JLabel("");
-		lblNewLabel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblNewLabel.setBounds(10, 19, 310, 477);
 		panel.add(lblNewLabel);
 
@@ -237,8 +238,7 @@ public class GerarLaudoPDF extends JDialog {
             ": : Prepara\u00E7\u00E3o : :",
             TitledBorder.CENTER,
             TitledBorder.TOP,
-            new Font("Dialog", Font.PLAIN, 12), // Defina a fonte com estilo normal
-            new Color(0, 0, 0)
+            new Font("Dialog", Font.PLAIN, 12) // Defina a fonte com estilo normal
         );
         panel_1.setBorder(titledBorder2);
 		panel_1.setBounds(10, 19, 437, 507);
@@ -261,7 +261,6 @@ public class GerarLaudoPDF extends JDialog {
 				}
 			}
 		});
-		txtNomeTecnico.setForeground(Color.BLACK);
 		txtNomeTecnico.setColumns(10);
 		txtNomeTecnico.setBounds(10, 48, 415, 29);
 		panel_1.add(txtNomeTecnico);
@@ -278,7 +277,6 @@ public class GerarLaudoPDF extends JDialog {
 				}
 			}
 		});
-		txtUsuarioRede.setForeground(Color.BLACK);
 		txtUsuarioRede.setColumns(10);
 		txtUsuarioRede.setBounds(10, 96, 113, 29);
 		panel_1.add(txtUsuarioRede);
@@ -292,7 +290,6 @@ public class GerarLaudoPDF extends JDialog {
 		txtCentroCusto.setFont(new Font("Dialog", Font.PLAIN, 12));
 		txtCentroCusto.setEnabled(false);
 		txtCentroCusto.setText("321 - Sistemas CAT");
-		txtCentroCusto.setForeground(Color.BLACK);
 		txtCentroCusto.setColumns(10);
 		txtCentroCusto.setBounds(144, 96, 281, 29);
 		panel_1.add(txtCentroCusto);
@@ -402,7 +399,6 @@ public class GerarLaudoPDF extends JDialog {
 									+ " para realizar atividades na empresa HPE prejudicando no desempenho profissional do colaborador(a).");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
-					comboBoxTemplate.setForeground(Color.BLACK);
 				}
 				// Fonte (Desktop)
 				else if (comboBoxTemplate.getSelectedIndex() == 2) {
@@ -414,7 +410,6 @@ public class GerarLaudoPDF extends JDialog {
 									+ " estar realizando suas atividades na empresa HPE.");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
-					comboBoxTemplate.setForeground(Color.BLACK);
 				}
 				// Bateria não segura carga (Notebook)
 				else if (comboBoxTemplate.getSelectedIndex() == 3) {
@@ -426,7 +421,6 @@ public class GerarLaudoPDF extends JDialog {
 									+ " estar locomovendo-se e realizando suas atividades na empresa HPE sem precisar estar com o notebook carregando na tomada.");
 					textAreaAnalise.setCaretPosition(0);// Sobe para cima a barra de rolagem vertical\
 					updateCount();
-					comboBoxTemplate.setForeground(Color.BLACK);
 				} else {
 					comboBoxTemplate.setForeground(Color.LIGHT_GRAY);
 					textAreaAnalise.setText("");

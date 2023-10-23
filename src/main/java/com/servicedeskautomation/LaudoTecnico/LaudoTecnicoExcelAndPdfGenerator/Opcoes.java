@@ -30,6 +30,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 @SuppressWarnings("serial")
 public class Opcoes extends JDialog {
@@ -73,24 +75,16 @@ public class Opcoes extends JDialog {
 
 			JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 			tabbedPane.setFont(new Font("Dialog", Font.PLAIN, 12));
-			tabbedPane.setBackground(new Color(240, 240, 240));
 			tabbedPane.setBounds(10, 11, 660, 217);
 			contentPanel.add(tabbedPane);
 			{
 				JPanel panel = new JPanel();
-				panel.setBackground(new Color(240, 240, 240));
+
 
 				// Crie uma instância personalizada de TitledBorder
 				TitledBorder titledBorder = new TitledBorder(
 						new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-						"Personalização", TitledBorder.LEADING, TitledBorder.TOP, new Font("Dialog", Font.PLAIN, 12), // Defina
-																														// a
-																														// fonte
-																														// e
-																														// o
-																														// tamanho
-																														// desejados
-						new Color(0, 0, 0));
+						"Personalização", TitledBorder.LEADING, TitledBorder.TOP, new Font("Dialog", Font.PLAIN, 12));
 
 				panel.setBorder(titledBorder);
 				tabbedPane.addTab("Geral", null, panel, null);
@@ -400,7 +394,8 @@ public class Opcoes extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel(new FlatIntelliJLaf());
+			FlatLaf.registerCustomDefaultsSource("com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
+			FlatMacDarkLaf.setup();
 			JFrame frame = new JFrame(); // Crie um JFrame para usar como janela principal
 			Opcoes dialog = new Opcoes(frame); // Passe o JFrame como argumento
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

@@ -39,7 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.Timer;
 import java.util.TimerTask;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -65,6 +64,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import javax.swing.Timer;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellCopyPolicy;
@@ -79,6 +79,9 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
@@ -139,6 +142,7 @@ public class Principal extends JFrame {
 	static String[] storageSpliter;
 	private JLabel lblHelp;
 	private JButton btnFechar;
+	private static Timer holdingTimer;
 
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
@@ -774,7 +778,6 @@ public class Principal extends JFrame {
 		jtitulo = new JTextField();
 		jtitulo.setFont(new Font("Dialog", Font.PLAIN, 12));
 		jtitulo.setEditable(false);
-		jtitulo.setDisabledTextColor(new Color(0, 0, 0));
 		jtitulo.setColumns(10);
 		jtitulo.setBounds(39, 131, 521, 39);
 		contentPane.add(jtitulo);
@@ -793,6 +796,7 @@ public class Principal extends JFrame {
 		table.setAutoscrolls(false);
 		table.addMouseListener(new MouseAdapter() {
 			boolean isAlreadyOneClick = false;
+			boolean isHoldingClick = false;
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -807,6 +811,7 @@ public class Principal extends JFrame {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+
 				if (isAlreadyOneClick) {
 					int linhaSelecionada = table.getSelectedRow();
 					// int[] selectedRows = table.getSelectedRows();
@@ -850,7 +855,7 @@ public class Principal extends JFrame {
 									flagSaved = true;
 									flagAdd = false;
 									flagNewLinha = false;
-									
+
 									// frame.setVisible(false);
 								} else {
 									frame.setVisible(true);
@@ -888,49 +893,52 @@ public class Principal extends JFrame {
 
 					// Design - Deixar os textos em preto e Transpor dados da tabela para a janela
 					// nova
-					EditarPlanilha.txtLaudo.setForeground(Color.BLACK);
+					EditarPlanilha.txtLaudo.setForeground(null);
 					EditarPlanilha.txtLaudo.setText(laudo.get(linhaSelecionada));
 
-					EditarPlanilha.txtNomeSolicitante.setForeground(Color.BLACK);
+					EditarPlanilha.txtNomeSolicitante.setForeground(null);
 					EditarPlanilha.txtNomeSolicitante.setText(nomeSolicitante.get(linhaSelecionada));
 
-					EditarPlanilha.txtUsuario.setForeground(Color.BLACK);
+					EditarPlanilha.txtUsuario.setForeground(null);
 					EditarPlanilha.txtUsuario.setText(usuario.get(linhaSelecionada));
 
-					EditarPlanilha.txtCentroDeCusto.setForeground(Color.BLACK);
+					EditarPlanilha.txtCentroDeCusto.setForeground(null);
 					EditarPlanilha.txtCentroDeCusto.setText(centroCusto.get(linhaSelecionada));
 
-					EditarPlanilha.txtItem.setForeground(Color.BLACK);
+					EditarPlanilha.txtItem.setForeground(null);
 					EditarPlanilha.txtItem.setText(item.get(linhaSelecionada));
-					
+
 					for (int i = 0; i <= EditarPlanilha.comboBoxQuantidade.getItemCount() - 1; i++) {
-						if (qtd.get(linhaSelecionada)==null||!qtd.get(linhaSelecionada).equals(EditarPlanilha.comboBoxQuantidade.getItemAt(i)))
+						if (qtd.get(linhaSelecionada) == null
+								|| !qtd.get(linhaSelecionada).equals(EditarPlanilha.comboBoxQuantidade.getItemAt(i)))
 							EditarPlanilha.comboBoxQuantidade.setForeground(Color.RED);
 						else {
-							EditarPlanilha.comboBoxQuantidade.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxQuantidade.setForeground(null);
 							EditarPlanilha.comboBoxQuantidade.setSelectedIndex(i);
 							break;
 						}
 					}
 
-					EditarPlanilha.txtAtivo.setForeground(Color.BLACK);
+					EditarPlanilha.txtAtivo.setForeground(null);
 					EditarPlanilha.txtAtivo.setText(ativo.get(linhaSelecionada));
 
 					for (int i = 0; i <= EditarPlanilha.comboBoxDispositivo.getItemCount() - 1; i++) {
-						if (dispositivo.get(linhaSelecionada)==null||!dispositivo.get(linhaSelecionada).equals(EditarPlanilha.comboBoxDispositivo.getItemAt(i)))
+						if (dispositivo.get(linhaSelecionada) == null || !dispositivo.get(linhaSelecionada)
+								.equals(EditarPlanilha.comboBoxDispositivo.getItemAt(i)))
 							EditarPlanilha.comboBoxDispositivo.setForeground(Color.RED);
 						else {
-							EditarPlanilha.comboBoxDispositivo.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxDispositivo.setForeground(null);
 							EditarPlanilha.comboBoxDispositivo.setSelectedIndex(i);
 							break;
 						}
 					}
 
-					EditarPlanilha.txtHostname.setForeground(Color.BLACK);
+					EditarPlanilha.txtHostname.setForeground(null);
 					EditarPlanilha.txtHostname.setText(hostname.get(linhaSelecionada));
 
 					for (int i = 0; i <= EditarPlanilha.comboBoxFabricante.getItemCount() - 1; i++) {
-						if (fabricante.get(linhaSelecionada)==null||!fabricante.get(linhaSelecionada).equals(EditarPlanilha.comboBoxFabricante.getItemAt(i))) {
+						if (fabricante.get(linhaSelecionada) == null || !fabricante.get(linhaSelecionada)
+								.equals(EditarPlanilha.comboBoxFabricante.getItemAt(i))) {
 							if (EditarPlanilha.comboBoxFabricante.getItemAt(i).toString().toUpperCase()
 									.contains(fabricante.get(linhaSelecionada).toUpperCase())) {
 								EditarPlanilha.comboBoxFabricante.setForeground(Color.RED);
@@ -938,34 +946,34 @@ public class Principal extends JFrame {
 								break;
 							}
 						} else {
-							EditarPlanilha.comboBoxFabricante.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxFabricante.setForeground(null);
 							EditarPlanilha.comboBoxFabricante.setSelectedIndex(i);
 							break;
 						}
 					}
 
-					EditarPlanilha.txtModelo.setForeground(Color.BLACK);
+					EditarPlanilha.txtModelo.setForeground(null);
 					EditarPlanilha.txtModelo.setText(modelo.get(linhaSelecionada));
 
-					EditarPlanilha.txtServiceTag.setForeground(Color.BLACK);
+					EditarPlanilha.txtServiceTag.setForeground(null);
 					EditarPlanilha.txtServiceTag.setText(serviceTag.get(linhaSelecionada));
 
-					EditarPlanilha.txtDdmmyyyy.setForeground(Color.BLACK);
+					EditarPlanilha.txtDdmmyyyy.setForeground(null);
 					EditarPlanilha.txtDdmmyyyy.setText(dataAquisicao.get(linhaSelecionada));
 
-					EditarPlanilha.txtCpu.setForeground(Color.BLACK);
+					EditarPlanilha.txtCpu.setForeground(null);
 					EditarPlanilha.txtCpu.setText(cpu.get(linhaSelecionada));
 
-					if (flagSaved == false &&flagNewLinha==false) {
+					if (flagSaved == false && flagNewLinha == false) {
 						storage.get(linhaSelecionada).trim();
 						storageSpliter = storage.get(linhaSelecionada).split(" ");
-						storageValue.set(linhaSelecionada,storageSpliter[0]);
-						storageType.set(linhaSelecionada,storageSpliter[1]);
+						storageValue.set(linhaSelecionada, storageSpliter[0]);
+						storageType.set(linhaSelecionada, storageSpliter[1]);
 					}
 					// System.out.println("Type: "+storageType.get(linhaSelecionada)+" Value:
 					// "+Integer.parseInt(storageValue.get(linhaSelecionada)));
 					// --- HD ---
-					if (flagAdd == true && (ultimaLinhaOld <= table.getRowCount()) && flagNewLinha==false) {
+					if (flagAdd == true && (ultimaLinhaOld <= table.getRowCount()) && flagNewLinha == false) {
 						storageSpliter = storage.get(linhaSelecionada).split(" ");
 						storageValue.set(linhaSelecionada, storageSpliter[pos]);
 						storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
@@ -983,7 +991,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 180 + toleranciaHD_SSD
@@ -996,7 +1004,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 250 + toleranciaHD_SSD
@@ -1008,7 +1016,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 300 + toleranciaHD_SSD
@@ -1020,7 +1028,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 500 + toleranciaHD_SSD
@@ -1032,7 +1040,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 750 + toleranciaHD_SSD
@@ -1044,7 +1052,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 1000 + toleranciaHD_SSD) { // Range
@@ -1055,7 +1063,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						}
@@ -1073,7 +1081,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 120 + toleranciaHD_SSD
@@ -1086,7 +1094,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						} else if (Integer.parseInt(storageValue.get(linhaSelecionada)) > 120 + toleranciaHD_SSD) { // Range
@@ -1098,7 +1106,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						}
@@ -1116,7 +1124,7 @@ public class Principal extends JFrame {
 							storageSpliter = storage.get(linhaSelecionada).split(" ");
 							storageValue.set(linhaSelecionada, storageSpliter[pos]);
 							storageType.set(linhaSelecionada, storageSpliter[pos + 1]);
-							EditarPlanilha.comboBoxStorage.setForeground(Color.BLACK);
+							EditarPlanilha.comboBoxStorage.setForeground(null);
 							EditarPlanilha.comboBoxStorage.setSelectedItem(storage.get(linhaSelecionada));
 
 						}
@@ -1133,50 +1141,72 @@ public class Principal extends JFrame {
 						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
 
 					} else {
-						EditarPlanilha.c.setForeground(Color.BLACK);
+						EditarPlanilha.c.setForeground(null);
 						EditarPlanilha.spinner_memoria.setValue(Integer.parseInt(memoria.get(linhaSelecionada)));
 					}
 
-					EditarPlanilha.txtNomeDoTecnico.setForeground(Color.BLACK);
+					EditarPlanilha.txtNomeDoTecnico.setForeground(null);
 					EditarPlanilha.txtNomeDoTecnico.setText(tecnico.get(linhaSelecionada));
 
-					EditarPlanilha.txtObservao.setForeground(Color.BLACK);
+					EditarPlanilha.txtObservao.setForeground(null);
 					EditarPlanilha.txtObservao.setText(observacao.get(linhaSelecionada));
 
-					EditarPlanilha.txtStatus.setForeground(Color.BLACK);
+					EditarPlanilha.txtStatus.setForeground(null);
 					EditarPlanilha.txtStatus.setText(status.get(linhaSelecionada));
 
 					isAlreadyOneClick = false;
 				} else {
 					isAlreadyOneClick = true;
-					Timer t = new Timer("doubleclickTimer", false);
 
 					// Habilita botoes
 					btnEditar.setEnabled(true);
 					btnRemover.setEnabled(true);
 					btnGerarArquivoPdf.setEnabled(true);
-
-					// Limpeza de selecao
-					// table.clearSelection();
-					// table.requestDefaultFocus();
-					t.schedule(new TimerTask() {
+					
+					// Inicia um Timer para agendar a limpeza do clique duplo
+					//Intervalo do segundo clique é de 200 milissegundos
+					Timer timer = new Timer(200, new ActionListener() {
 						@Override
-						public void run() {
+						public void actionPerformed(ActionEvent e) {
 							isAlreadyOneClick = false;
+							((Timer) e.getSource()).stop();
 						}
-					}, 300);
+					});
+					timer.setRepeats(false);
+					timer.start();
 				}
 
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				int linhaSelecionada = table.getSelectedRow();
-				if (table.isRowSelected(linhaSelecionada)) {
-					// Habilita botoes
-					btnEditar.setEnabled(true);
-					btnRemover.setEnabled(true);
-					btnGerarArquivoPdf.setEnabled(true);
+				isHoldingClick = true;
+				holdingTimer = new Timer(100, new ActionListener() { // 1000 milissegundos = 1 segundo
+					@Override
+					public void actionPerformed(ActionEvent evt) {
+						if (isHoldingClick) {
+							// Ação a ser executada após manter o botão do mouse pressionado por 1 segundo
+
+							// Habilita botoes
+							btnEditar.setEnabled(true);
+							btnRemover.setEnabled(true);
+							btnGerarArquivoPdf.setEnabled(true);
+						}
+
+						// Reinicia o estado
+						isHoldingClick = false;
+						holdingTimer.stop();
+					}
+				});
+				holdingTimer.setRepeats(false);
+				holdingTimer.start();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// Cancela o timer ao soltar o botão
+				if (holdingTimer != null && holdingTimer.isRunning()) {
+					holdingTimer.stop();
 				}
 			}
 		});
@@ -1209,7 +1239,7 @@ public class Principal extends JFrame {
 				// flag
 				flagSaved = false;
 				flagNewLinha = true;
-				
+
 				// Adiciona uma linha em branco ao final da tabela
 				dados.add(new Object[] { "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" });
 				adicionarArrayList();
@@ -1262,7 +1292,9 @@ public class Principal extends JFrame {
 
 				if (linhasSelecionadas.length > 1) {
 					JOptionPane.showMessageDialog(null,
-							"Voce clicou em editar linha. Porém selecionou mais de 1 linha.\nPor favor, selecione somente 1 linha para editar.");
+							"Por favor selecione apenas uma linha por vez para editar.\n\n" + ":: Debug ::\n"
+									+ "Você tentou editar com " + linhasSelecionadas.length + " linhas selecionadas.",
+							"Erro", JOptionPane.ERROR_MESSAGE);
 				} else if (linhasSelecionadas.length == 1) {
 					if (linhasSelecionadas.length != -1 && linhasSelecionadas.length <= 1) {
 
@@ -1275,8 +1307,9 @@ public class Principal extends JFrame {
 						table.dispatchEvent(me);
 					} else {
 						JOptionPane.showMessageDialog(null,
-								"Por favor selecione apenas uma linha por vez para editar.\nVocê tentou editar com "
-										+ linhasSelecionadas.length + " linhas selecionadas.",
+								"Por favor selecione apenas uma linha por vez para editar.\n\n" + ":: Debug ::\n"
+										+ "Você tentou editar com " + linhasSelecionadas.length
+										+ " linhas selecionadas.",
 								"Erro", JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -1376,15 +1409,7 @@ public class Principal extends JFrame {
 						JOptionPane.showMessageDialog(null, "Erro com o arquivo!\n" + e.getMessage()
 								+ "\nPor favor, feche o programa que esteja utilizando o arquivo que você quer salvar.",
 								"Erro", JOptionPane.ERROR_MESSAGE);
-					} /*
-						 * catch (NullPointerException e) { JOptionPane.showMessageDialog(null,
-						 * "As alterações foram salvas com suceeso!");
-						 * 
-						 * // Atualiza a tabela... btnPreencher.doClick();
-						 * JOptionPane.showMessageDialog(null, aux); // Desabilita botoes
-						 * btnSalvarAlteracoes.setEnabled(false); btnEditar.setEnabled(false);
-						 * btnGerarArquivoPdf.setEnabled(false); }
-						 */
+					}
 				} else {
 					requestFocus();
 				}
@@ -1421,7 +1446,6 @@ public class Principal extends JFrame {
 				boolean temElementosEmComum = false;
 				if (linhasSelecionadas.length > 1) {
 					for (int i = 0; i < linhasSelecionadas.length; i++) {
-						JOptionPane.showMessageDialog(null, i);
 						for (int j = i + 1; j < linhasSelecionadas.length; j++) {
 							if (Principal.table.getValueAt(linhasSelecionadas[i], 8)
 									.equals(Principal.table.getValueAt(linhasSelecionadas[j], 8))
@@ -1510,7 +1534,10 @@ public class Principal extends JFrame {
 
 				} else {
 					JOptionPane.showMessageDialog(null,
-							"Por favor, verifique as linhas que você selecionou, se possuem os mesmos ativos.\nPois não é permitido fazer 1 laudo para computadores diferentes.",
+							"Por favor, verifique as linhas que você selecionou, se possuem os mesmos ativos.\nNão é permitido fazer 1 laudo para computadores diferentes.\n\n"
+									+ ":: Debug ::\n" + "Você selecionou " + linhasSelecionadas.length + " linhas;\n"
+									+ "Nessa seleção há " + flag_aux
+									+ " linhas com ativos diferentes em relação a primeira linha (de cima para baixo).",
 							"Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -1537,29 +1564,45 @@ public class Principal extends JFrame {
 		});
 		btnRemover.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int selectedRow = table.getSelectedRow();
-				if (selectedRow != -1) {
-					ModeloTabela model = (ModeloTabela) table.getModel();
+				int[] linhasSelecionadas = Principal.table.getSelectedRows();
+				int linhaFirst = table.getSelectedRow();
 
-					// Remove a linha da tabela
-					model.removeRow(selectedRow);
+				if (linhasSelecionadas.length > 1) {
+					JOptionPane.showMessageDialog(null,
+							"Por favor selecione apenas uma linha por vez para remover.\n\n" + ":: Debug ::\n"
+									+ "Você tentou remover com " + linhasSelecionadas.length + " linhas selecionadas.",
+							"Erro", JOptionPane.ERROR_MESSAGE);
+				} else if (linhasSelecionadas.length == 1) {
+					if (linhasSelecionadas.length != -1 && linhasSelecionadas.length <= 1) {
 
-					// Limpa a base de dados
-					removerArrayList(selectedRow);
+						ModeloTabela model = (ModeloTabela) table.getModel();
 
-					// Atualiza a tabela
-					preencherTabelaProprietario();
-					table.updateUI();
-					table.requestFocus();
+						// Remove a linha da tabela
+						model.removeRow(linhaFirst);
 
-					// Desabilita/habilita botoes
-					btnEditar.setEnabled(false);
-					btnRemover.setEnabled(false);
-					btnSalvarAlteracoes.setEnabled(true);
-					btnGerarArquivoPdf.setEnabled(false);
+						// Limpa a base de dados
+						removerArrayList(linhaFirst);
 
-					// flag
-					flagSaved = false;
+						// Atualiza a tabela
+						preencherTabelaProprietario();
+						table.updateUI();
+						table.requestFocus();
+
+						// Desabilita/habilita botoes
+						btnEditar.setEnabled(false);
+						btnRemover.setEnabled(false);
+						btnSalvarAlteracoes.setEnabled(true);
+						btnGerarArquivoPdf.setEnabled(false);
+
+						// flag
+						flagSaved = false;
+					} else {
+						JOptionPane.showMessageDialog(null,
+								"Por favor selecione apenas uma linha por vez para remover.\n\n" + ":: Debug ::\n"
+										+ "Você tentou remover com " + linhasSelecionadas.length
+										+ " linhas selecionadas.",
+								"Erro", JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			}
 		});
@@ -1572,7 +1615,7 @@ public class Principal extends JFrame {
 		lblHelp.setHorizontalTextPosition(SwingConstants.LEFT);
 		lblHelp.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblHelp.setIcon(new ImageIcon(img_help));
-		lblHelp.setBounds(611, 0, 85, 23);
+		lblHelp.setBounds(611, 15, 85, 23);
 		lblHelp.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -1997,10 +2040,11 @@ public class Principal extends JFrame {
 	}
 
 	public static void main(String[] args) {
+		FlatLaf.registerCustomDefaultsSource("com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
+		FlatMacDarkLaf.setup();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(new FlatIntelliJLaf());
 					frame = new Principal();
 					frame.setVisible(true);
 				} catch (Exception e) {

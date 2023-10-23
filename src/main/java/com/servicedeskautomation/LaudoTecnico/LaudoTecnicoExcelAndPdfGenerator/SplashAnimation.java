@@ -36,6 +36,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 public class SplashAnimation extends JFrame {
 	private static final long serialVersionUID = 3356025952135839862L;
@@ -98,7 +100,8 @@ public class SplashAnimation extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					UIManager.setLookAndFeel(new FlatIntelliJLaf());
+					FlatLaf.registerCustomDefaultsSource("com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
+					FlatMacDarkLaf.setup();
 					SplashAnimation frame = new SplashAnimation();
 					frame.setUndecorated(true);
 					frame.setShape(new RoundRectangle2D.Double(0, 0, 382, 122, 20, 20));
