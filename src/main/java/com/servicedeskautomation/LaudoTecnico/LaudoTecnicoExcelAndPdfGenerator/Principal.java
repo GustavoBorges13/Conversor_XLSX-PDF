@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -86,36 +87,34 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 public class Principal extends JFrame {
-	// Variaveis Locais
+	//Variaveis Locais
+	//serial_auto_generated
 	private static final long serialVersionUID = 6391163855934589017L;
+	
+	//janelas
+	static Principal frame;
 	private JPanel contentPane;
+	
+	//textfields
 	private JTextField jlocal;
 	private JTextField jtitulo;
-	static JTable table;
-	private static int alinhamento = SwingConstants.LEFT;
-	private File pathfileExcel;
-	static File pathfileWord;
+	
+	//labels
+	private JLabel lblHelp;
+	
+	//botoes
+	private JButton btnRemover;
 	private JButton btnPreencher;
 	private JButton btnXLS;
 	private JButton btnAddLinha;
 	static JButton btnSalvarAlteracoes;
 	static JButton btnGerarArquivoPdf;
 	static JButton btnEditar;
-	public int KEYCODE_ESC = 27;
-	static Principal frame;
-	private JButton btnRemover;
-	private int qtdTemporaria;
-	private XSSFWorkbook work;
-	private int row = 0;
-	private int ultimaLinhaOld = 0;
-	private boolean flagAdd = false;
-	private boolean flagNewLinha = false;
-	static boolean flagSaved = true;
-	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
-			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-	private BufferedImage convolvedImage;
-
-	// Database
+	private JButton btnFechar;
+	
+	//tabela
+	static JTable table;
+	private static int alinhamento = SwingConstants.LEFT;
 	static ArrayList<String> laudo = new ArrayList<String>();
 	static ArrayList<String> nomeSolicitante = new ArrayList<String>();
 	static ArrayList<String> usuario = new ArrayList<String>();
@@ -140,10 +139,34 @@ public class Principal extends JFrame {
 	static ArrayList<String> storageType = new ArrayList<String>();
 	static ArrayList<String> storageValue = new ArrayList<String>();
 	static String[] storageSpliter;
-	private JLabel lblHelp;
-	private JButton btnFechar;
+	
+	//arquivos
+	private File pathfileExcel;
+	static File pathfileWord;
+	private XSSFWorkbook work;
+	
+	//temporizacao ou threads
 	private static Timer holdingTimer;
+	
+	//Key shortcuts
+	public int KEYCODE_ESC = 27;
+	
+	//variaveis auxiliares
+	private int qtdTemporaria;
+	private int row = 0;
+	private int ultimaLinhaOld = 0;
+	
+	//flags
+	private boolean flagAdd = false;
+	private boolean flagNewLinha = false;
+	static boolean flagSaved = true;
+	
+	//imagens
+	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
+			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+	private BufferedImage convolvedImage;
 
+	// Tabela - alinhamento das tuplas
 	public static class HorizontalAlignmentHeaderRenderer implements TableCellRenderer {
 		private int horizontalAlignment = SwingConstants.LEFT;
 
@@ -161,6 +184,7 @@ public class Principal extends JFrame {
 		}
 	}
 
+	// Tabela
 	@SuppressWarnings("static-access")
 	public static void preencherTabelaProprietario() {
 		dados.clear();
@@ -187,7 +211,7 @@ public class Principal extends JFrame {
 		table.getColumnModel().getColumn(0).setPreferredWidth(50); // coluna LAUDO
 		table.getColumnModel().getColumn(0).setResizable(true);
 		table.getColumnModel().getColumn(0).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(1).setPreferredWidth(170); // coluna NOME SOLICITANTE
+		table.getColumnModel().getColumn(1).setPreferredWidth(185); // coluna NOME SOLICITANTE
 		table.getColumnModel().getColumn(1).setResizable(true);
 		table.getColumnModel().getColumn(1).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(2).setPreferredWidth(65); // coluna USUARIO
@@ -196,7 +220,7 @@ public class Principal extends JFrame {
 		table.getColumnModel().getColumn(3).setPreferredWidth(200); // coluna CENTRO DE CUSTO
 		table.getColumnModel().getColumn(3).setResizable(true);
 		table.getColumnModel().getColumn(3).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
-		table.getColumnModel().getColumn(4).setPreferredWidth(190); // coluna ITEM
+		table.getColumnModel().getColumn(4).setPreferredWidth(230); // coluna ITEM
 		table.getColumnModel().getColumn(4).setResizable(true);
 		table.getColumnModel().getColumn(4).setHeaderRenderer(new HorizontalAlignmentHeaderRenderer(alinhamento));
 		table.getColumnModel().getColumn(5).setPreferredWidth(30); // coluna QTD
@@ -256,6 +280,8 @@ public class Principal extends JFrame {
 		table.setFont(new Font("Dialog", Font.PLAIN, 10));
 	}
 
+	
+	// Janela geral
 	public Principal() {
 		setIconImage(
 				Toolkit.getDefaultToolkit().getImage(Principal.class.getResource("/resources/icon-ServiceDesk.png")));
@@ -265,6 +291,7 @@ public class Principal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 744, 580);
 		setLocationRelativeTo(null);
+		JOptionPane.showMessageDialog(null, this.getLocation());
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
