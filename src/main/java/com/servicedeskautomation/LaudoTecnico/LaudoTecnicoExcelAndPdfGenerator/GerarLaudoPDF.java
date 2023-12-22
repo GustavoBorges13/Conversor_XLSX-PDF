@@ -30,6 +30,8 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -47,10 +49,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -59,8 +59,10 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.undo.UndoManager;
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
+import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
 import org.apache.poi.xwpf.usermodel.XWPFAbstractNum;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -84,7 +86,6 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STNumberFormat;
 import com.documents4j.api.DocumentType;
 import com.documents4j.api.IConverter;
 import com.documents4j.job.LocalConverter;
-import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
@@ -126,7 +127,8 @@ public class GerarLaudoPDF extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					FlatLaf.registerCustomDefaultsSource("com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
+					FlatLaf.registerCustomDefaultsSource(
+							"com.servicedeskautomation.LaudoTecnico.LaudoTecnicoExcelAndPdfGenerator");
 					FlatMacDarkLaf.setup();
 					GerarLaudoPDF frame = new GerarLaudoPDF();
 					frame.setVisible(true);
@@ -211,18 +213,15 @@ public class GerarLaudoPDF extends JDialog {
 
 		JPanel panel = new JPanel();
 		panel.setLayout(null);
-		
-		
+
 		// Crie uma instância personalizada de TitledBorder com fonte normal
-        TitledBorder titledBorder1 = new TitledBorder(
-            new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-            ": : Visualiza\u00E7\u00E3o - Preview : :",
-            TitledBorder.CENTER,
-            TitledBorder.TOP,
-            new Font("Dialog", Font.PLAIN, 12) // Defina a fonte com estilo normal
-        );
-        panel.setBorder(titledBorder1);
-        
+		TitledBorder titledBorder1 = new TitledBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+				": : Visualiza\u00E7\u00E3o - Preview : :", TitledBorder.CENTER, TitledBorder.TOP,
+				new Font("Dialog", Font.PLAIN, 12) // Defina a fonte com estilo normal
+		);
+		panel.setBorder(titledBorder1);
+
 		panel.setBounds(457, 19, 330, 507);
 		contentPane.add(panel);
 
@@ -233,14 +232,12 @@ public class GerarLaudoPDF extends JDialog {
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
 		// Crie uma instância personalizada de TitledBorder com fonte normal
-        TitledBorder titledBorder2 = new TitledBorder(
-            new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-            ": : Prepara\u00E7\u00E3o : :",
-            TitledBorder.CENTER,
-            TitledBorder.TOP,
-            new Font("Dialog", Font.PLAIN, 12) // Defina a fonte com estilo normal
-        );
-        panel_1.setBorder(titledBorder2);
+		TitledBorder titledBorder2 = new TitledBorder(
+				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
+				": : Prepara\u00E7\u00E3o : :", TitledBorder.CENTER, TitledBorder.TOP,
+				new Font("Dialog", Font.PLAIN, 12) // Defina a fonte com estilo normal
+		);
+		panel_1.setBorder(titledBorder2);
 		panel_1.setBounds(10, 19, 437, 507);
 		contentPane.add(panel_1);
 
@@ -709,7 +706,7 @@ public class GerarLaudoPDF extends JDialog {
 
 		// Adiciona a funcionalidade de desfazer/refazer em todos os componentes
 		addUndoRedoFunctionality(getContentPane());
-		
+
 		txtNomeTecnico.setText(Principal.tecnico.get(Principal.table.getSelectedRow()));
 	}
 
@@ -967,37 +964,45 @@ public class GerarLaudoPDF extends JDialog {
 			pathPdfGerados.mkdirs();
 			
 			// Abrindo o arquivo word a ser convertido
-			try {
-				long start = System.currentTimeMillis();
-				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-
-				// 1 - Carregando arquivo WORD (DOCX)
-				InputStream docxInputStream = new FileInputStream(pathBackup.getPath() + "\\"
+			try(	// 1 - Carregando arquivo WORD (DOCX)
+					InputStream docxInputStream = new FileInputStream(pathBackup.getPath() + "\\"
 						+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
 						+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".docx");
-				// 2 - Definindo posicao saida para o arquivo PDF
-				OutputStream outputStream = new FileOutputStream(pathPdfGerados.getPath() + "\\"
-						+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
-						+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf");
+					// 2 - Definindo posicao saida para o arquivo PDF
+					OutputStream outputStream = new FileOutputStream(pathPdfGerados.getPath() + "\\"
+							+ Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0]) + " - " + ativo[0] + " - "
+							+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf");){
+				
+				long start = System.currentTimeMillis();
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				
+				
+				// Convertendo docx para pdf
+				IConverter converter = LocalConverter.builder()
+						.workerPool(20, 150, 2, TimeUnit.SECONDS).processTimeout(5, TimeUnit.SECONDS).build();
 
-				// 3 - Convertendo para PDF
-				IConverter converter = LocalConverter.builder().build();
-				converter.convert(docxInputStream).as(DocumentType.DOCX).to(outputStream).as(DocumentType.PDF)
-						.execute();
-				outputStream.close();
+				@SuppressWarnings("unused")
+				Future<Boolean> conversion = converter.convert(docxInputStream).as(DocumentType.MS_WORD).to(outputStream).as(DocumentType.PDF)
+						.schedule();
+				
+				converter.shutDown();
 
 				pdfPATH = pathPdfGerados.getPath() + "\\" + Principal.laudo.get(GerarLaudoPDF.linhasSelecionadas[0])
 						+ " - " + ativo[0] + " - " + Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0])
 						+ ".pdf";
-				File arquivo = new File(pdfPATH);
-
+				
+				
 				// 4 - Gerando a preview da primeira pagina PDF para a Label...
-				PDDocument doc = PDDocument.load(arquivo);
-				org.apache.pdfbox.rendering.PDFRenderer pdfRenderer = new org.apache.pdfbox.rendering.PDFRenderer(doc);
-				BufferedImage bim = pdfRenderer.renderImageWithDPI(0, 300, ImageType.RGB);
-				ImageIcon img = new ImageIcon(bim);
-				ImageIcon imageIcon = new ImageIcon(img.getImage().getScaledInstance(310, 477, Image.SCALE_SMOOTH));
-				lblNewLabel.setIcon(imageIcon);
+				File arquivo = new File(pdfPATH);
+				try(PDDocument pddDoc =  Loader.loadPDF(arquivo) ){
+		            PDFRenderer pr = new PDFRenderer (pddDoc );
+		            BufferedImage bim = pr.renderImageWithDPI(0, 300, ImageType.RGB);
+					ImageIcon img = new ImageIcon(bim);
+					ImageIcon imageIcon = new ImageIcon(img.getImage().getScaledInstance(310, 477, Image.SCALE_SMOOTH));
+					lblNewLabel.setIcon(imageIcon);
+		        } catch (IOException  e) {
+		            e.printStackTrace();
+		        }
 
 				// Habilita botoes
 				btnVisualizar.setEnabled(true);

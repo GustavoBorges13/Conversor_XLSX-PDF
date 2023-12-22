@@ -13,4 +13,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
+ 	<!-- Entradas do SLF4J e Log4j -->
 </classpath>
+
