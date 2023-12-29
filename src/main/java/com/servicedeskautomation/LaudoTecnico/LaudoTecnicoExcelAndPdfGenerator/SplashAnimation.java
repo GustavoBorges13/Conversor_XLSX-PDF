@@ -106,7 +106,6 @@ public class SplashAnimation extends JFrame {
 					frame.setUndecorated(true);
 					frame.setShape(new RoundRectangle2D.Double(0, 0, 382, 122, 20, 20));
 					frame.setVisible(true);
-					frame.setVisible(true);
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Erro ao abrir a janela: " + e);
 				}
