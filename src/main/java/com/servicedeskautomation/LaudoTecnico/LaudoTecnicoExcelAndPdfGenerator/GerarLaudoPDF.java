@@ -978,7 +978,10 @@ public class GerarLaudoPDF extends JDialog {
 				
 				
 				// Convertendo docx para pdf
-				IConverter converter = LocalConverter.builder()
+				String pathTemp = "C:/temp/LocalConverter";
+				File temp = new File(pathTemp);
+				temp.mkdir();
+				IConverter converter = LocalConverter.builder().baseFolder(new File(pathTemp))
 						.workerPool(20, 150, 2, TimeUnit.SECONDS).processTimeout(5, TimeUnit.SECONDS).build();
 
 				@SuppressWarnings("unused")
@@ -1014,18 +1017,20 @@ public class GerarLaudoPDF extends JDialog {
 								+ Principal.nomeSolicitante.get(GerarLaudoPDF.linhasSelecionadas[0]) + ".pdf"
 								+ "\nDuração: " + ((System.currentTimeMillis() - start) / 1000) + " segundos.");
 				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			} catch (Exception e) {
-				JOptionPane.showMessageDialog(null, "Erro Exception IN: " + e);
-			}
+		    } catch (FileNotFoundException e) {
+		        JOptionPane.showMessageDialog(null, "Arquivo DOCX não encontrado: " + e.getMessage());
+		    } catch (IOException e) {
+		        JOptionPane.showMessageDialog(null, "Erro de IO ao manipular o arquivo DOCX ou PDF: " + e.getMessage());
+		    } catch (Exception e) {
+		        JOptionPane.showMessageDialog(null, "Erro inesperado: " + e.getMessage());
+		    }
 
-		} catch (
-
-		FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Erro com arquivo: " + e);
+		} catch (FileNotFoundException e) {
+		    JOptionPane.showMessageDialog(null, "Erro ao criar diretório de backup: " + e.getMessage());
 		} catch (IOException e) {
-			JOptionPane.showMessageDialog(null, "Erro IO: " + e);
+		    JOptionPane.showMessageDialog(null, "Erro de IO ao criar diretório de backup: " + e.getMessage());
 		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null, "Erro Exception: " + e);
+		    JOptionPane.showMessageDialog(null, "Erro inesperado ao criar diretório de backup: " + e.getMessage());
 		}
 	}
 
