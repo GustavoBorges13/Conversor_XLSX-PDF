@@ -18,7 +18,6 @@ public class ConfigManager {
 
 	// Método auxiliar para criar o arquivo de configuração se não existir
 	public static void createConfigFileIfNotExists() {
-		// ... restante do código para salvar o arquivo
 		try {
 			// Antes de salvar o arquivo config.ini
 			File configDir = new File(System.getProperty("user.home") + "\\ConversorXLSX-PDF");
@@ -28,16 +27,16 @@ public class ConfigManager {
 			if (!configFile.exists()) {
 				configFile.createNewFile();
 
-				// Cria um comentário na linha 0 para não substituir
+				// Cria um comentário na linha 1 para não substituir
 				ConfigManager.setConfigLine(0, System.getProperty("user.home") + "\\ConversorXLSX-PDF\\config.ini");
 				
-				//Criando a linha 3 - paths backup
+				//Criando a linha 2 - paths backup
 				String userHome = System.getProperty("user.home");
 				String pathRestante = "\\ConversorXLSX-PDF\\data\\";
 				File path= new File(userHome + pathRestante + "Backup");
 				ConfigManager.setConfigLine(1, path.toPath().toString());
 				
-				//Criando a linha 4 - paths pdf generated
+				//Criando a linha 3 - paths pdf generated
 				path = new File(userHome + pathRestante + "Pdf generated");
 				ConfigManager.setConfigLine(2, path.toPath().toString());
 			}

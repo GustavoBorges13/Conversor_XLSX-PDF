@@ -420,7 +420,8 @@ public class SplashAnimation extends JFrame {
 			if (!configFile.exists()) {
 				configFile.createNewFile();
 			}
-
+			
+			//Criando a linha 4 - paths pdf generated
 			// Salva o caminho raiz do arquivo .docx do servidor ou da pasta..
 			ConfigManager.setConfigLine(3, "N/A");
 

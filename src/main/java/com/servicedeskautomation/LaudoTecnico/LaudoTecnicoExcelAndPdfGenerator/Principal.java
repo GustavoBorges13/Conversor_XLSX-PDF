@@ -35,6 +35,7 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -82,22 +83,22 @@ import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 public class Principal extends JFrame {
-	//Variaveis Locais
-	//serial_auto_generated
+	// Variaveis Locais
+	// serial_auto_generated
 	private static final long serialVersionUID = 6391163855934589017L;
-	
-	//janelas
+
+	// janelas
 	static Principal frame;
 	private JPanel contentPane;
-	
-	//textfields
+
+	// textfields
 	private JTextField jlocal;
 	private JTextField jtitulo;
-	
-	//labels
+
+	// labels
 	private JLabel lblHelp;
-	
-	//botoes
+
+	// botoes
 	private JButton btnRemover;
 	private JButton btnPreencher;
 	private JButton btnXLS;
@@ -106,8 +107,8 @@ public class Principal extends JFrame {
 	static JButton btnGerarArquivoPdf;
 	static JButton btnEditar;
 	private JButton btnFechar;
-	
-	//tabela
+
+	// tabela
 	static JTable table;
 	private static int alinhamento = SwingConstants.LEFT;
 	static ArrayList<String> laudo = new ArrayList<String>();
@@ -134,29 +135,29 @@ public class Principal extends JFrame {
 	static ArrayList<String> storageType = new ArrayList<String>();
 	static ArrayList<String> storageValue = new ArrayList<String>();
 	static String[] storageSpliter;
-	
-	//arquivos
+
+	// arquivos
 	private File pathfileExcel;
 	static File pathfileWord;
 	private XSSFWorkbook work;
-	
-	//temporizacao ou threads
+
+	// temporizacao ou threads
 	private static Timer holdingTimer;
-	
-	//Key shortcuts
+
+	// Key shortcuts
 	public int KEYCODE_ESC = 27;
-	
-	//variaveis auxiliares
+
+	// variaveis auxiliares
 	private int qtdTemporaria;
 	private int row = 0;
 	private int ultimaLinhaOld = 0;
-	
-	//flags
+
+	// flags
 	private boolean flagAdd = false;
 	private boolean flagNewLinha = false;
 	static boolean flagSaved = true;
-	
-	//imagens
+
+	// imagens
 	private Image img_help = new ImageIcon(SplashAnimation.class.getResource("/resources/help-icon.png")).getImage()
 			.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 	private BufferedImage convolvedImage;
@@ -275,7 +276,6 @@ public class Principal extends JFrame {
 		table.setFont(new Font("Dialog", Font.PLAIN, 10));
 	}
 
-	
 	// Janela geral
 	public Principal() {
 		setIconImage(
@@ -586,8 +586,9 @@ public class Principal extends JFrame {
 					JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e3, "Erro",
 							JOptionPane.ERROR_MESSAGE);
 				} finally {
+					int coluna = 0; // valor default coluna
+					int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
 					try {
-						int i = 1; // varredura a partir da segunda linha ~ ignora cabeçalho
 						int pos = 0; // valor default
 
 						// Abre o arquivo excel
@@ -598,7 +599,7 @@ public class Principal extends JFrame {
 						sheet = work.getSheetAt(0);
 
 						// Linha de referencia (selecionar a partir de uma determinada linha...)
-						Cell cellSelected;
+						// Cell cellSelected;
 						if (colunas.size() == 19) {
 							// Copia as informações das linhas da planilhas para arrayslists.
 							while (((row = sheet.getRow(i)) != null && row.getCell(0).getCellType() != CellType.BLANK
@@ -613,26 +614,38 @@ public class Principal extends JFrame {
 								storageSpliter = null; // limpa o vetor auxiliar
 
 								// Criando o DataBase Local (Armazenando os valores em Arraylists)
+								coluna = 0;
 								if (row.getCell(0).getCellType() == CellType.STRING)
 									laudo.add(row.getCell(0).getStringCellValue());
 								else if (row.getCell(0).getCellType() == CellType.NUMERIC)
 									laudo.add((int) row.getCell(0).getNumericCellValue() + "");
 								else
 									laudo.add("");
+								coluna = 1;
 								nomeSolicitante.add(row.getCell(1).getStringCellValue());
+								coluna++;
 								usuario.add(row.getCell(2).getStringCellValue());
+								coluna++;
 								centroCusto.add(row.getCell(3).getStringCellValue());
+								coluna++;
 								item.add(row.getCell(4).getStringCellValue());
-								if (row.getCell(5).getCellType() == CellType.STRING)
-									qtd.add(row.getCell(5).getStringCellValue());
-								else
-									qtd.add((int) row.getCell(5).getNumericCellValue() + "");
+								coluna++;
+								String quantidadeString = row.getCell(5).getNumericCellValue()+"";
+								String qtd_aux = quantidadeString.replaceAll(".0", "");
+								qtd.add(qtd_aux);
+								coluna++;
 								ativo.add(row.getCell(6).getStringCellValue());
+								coluna++;
 								dispositivo.add(row.getCell(7).getStringCellValue());
+								coluna++;
 								hostname.add(row.getCell(8).getStringCellValue());
+								coluna++;
 								fabricante.add(row.getCell(9).getStringCellValue());
+								coluna++;
 								modelo.add(row.getCell(10).getStringCellValue());
+								coluna++;
 								serviceTag.add(row.getCell(11).getStringCellValue());
+								coluna++;
 
 								// Tratamento de exeptions
 								try {
@@ -659,14 +672,18 @@ public class Principal extends JFrame {
 										} catch (ParseException e1) {
 											System.out.println("Debug date Formatacao-> " + e1);
 										}
+										coluna++;
 									}
-
 									// Erro em caso de nâo ser reconhecido o tipo numerico
 								} catch (NullPointerException e1) {
 									String dateString = row.getCell(12).getStringCellValue();
 									dataAquisicao.add(dateString);
+									coluna++;
 								} catch (IllegalStateException e2) {
 									System.out.println("Debug Date Type -> " + e2);
+									JOptionPane.showMessageDialog(null, "Erro na linha " + (i + 1) + " coluna: "
+											+ (coluna + 1)
+											+ "\nPossivel causa: data não está formatada direito ou contém espaços no inicio ou no fim");
 								} finally {
 									// Verifica se o tipo é string
 									if (row.getCell(12).getCellType() == CellType.STRING) {
@@ -690,9 +707,11 @@ public class Principal extends JFrame {
 											}
 										}
 									}
+									coluna++;
 								}
 
 								cpu.add(row.getCell(13).getStringCellValue());
+								coluna++;
 								if ((row.getCell(14).getStringCellValue()) != null
 										&& !(row.getCell(14).getStringCellValue()).isEmpty()) {
 									storage.add(row.getCell(14).getStringCellValue());
@@ -701,11 +720,13 @@ public class Principal extends JFrame {
 									storageValue.add(storageSpliter[pos]);
 									storageType.add(storageSpliter[pos + 1]);
 								}
-								if (row.getCell(15).getCellType() == CellType.STRING)
-									memoria.add(row.getCell(15).getStringCellValue());
-								else
-									memoria.add((int) row.getCell(15).getNumericCellValue() + "");
+								coluna++;
+								String memoriaString = row.getCell(15).getNumericCellValue()+"";
+								String memoria_aux = memoriaString.replaceAll(".0", "");
+								memoria.add(memoria_aux);
+								coluna++;
 								tecnico.add(row.getCell(16).getStringCellValue());
+								coluna++;
 
 								// Observacao
 								Cell cell = row.getCell(17);
@@ -715,6 +736,7 @@ public class Principal extends JFrame {
 									observacao.add(cell.getStringCellValue());
 								}
 
+								coluna++;
 								// Status
 								cell = row.getCell(18);
 								if (cell == null || cell.getStringCellValue().isEmpty()) {
@@ -722,7 +744,7 @@ public class Principal extends JFrame {
 								} else {
 									status.add(cell.getStringCellValue());
 								}
-
+								coluna++;
 								i++;
 							}
 							qtdTemporaria = laudo.size();
@@ -736,19 +758,21 @@ public class Principal extends JFrame {
 						JOptionPane.showMessageDialog(null, "Arquivo invalido!\nErro: " + e2, "Erro",
 								JOptionPane.ERROR_MESSAGE);
 					} catch (java.lang.ArrayIndexOutOfBoundsException e3) {
-						JOptionPane.showMessageDialog(null,
-								"Esta não é a planilha que utilizamos em 2023.\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
-										+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
-										+ " e quantidade de colunas.\nErro: " + e3,
-								"Aviso", JOptionPane.WARNING_MESSAGE);
+						int anoAtual = Calendar.getInstance().get(Calendar.YEAR);
+						JOptionPane.showMessageDialog(null, "Esta não é a planilha que utilizamos em " + anoAtual
+								+ ".\nPor favor, abra a planilha com o modelo padrão utilizado pois,"
+								+ " este codigo foi feito especificamente para ser utilizado com esse tipo de planilha devido as formatações"
+								+ " e quantidade de colunas.\nErro: " + e3, "Aviso", JOptionPane.WARNING_MESSAGE);
 					} catch (java.lang.NullPointerException e4) {
 						JOptionPane.showMessageDialog(null,
 								"Está é uma planilha nova! Possivelmente existem campos vazios, por favor, insira novos laudos.\n Exception: "
 										+ e4,
 								"Aviso", JOptionPane.WARNING_MESSAGE);
 					} catch (IllegalStateException e3) {
-						//19/03/2024
-						JOptionPane.showMessageDialog(null, "Erro na linha "+ultimaLinhaOld+1 +" coluna: "+colunas.size());
+						if(coluna == 19)
+							coluna = 0;
+						JOptionPane.showMessageDialog(null, "Erro na linha " + (i + 1) + " coluna: " + (coluna + 1)
+								+ "\nPossivel causa: nao está formatado corretamente, ou no lugar de string colocou numeros inteiros, ou vice-versa.");
 					}
 				}
 
@@ -1187,9 +1211,9 @@ public class Principal extends JFrame {
 					btnEditar.setEnabled(true);
 					btnRemover.setEnabled(true);
 					btnGerarArquivoPdf.setEnabled(true);
-					
+
 					// Inicia um Timer para agendar a limpeza do clique duplo
-					//Intervalo do segundo clique é de 200 milissegundos
+					// Intervalo do segundo clique é de 200 milissegundos
 					Timer timer = new Timer(200, new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
