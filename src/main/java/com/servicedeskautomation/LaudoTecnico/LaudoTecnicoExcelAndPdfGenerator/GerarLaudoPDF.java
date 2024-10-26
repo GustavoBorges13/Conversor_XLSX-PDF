@@ -978,9 +978,10 @@ public class GerarLaudoPDF extends JDialog {
 				
 				
 				// Convertendo docx para pdf
-				String pathTemp = "C:/temp/LocalConverter";
+				String pathTemp = System.getProperty("java.io.tmpdir") + "/LocalConverter";
 				File temp = new File(pathTemp);
 				temp.mkdir();
+			
 				IConverter converter = LocalConverter.builder().baseFolder(new File(pathTemp))
 						.workerPool(20, 150, 2, TimeUnit.SECONDS).processTimeout(5, TimeUnit.SECONDS).build();
 
