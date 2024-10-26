@@ -7,10 +7,15 @@
 <!---[![Build Status](https://app.travis-ci.com/GustavoBorges13/RunBlocker.svg?branch=main)](https://app.travis-ci.com/GustavoBorges13/RunBlocker)-->
 
 ```diff
-- Em desenvolvimento!
+- Finalizado e Obsoleto!
 + Autor: Gustavo Borges Peres da Silva
 # Projeto no estagio
 ```
+
+# Sobre o projeto
+Relatorio disponivel aqui
+[relatorio_projeto.pdf](https://github.com/user-attachments/files/17529859/relatorio_projeto.pdf)
+
 # Sobre o projeto
 
 Desenvolvemos esta aplicação para aprimorar a eficiência de nossa equipe de service desk.
